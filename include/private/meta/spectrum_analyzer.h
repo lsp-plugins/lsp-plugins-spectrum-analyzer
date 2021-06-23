@@ -33,7 +33,7 @@ namespace lsp
     {
         //-------------------------------------------------------------------------
         // Spectrum analyzer metadata
-        struct spectrum_analyzer_metadata
+        struct spectrum_analyzer
         {
             static const float          FREQ_MIN            = SPEC_FREQ_MIN;
             static const float          FREQ_DFL            = 1000.0f;
