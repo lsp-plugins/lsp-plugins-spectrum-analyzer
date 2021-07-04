@@ -1,5 +1,6 @@
 <plugin resizable="true">
 	<vbox spacing="4">
+		<!-- Head settings -->
 		<align halign="-1" fill="true">
 			<hbox padding="4" spacing="8" fill="false">
 				<label text="labels.mode" />
@@ -21,6 +22,69 @@
 				<button id="splog" size="16" color="yellow" led="true" visibility=":mode ige 4" />
 			</hbox>
 		</align>
+
+		<!-- Channel for metering configuration -->
+		<group text="groups.channels" visibility="(:mode ieq 0) or (:mode ieq 2)">
+			<grid rows="7" cols="17" transpose="true">
+				<label text="labels.specials.num" />
+				<label text="labels.chan.on" />
+				<label text="labels.chan.solo_hold" />
+				<label text="labels.chan.hue" />
+				<label />
+				<label text="labels.chan.shift" />
+				<label text="labels.chan.:db" />
+				
+				<ui:for id="i" first="0" last="15">
+					<label text="labels.specials.idx" text:id="${i}" />
+					<button id="on_${i}" size="16" color="red" led="true" color.hue=":hue_${i}" />
+					
+					<grid rows="2" cols="2" fill="false">
+						<button id="solo_${i}" size="12" color="red" led="true" color.hue=":hue_${i}" />
+						<button id="frz_${i}" size="12" color="red" led="true" color.hue=":hue_${i}" />
+						<label text="labels.chan.S_olo" font_size="8" />
+						<label text="labels.chan.H_old" font_size="8" />
+					</grid> 
+					
+					<knob id="hue_${i}" scolor.hue=":hue_${i}" size="20"/>
+					<value id="hue_${i}" detailed="false" />
+					<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
+					<value id="sh_${i}" detailed="false" />
+				</ui:for>
+			</grid>
+		</group>
+		
+		<!-- Channels for mastering -->
+		<hbox spacing="4" visibility="(:mode ine 0) and (:mode ine 2)">
+			<group text="groups.channels" expand="true" fill="true">
+				<grid rows="6" cols="33" transpose="true" fill="true">
+					<label text="labels.channel" />
+					<label text="labels.chan.hold" />
+					<label text="labels.chan.hue" />
+					<label />
+					<label text="labels.chan.shift" />
+					<label text="labels.chan.:db" />
+				
+					<ui:for id="i" first="0" last="15">
+						<label text="labels.specials.idx" text:id="${i}" />
+						<button id="frz_${i}" size="32" color="red" led="true" color.hue=":hue_${i}" />
+						<knob id="hue_${i}" scolor.hue=":hue_${i}" size="20" />
+						<value id="hue_${i}" detailed="false" />
+						<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20" />
+						<value id="sh_${i}" detailed="false" />
+					</ui:for>
+				</grid>
+			</group>
+			<group text="groups.metering">
+				<grid rows="6" cols="1" transpose="true" fill="true">
+					<label text="labels.metering.preamp" />
+					<knob id="pamp" />
+					<value id="pamp" same_line="true" />
 	
+					<label text="labels.metering.reactivity" />
+					<knob id="react" />
+					<value id="react" same_line="true" />
+				</grid>
+			</group>
+		</hbox>
 	</vbox>
 </plugin>
