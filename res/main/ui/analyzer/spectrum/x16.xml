@@ -104,9 +104,8 @@
 					<ui:attributes x="10" htext="1" vtext="1" color="graph_prim"  visibility=":zoom le -18 db">
 						<text y="-42 db" text="-42" />
 						<text y="-30 db" text="-30" />
-						<text y="-12 db" text="-12" />
-						<text y="0 db" text="0" />
-						<text y="+12 db" text="+12" />
+						<text y="-18 db" text="-18" />
+						<text y="-6 db" text="-6" />
 					</ui:attributes>
 					
 					<ui:attributes x="10" htext="1" vtext="1" color="graph_prim"  visibility=":zoom le -33 db">
