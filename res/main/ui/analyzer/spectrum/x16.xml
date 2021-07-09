@@ -146,8 +146,9 @@
 					</ui:for>
 
 					<!-- Frame buffer -->
-					<!-- fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" opacity="0.75" angle="0"
-						mode=":spm" color="left_channel" hue_id="hue[spc0]" /-->
+					<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1"
+						transparency="0.25" angle="0"
+						mode=":spm" color="red" color.hue=":hue[spc0]" />
 		
 					<!-- Boundaries -->
 					<marker value="8" ox="1" oy="0" color="graph_prim"/>
@@ -210,10 +211,10 @@
 					</ui:for>
 
 					<!-- Frame buffer -->
-					<!-- fbuffer id="fb0" width="0.5" height="1" hpos="-1" vpos="1" opacity="0.75" angle="0"
-						mode=":spm" color="left_channel" hue_id="hue[spc0]" />
-					<fbuffer id="fb1" width="0.5" height="1" hpos="0" vpos="1" opacity="0.75" angle="0"
-						mode=":spm" color="left_channel" hue_id="hue[spc1]" /-->
+					<fbuffer id="fb0" x="-1" y="1" width="0.5" height="1" transparency="0.25" angle="0"
+						mode=":spm" color="red" color.hue=":hue[spc0]" />
+					<fbuffer id="fb1" x="0" y="1" width="0.5" height="1" transparency="0.25" angle="0"
+						mode=":spm" color="red" color.hue=":hue[spc1]" />
 		
 					<!-- Boundaries -->
 					<marker value="8" o="0" color="graph_prim" ox="1" oy="0" />
