@@ -20,7 +20,7 @@
 
 # Package version
 ARTIFACT_ID                 = lsp-plugins-spectrum-analyzer
-ARTIFACT_DESC               = Phase detector plugin
+ARTIFACT_DESC               = Spectrum analyzer plugin
 ARTIFACT_VARS               = LSP_PLUGINS_SPECTRUM_ANALYZER
 ARTIFACT_HEADERS            = lsp-plug.in
 ARTIFACT_EXPORT_ALL         = 1
