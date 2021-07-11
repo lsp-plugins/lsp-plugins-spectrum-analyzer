@@ -124,6 +124,10 @@ LIBICONV_TYPE              := libiconv
 LIBICONV_TYPE              := opt
 LIBICONV_LDFLAGS           := -liconv
 
+LIBFREETYPE_VERSION        := system
+LIBFREETYPE_NAME           := freetype2
+LIBFREETYPE_TYPE           := pkg
+
 LIBSHLWAPI_VERSION         := system
 LIBSHLWAPI_NAME            := libshlwapi
 LIBSHLWAPI_TYPE            := opt

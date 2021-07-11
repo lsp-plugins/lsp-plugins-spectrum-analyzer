@@ -55,7 +55,8 @@ ifeq ($(PLATFORM),Linux)
     LIBJACK \
     LIBSNDFILE \
     LIBX11 \
-    LIBCAIRO
+    LIBCAIRO \
+    LIBFREETYPE
 endif
 
 ifeq ($(PLATFORM),BSD)
@@ -63,7 +64,8 @@ ifeq ($(PLATFORM),BSD)
     LIBJACK \
     LIBSNDFILE \
     LIBX11 \
-    LIBCAIRO
+    LIBCAIRO \
+    LIBFREETYPE
 endif
 
 ifeq ($(PLATFORM),Windows)
@@ -85,6 +87,7 @@ ALL_DEPENDENCIES = \
   LIBCAIRO \
   LIBDL \
   LIBICONV \
+  LIBFREETYPE \
   LIBSHLWAPI \
   LIBWINMM \
   LIBMSACM
