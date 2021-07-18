@@ -4,7 +4,7 @@
 		<align halign="-1" fill="true">
 			<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" spacing="8" fill="false" bg.color="bg_light">
 				<label text="labels.mode" />
-				<combo id="mode" bg.inherit="true" />
+				<combo bg.inherit="true" id="mode" />
 
 				<button text="actions.freeze" size="16" width="64" led="true" id="freeze" color="yellow" />
 
