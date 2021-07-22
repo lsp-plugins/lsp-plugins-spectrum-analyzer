@@ -263,10 +263,11 @@
 				</hbox>
 			</vbox>
 
-			<vbox visibility=":mode ilt 4" vexpand="true">
-				<label text="labels.zoom" />
-				<fader id="zoom" angle="1" vexpand="true" />
-				<value id="zoom" />
+			<vbox visibility=":mode ilt 4" vexpand="true" bg.color="bg_schema">
+				<!-- <label text="labels.zoom" /> -->
+				<label font.name="lsp-icons" font.size="12" font.antialias="true" text="E" color="text_icon" padding.bottom="4"/>
+				<fader id="zoom" angle="1" vexpand="true" bg.inherit="true" flat="true"/>
+				<value id="zoom" width="40"/>
 			</vbox>
 
 			<group text="groups.metering" visibility="(:mode ieq 0) or (:mode ieq 2)">
