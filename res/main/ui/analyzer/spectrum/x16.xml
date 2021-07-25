@@ -270,8 +270,8 @@
 			<group text="groups.metering" visibility="(:mode ieq 0) or (:mode ieq 2)" bg.color="bg" ipadding="0">
 				<grid rows="5" cols="2" expand="true" spacing="4">
 
-					<cell rows="1" cols="2" bg.color="bg_light">
-						<vbox>
+					<cell rows="1" cols="2">
+						<vbox bg.color="bg_light">
 							<label text="labels.metering.preamp"/>
 							<hbox>
 								<knob id="pamp"/>
@@ -280,8 +280,8 @@
 						</vbox>
 					</cell>
 
-					<cell rows="1" cols="2" bg.color="bg_light">
-						<vbox>
+					<cell rows="1" cols="2">
+						<vbox bg.color="bg_light">
 							<label text="labels.metering.reactivity"/>
 							<hbox>
 								<knob id="react"/>
@@ -291,26 +291,28 @@
 					</cell>
 
 					<cell rows="1" cols="2">
-						<grid rows="3" cols="2"  hfill="true" hspacing="4">
-							<label text="labels.metering.channel" bg.color="bg_light" width="50"/>
-							<label text="labels.metering.selector" bg.color="bg_light" width="50"/>
-							<combo id="chn" width="48" bg.color="bg_light"/>
-							<knob id="sel" bg.color="bg_light" scolor.hue=":hue_${i}"/>
-							<void bg.color="bg_light"/>
-							<value id="sel" same_line="true" bg.color="bg_light"/>
+						<grid rows="3" cols="2" hfill="true" hspacing="4">
+							<ui:attributes bg.color="bg_light">
+								<label text="labels.metering.channel" width="50"/>
+								<label text="labels.metering.selector" width="50"/>
+								<combo id="chn" width="48" />
+								<knob id="sel" scolor.hue=":hue[chn]"/>
+								<void />
+								<value id="sel" same_line="true" />
+							</ui:attributes>
 						</grid>
 					</cell>
 
-					<cell rows="1" cols="2" bg.color="bg_light">
-						<vbox>
+					<cell rows="1" cols="2">
+						<vbox bg.color="bg_light">
 							<label text="labels.metering.frequency:hz"/>
-							<indicator id="freq" format="f6.1!" text.color.hue=":hue_${i}" padding="6"/>
+							<indicator id="freq" format="f6.1!" text.color.hue=":hue[chn]" padding="6"/>
 						</vbox>
 					</cell>
 					<cell rows="1" cols="2" bg.color="bg_light">
 						<vbox>
 							<label text="labels.metering.level:db"/>
-							<indicator id="lvl" format="+-f4.1!" text.color.hue=":hue_${i}" text_color="green"/>
+							<indicator id="lvl" format="+-f4.1!" text.color.hue=":hue[chn]" text_color="green"/>
 						</vbox>
 					</cell>
 				</grid>
@@ -333,8 +335,8 @@
 					<button ui:inject="Button_ON_OFF" text="ON/OFF" id="on_${i}" color.hue=":hue_${i}" down.color.hue=":hue_${i}"/>
 
 					<grid rows="2" cols="2" fill="false">
-						<button id="solo_${i}" text="S" size="12" color="red" led="true" color.hue=":hue_${i}"/>
-						<button id="frz_${i}" text="H" size="12" color="red" led="true" color.hue=":hue_${i}"/>
+						<button id="solo_${i}" text="labels.chan.S_olo" size="12" color="red" led="true" color.hue=":hue_${i}"/>
+						<button id="frz_${i}" text="labels.chan.H_old" size="12" color="red" led="true" color.hue=":hue_${i}"/>
 						<label text="labels.chan.S_olo" font_size="8"/>
 						<label text="labels.chan.H_old" font_size="8"/>
 					</grid>
