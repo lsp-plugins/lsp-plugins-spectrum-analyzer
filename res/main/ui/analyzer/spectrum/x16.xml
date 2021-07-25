@@ -295,7 +295,7 @@
 							<label text="labels.metering.channel" bg.color="bg_light" width="50"/>
 							<label text="labels.metering.selector" bg.color="bg_light" width="50"/>
 							<combo id="chn" width="48" bg.color="bg_light"/>
-							<knob id="sel" bg.color="bg_light"/>
+							<knob id="sel" bg.color="bg_light" scolor.hue=":hue_${i}"/>
 							<void bg.color="bg_light"/>
 							<value id="sel" same_line="true" bg.color="bg_light"/>
 						</grid>
@@ -304,13 +304,13 @@
 					<cell rows="1" cols="2" bg.color="bg_light">
 						<vbox>
 							<label text="labels.metering.frequency:hz"/>
-							<indicator id="freq" format="f6.1!" text_color="green" padding="6"/>
+							<indicator id="freq" format="f6.1!" text.color.hue=":hue_${i}" padding="6"/>
 						</vbox>
 					</cell>
 					<cell rows="1" cols="2" bg.color="bg_light">
 						<vbox>
 							<label text="labels.metering.level:db"/>
-							<indicator id="lvl" format="+-f4.1!" text_color="green"/>
+							<indicator id="lvl" format="+-f4.1!" text.color.hue=":hue_${i}" text_color="green"/>
 						</vbox>
 					</cell>
 				</grid>
@@ -330,11 +330,11 @@
 
 				<ui:for id="i" first="0" last="15">
 					<label text="labels.specials.idx" text:id="${i}"/>
-					<button id="on_${i}" size="16" color="red" led="true" color.hue=":hue_${i}"/>
+					<button ui:inject="Button_ON_OFF" text="ON/OFF" id="on_${i}" color.hue=":hue_${i}" down.color.hue=":hue_${i}"/>
 
 					<grid rows="2" cols="2" fill="false">
-						<button id="solo_${i}" size="12" color="red" led="true" color.hue=":hue_${i}"/>
-						<button id="frz_${i}" size="12" color="red" led="true" color.hue=":hue_${i}"/>
+						<button id="solo_${i}" text="S" size="12" color="red" led="true" color.hue=":hue_${i}"/>
+						<button id="frz_${i}" text="H" size="12" color="red" led="true" color.hue=":hue_${i}"/>
 						<label text="labels.chan.S_olo" font_size="8"/>
 						<label text="labels.chan.H_old" font_size="8"/>
 					</grid>
