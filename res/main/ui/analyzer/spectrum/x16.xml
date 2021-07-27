@@ -8,22 +8,10 @@
 
 				<button padding.left="10" ui:inject="Button_Text_Cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
 
-				<label padding.left="10" text="labels.spectrogram" visibility=":mode ige 4"/>
-				<combo id="spm" visibility=":mode ige 4"/>
-
-				<label padding.left="10" text="labels.channel" visibility=":mode ieq 4"/>
-
 				<!-- Stereo Mode Chanels -->
-				<!--
-				<label padding.left="10" text="labels.channels" visibility=":mode band 1"/>
+				<!-- <label padding.left="10" text="labels.channels" visibility=":mode band 1"/> <hbox spacing="2"> <combo id="spc0" width="32" visibility="(:mode ine 0) and (:mode ine 2)"/> <combo id="spc1" width="32" visibility="(:mode ieq 1) or (:mode ieq 3) or
+				(:mode ieq 5)"/> </hbox> -->
 
-				<hbox spacing="2">
-					<combo id="spc0" width="32" visibility="(:mode ine 0) and (:mode ine 2)"/>
-					<combo id="spc1" width="32" visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)"/>
-				</hbox> -->
-
-				<label padding.left="10" text="labels.log_scale" visibility=":mode ige 4"/>
-				<button ui:inject="Button_Yellow" id="splog" size="16" visibility=":mode ige 4"/>
 			</hbox>
 		</align>
 
@@ -249,16 +237,21 @@
 					</graph>
 				</group>
 
-				<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" spacing="8" fill="true" bg.color="bg_schema">
-					<label text="labels.fft.window"/>
+				<align halign="1" fill="true">
+					<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" spacing="8" bg.color="bg_schema">
+					<label text="labels.fft.window" padding.left="15"/>
 					<combo id="wnd"/>
-					<label text="labels.fft.tolerance"/>
+					<label text="labels.fft.tolerance" padding.left="15"/>
 					<combo id="tol"/>
-					<label text="labels.fft.envelope"/>
+					<label text="labels.fft.envelope" padding.left="15"/>
 					<combo id="env"/>
+					<label text="labels.spectrogram" visibility=":mode ige 4" padding.left="15"/>
+					<combo id="spm" visibility=":mode ige 4"/>
+					<!-- <label padding.left="10" text="labels.log_scale" visibility=":mode ige 4"/> -->
+					<button ui:inject="Button_Text_Yellow" text="labels.log_scale" id="splog" size="16" visibility=":mode ige 4" padding.left="15"/>
 				</hbox>
+			</align>
 			</vbox>
-
 
 			<!-- Zoom Fader -->
 			<vbox visibility=":mode ilt 4" vexpand="true" bg.color="bg_schema">
@@ -277,9 +270,9 @@
 					<cell rows="1" cols="2">
 						<vbox bg.color="bg_schema">
 							<label text="labels.metering.preamp"/>
-							<hbox>
-								<knob id="pamp"/>
-								<value id="pamp" same_line="true"/>
+							<hbox fill="false">
+								<knob id="pamp" width="60"/>
+								<value id="pamp" same_line="true" width="60"/>
 							</hbox>
 						</vbox>
 					</cell>
@@ -287,9 +280,9 @@
 					<cell rows="1" cols="2">
 						<vbox bg.color="bg_schema">
 							<label text="labels.metering.reactivity"/>
-							<hbox>
-								<knob id="react"/>
-								<value id="react" same_line="true"/>
+							<hbox fill="false">
+								<knob id="react" width="60"/>
+								<value id="react" same_line="true" width="60"/>
 							</hbox>
 						</vbox>
 					</cell>
@@ -297,12 +290,12 @@
 					<cell rows="1" cols="2">
 						<grid rows="3" cols="2" hfill="true" hspacing="4">
 							<ui:attributes bg.color="bg_schema">
-								<label text="labels.metering.channel" width="50"/>
-								<label text="labels.metering.selector" width="50"/>
-								<combo id="chn" width="48" />
+								<label text="labels.metering.channel" width="58"/>
+								<label text="labels.metering.selector" width="58"/>
+								<combo id="chn" width="48"/>
 								<knob id="sel" scolor.hue=":hue[chn]"/>
-								<void />
-								<value id="sel" same_line="true" />
+								<void/>
+								<value id="sel" same_line="true"/>
 							</ui:attributes>
 						</grid>
 					</cell>
@@ -325,130 +318,106 @@
 
 		<!-- Channel for metering configuration -->
 		<!-- version 1 -->
-		<!-- <group text="groups.channels" visibility="(:mode ieq 0) or (:mode ieq 2)" spacing="4" bg.color="bg" ipadding="0">
-			<grid rows="5" cols="17" transpose="true" hspacing="4" >
-				<ui:attributes padding="6">
-				<label text="labels.specials.num" bg.color="bg_schema"/>
-				<label text="labels.chan.on" bg.color="bg_schema"/>
-				<label text="labels.chan.solo_hold" bg.color="bg_schema"/>
-				<label text="labels.chan.shift" bg.color="bg_schema"/>
-				<label text="labels.chan.:db" bg.color="bg_schema"/>
+		<!-- <group text="groups.channels" visibility="(:mode ieq 0) or (:mode ieq 2)" spacing="4" bg.color="bg" ipadding="0"> <grid rows="5" cols="17" transpose="true" hspacing="4" > <ui:attributes padding="6"> <label text="labels.specials.num"
+		bg.color="bg_schema"/> <label text="labels.chan.on" bg.color="bg_schema"/> <label text="labels.chan.solo_hold" bg.color="bg_schema"/> <label text="labels.chan.shift" bg.color="bg_schema"/> <label text="labels.chan.:db" bg.color="bg_schema"/> <ui:for
+		id="i" first="0" last="15"> <ui:attributes bg.color="bg_schema"> <label text="labels.specials.idx" text:id="${i}" /> <button ui:inject="Button_Cycle" text="labels.chan.on" id="on_${i}" width="37" height="10" color.hue=":hue_${i}"
+		hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}" /> <hbox fill="false"
+		spacing="4" padding.bottom="14"> <button ui:inject="Button_Cycle" id="solo_${i}" text="labels.chan.S_olo" height="10" width="10" color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}"
+		border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}"/> <button ui:inject="Button_Cycle" id="frz_${i}" text="labels.chan.H_old" height="10" width="10"
+		color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}"/>
+		</hbox> <knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/> <value id="sh_${i}" detailed="false" /> </ui:attributes> </ui:for> </ui:attributes> </grid> </group> -->
 
-				<ui:for id="i" first="0" last="15">
-					<ui:attributes bg.color="bg_schema">
-					<label text="labels.specials.idx" text:id="${i}" />
-					<button ui:inject="Button_Cycle" text="labels.chan.on" id="on_${i}"  width="37" height="10"  color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}" />
-
-					<hbox fill="false" spacing="4" padding.bottom="14">
-						<button ui:inject="Button_Cycle" id="solo_${i}" text="labels.chan.S_olo" height="10" width="10" color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}"/>
-						<button ui:inject="Button_Cycle" id="frz_${i}" text="labels.chan.H_old" height="10" width="10" color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}"/>
-					</hbox>
-
-					<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
-					<value id="sh_${i}" detailed="false" />
-					</ui:attributes>
-				</ui:for>
-			</ui:attributes>
-			</grid>
-		</group> -->
-
-<!-- version 2 -->
+		<!-- version 2 -->
 		<group text="groups.channels" visibility="(:mode ieq 0) or (:mode ieq 2)" spacing="4" bg.color="bg" ipadding="0">
-			<grid rows="5" cols="17" transpose="true" hspacing="4" >
+			<grid rows="5" cols="17" transpose="true" hspacing="4">
 				<ui:attributes padding="6">
-				<label text="labels.specials.num" bg.color="bg_schema"/>
-				<label text="labels.chan.on" bg.color="bg_schema"/>
-				<label text="labels.chan.solo_hold" bg.color="bg_schema"/>
-				<label text="labels.chan.shift" bg.color="bg_schema"/>
-				<label text="labels.chan.:db" bg.color="bg_schema"/>
+					<label text="labels.specials.num" bg.color="bg_schema"/>
+					<label text="labels.chan.on" bg.color="bg_schema"/>
+					<label text="labels.chan.solo_hold" bg.color="bg_schema"/>
+					<label text="labels.chan.shift" bg.color="bg_schema"/>
+					<label text="labels.chan.:db" bg.color="bg_schema"/>
 
-				<ui:for id="i" first="0" last="15">
-					<ui:attributes bg.color="bg_schema">
-					<label text="labels.specials.idx" text:id="${i}" />
-					<button ui:inject="Button_On" text="labels.chan.on" id="on_${i}"  width="37" height="10"/>
+					<ui:for id="i" first="0" last="15">
+						<ui:attributes bg.color="bg_schema">
+							<label text="labels.specials.idx" text:id="${i}"/>
+							<button ui:inject="Button_Cycle" text="labels.chan.on" id="on_${i}" width="37" height="10" color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}"/>
 
-					<hbox fill="false" spacing="4" padding.bottom="14">
-						<button ui:inject="Button_Solo" id="solo_${i}" text="labels.chan.S_olo" height="10" width="10" />
-						<button ui:inject="Button_Hold" id="frz_${i}" text="labels.chan.H_old" height="10" width="10" />
-					</hbox>
+							<hbox fill="false" spacing="4" padding.bottom="14">
+								<button ui:inject="Button_Cycle" id="solo_${i}" text="labels.chan.S_olo" height="10" width="10" color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}"/>
+								<button ui:inject="Button_Cycle" id="frz_${i}" text="labels.chan.H_old" height="10" width="10" color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}"/>
+							</hbox>
 
-					<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
-					<value id="sh_${i}" detailed="false" />
-					</ui:attributes>
-				</ui:for>
-			</ui:attributes>
+							<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
+							<value id="sh_${i}" detailed="false"/>
+						</ui:attributes>
+					</ui:for>
+				</ui:attributes>
 			</grid>
 		</group>
 
 		<!-- Channels for mastering -->
 		<hbox spacing="4" visibility="(:mode ine 0) and (:mode ine 2)">
-			<group text="groups.channels" expand="true" fill="true">
-				<grid rows="4" cols="33" transpose="true" fill="true">
-					<label text="labels.channel"/>
-					<label text="labels.chan.hold"/>
-					<!-- <label text="labels.chan.hue"/>
-					<label/> -->
-					<label text="labels.chan.shift"/>
-					<label text="labels.chan.:db"/>
+			<group text="groups.channels" expand="true" fill="true" spacing="4" bg.color="bg" ipadding="0">
+				<grid rows="5" cols="17" transpose="true" fill="true" hspacing="4">
+					<ui:attributes padding="6">
+						<label text="labels.channel" bg.color="bg_schema"/>
+						<label text="labels.chan.hold" bg.color="bg_schema"/>
+						<!-- <label text="labels.chan.hue"/> <label/> -->
+						<label text="labels.chan.shift" bg.color="bg_schema"/>
+						<label text="labels.chan.:db" bg.color="bg_schema"/>
+					</ui:attributes>
+					<cell rows="1" cols="17" expand="true" hspacing="0">
+						<vbox>
+							<void bg.color="bg" height="4"/>
+							<void bg.color="bg_schema" expand="true"/>
+						</vbox>
+					</cell>
 
 					<ui:for id="i" first="0" last="15">
-						<label text="labels.specials.idx" text:id="${i}"/>
-						<button ui:inject="Button_Hold" text="labels.chan.hold" id="frz_${i}" width="37" height="10" color.hue=":hue_${i}"/>
-						<!-- <knob id="hue_${i}" scolor.hue=":hue_${i}" size="20"/>
-						<value id="hue_${i}" detailed="false"/> -->
-						<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
-						<value id="sh_${i}" detailed="false"/>
+						<ui:attributes bg.color="bg_schema">
+							<label text="labels.specials.idx" text:id="${i}" width="43"/>
+							<button ui:inject="Button_Cycle" text="labels.chan.hold" id="frz_${i}" width="37" height="10" color.hue=":hue_${i}" hover.color.hue=":hue_${i}" down.color.hue=":hue_${i}" down.hover.color.hue=":hue_${i}" border.color.hue=":hue_${i}" border.hover.color.hue=":hue_${i}" border.down.color.hue=":hue_${i}" border.down.hover.color.hue=":hue_${i}"/>
+							<!-- <knob id="hue_${i}" scolor.hue=":hue_${i}" size="20"/> <value id="hue_${i}" detailed="false"/> -->
+							<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
+							<value id="sh_${i}" detailed="false"/>
+						</ui:attributes>
 					</ui:for>
 				</grid>
 			</group>
 			<!-- OLD -->
-			<!-- <group text="groups.metering">
-				<grid rows="6" cols="1" transpose="true" fill="true">
-					<label text="labels.metering.preamp"/>
-					<knob id="pamp"/>
-					<value id="pamp" same_line="true"/>
-
-					<label text="labels.metering.reactivity"/>
-					<knob id="react"/>
-					<value id="react" same_line="true"/>
-				</grid>
-			</group> -->
-			<group text="groups.metering" bg.color="bg" ipadding="0" >
-				<grid rows="3" cols="2" expand="true" spacing="4" width="90" height="200">
-					<ui:attributes bg.color="bg_schema" >
+			<!-- <group text="groups.metering"> <grid rows="6" cols="1" transpose="true" fill="true"> <label text="labels.metering.preamp"/> <knob id="pamp"/> <value id="pamp" same_line="true"/> <label text="labels.metering.reactivity"/> <knob id="react"/>
+			<value id="react" same_line="true"/> </grid> </group> -->
+			<group text="groups.metering" bg.color="bg" ipadding="0">
+				<grid rows="2" cols="2" expand="true" spacing="4">
+					<ui:attributes bg.color="bg_schema" padding="6">
 						<cell rows="1" cols="2">
 							<vbox>
-								<label text="labels.channels" visibility=":mode band 1"/>
-								<hbox>
-									<combo id="spc0" width="32" visibility="(:mode ine 0) and (:mode ine 2)"/>
-									<combo id="spc1" width="32" visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)"/>
-								</hbox>
-							</vbox>
-						</cell>
-						<cell rows="1" cols="2">
-							<vbox>
-								<label text="labels.metering.preamp"/>
-								<hbox>
-									<knob id="pamp"/>
-									<value id="pamp" same_line="true"/>
+								<label text="labels.channel" visibility=":mode ieq 4" padding.bottom="4"/>
+								<label text="labels.channels" visibility=":mode band 1" padding.bottom="4"/>
+								<hbox spacing="4">
+									<combo id="spc0" fill="true" visibility="(:mode ine 0) and (:mode ine 2)"/>
+									<combo id="spc1" fill="true" visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)"/>
 								</hbox>
 							</vbox>
 						</cell>
 
-						<cell rows="1" cols="2">
-							<vbox>
-								<label text="labels.metering.reactivity"/>
-								<hbox>
-									<knob id="react"/>
-									<value id="react" same_line="true"/>
-								</hbox>
-							</vbox>
-						</cell>
-				</ui:attributes>
+						<vbox width="61">
+							<label text="labels.metering.preamp" padding.bottom="4"/>
+							<knob id="pamp" padding.bottom="4"/>
+							<value id="pamp" same_line="true"/>
+						</vbox>
+
+						<vbox width="61">
+							<label text="labels.metering.reactivity" padding.bottom="4"/>
+							<knob id="react" padding.bottom="4"/>
+							<value id="react" same_line="true"/>
+						</vbox>
+
+					</ui:attributes>
+
 				</grid>
 
-
-</group>
+			</group>
 
 		</hbox>
 	</vbox>
