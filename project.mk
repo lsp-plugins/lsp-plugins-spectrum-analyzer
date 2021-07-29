@@ -19,9 +19,9 @@
 #
 
 # Package version
-ARTIFACT_ID                 = lsp-plugins-spectrum-analyzer
+ARTIFACT_ID                 = LSP_PLUGINS_SPECTRUM_ANALYZER
+ARTIFACT_NAME               = lsp-plugins-spectrum-analyzer
 ARTIFACT_DESC               = Spectrum analyzer plugin
-ARTIFACT_VARS               = LSP_PLUGINS_SPECTRUM_ANALYZER
 ARTIFACT_HEADERS            = lsp-plug.in
 ARTIFACT_EXPORT_ALL         = 1
 ARTIFACT_VERSION            = 1.0.0-devel
