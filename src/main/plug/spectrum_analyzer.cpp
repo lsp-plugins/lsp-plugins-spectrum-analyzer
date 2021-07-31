@@ -943,7 +943,7 @@ namespace lsp
             }
             v->end_array();
 
-            v->write("pIDisplay", pIDisplay);
+            v->write_object("pIDisplay", pIDisplay);
         }
 
     } // namespace plugins
