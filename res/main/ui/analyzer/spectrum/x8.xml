@@ -14,7 +14,7 @@
 
 				<!-- Analyzer, Mastering -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ilt 4">
-					<graph width.min="640" height.min="360" expand="true" fill="true">
+					<graph width.min="620" height.min="360" expand="true" fill="true">
 						<origin hpos="-1" vpos="-1" visible="false"/>
 
 						<!-- Gray grid -->
@@ -103,7 +103,7 @@
 
 				<!-- Spectralizer (1 channel) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 4">
-					<graph width.min="800" height.min="360" expand="true" fill="true">
+					<graph width.min="780" height.min="360" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visible="false"/>
 
 						<!-- Gray grid -->
@@ -159,7 +159,7 @@
 
 				<!-- Spectralizer (2 channels) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 5">
-					<graph width.min="800" height.min="360" expand="true" fill="true">
+					<graph width.min="780" height.min="360" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visible="false"/>
 						<origin hpos="0" vpos="1" visible="false"/>
 
@@ -262,20 +262,29 @@
 		</hbox>
 
 		<!-- Channel for metering configuration -->
-
 		<hbox spacing="4" visibility="(:mode ieq 0) or (:mode ieq 2)">
 			<group text="groups.channels" spacing="4" bg.color="bg" ipadding="0">
-				<grid rows="5" cols="9" transpose="true" hspacing="4">
+				<grid rows="6" cols="17" transpose="true" hspacing="2">
 					<ui:attributes padding="6">
 						<label text="labels.specials.num" bg.color="bg_schema"/>
 						<label text="labels.chan.on" bg.color="bg_schema"/>
 						<label text="labels.chan.solo_hold" bg.color="bg_schema"/>
 						<label text="labels.chan.shift" bg.color="bg_schema"/>
 						<label text="labels.chan.:db" bg.color="bg_schema"/>
+						<cell rows="1" cols="17" expand="false" hspacing="0" height="30" padding="0" >
+							<vbox>
+								<void bg.color="bg" height="4"/>
+								<hsep />
+								<void bg.color="bg_schema" expand="true"/>
+							</vbox>
+						</cell>
 
 						<ui:for id="i" first="0" last="7">
 							<ui:attributes bg.color="bg_schema">
-								<label text="labels.specials.idx" text:id="${i}"/>
+								<cell rows="5" cols="1" expand="false" padding="0" bg.color="bg">
+									<vsep/>
+								</cell>
+								<label text="labels.specials.idx" text:id="${i}" width="43"/>
 								<button
 									ui:inject="Button_Cycle"
 									text="labels.chan.on"
@@ -386,23 +395,27 @@
 		<!-- Channels for mastering -->
 		<hbox spacing="4" visibility="(:mode ine 0) and (:mode ine 2)">
 			<group text="groups.channels" expand="true" fill="true" spacing="4" bg.color="bg" ipadding="0">
-				<grid rows="5" cols="9" transpose="true" fill="true" hspacing="4">
+				<grid rows="5" cols="17" transpose="true" fill="true" hspacing="2">
 					<ui:attributes padding="6">
 						<label text="labels.channel" bg.color="bg_schema"/>
 						<label text="labels.chan.hold" bg.color="bg_schema"/>
 						<label text="labels.chan.shift" bg.color="bg_schema"/>
 						<label text="labels.chan.:db" bg.color="bg_schema"/>
 					</ui:attributes>
-					<cell rows="1" cols="9" expand="true" hspacing="0">
+					<cell rows="1" cols="17" expand="true" hspacing="0">
 						<vbox>
 							<void bg.color="bg" height="4"/>
+							<hsep />
 							<void bg.color="bg_schema" expand="true"/>
 						</vbox>
 					</cell>
 
 					<ui:for id="i" first="0" last="7">
 						<ui:attributes bg.color="bg_schema">
-							<label text="labels.specials.idx" text:id="${i}" width="43"/>
+							<cell rows="4" cols="1" expand="false" padding="0" bg.color="bg">
+								<vsep/>
+							</cell>
+							<label text="labels.specials.idx" text:id="${i}" />
 							<button
 								ui:inject="Button_Cycle"
 								text="labels.chan.hold"
