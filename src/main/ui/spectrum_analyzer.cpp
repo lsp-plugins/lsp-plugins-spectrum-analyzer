@@ -28,7 +28,7 @@ namespace lsp
     {
         //---------------------------------------------------------------------
         // Plugin UI factory
-        static const meta::plugin_t *uis[] =
+        static const meta::plugin_t *plugin_uis[] =
         {
             &meta::spectrum_analyzer_x1,
             &meta::spectrum_analyzer_x2,
@@ -38,7 +38,7 @@ namespace lsp
             &meta::spectrum_analyzer_x16
         };
 
-        static ui::Factory factory(uis, 6);
+        static ui::Factory factory(plugin_uis, 6);
     }
 }
 

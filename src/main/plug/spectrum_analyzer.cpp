@@ -49,12 +49,12 @@ namespace lsp
             &meta::spectrum_analyzer_x16
         };
 
-        static plug::Module *spectrum_analyzer_factory(const meta::plugin_t *meta)
+        static plug::Module *plugin_factory(const meta::plugin_t *meta)
         {
             return new spectrum_analyzer(meta);
         }
 
-        static plug::Factory factory(spectrum_analyzer_factory, plugins, 6);
+        static plug::Factory factory(plugin_factory, plugins, 6);
 
         //-------------------------------------------------------------------------
         spectrum_analyzer::spectrum_analyzer(const meta::plugin_t *metadata): plug::Module(metadata)
