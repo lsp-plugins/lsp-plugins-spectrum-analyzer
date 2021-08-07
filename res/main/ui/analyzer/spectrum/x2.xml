@@ -11,10 +11,9 @@
 
 		<hbox expand="true" spacing="4">
 			<vbox spacing="4" expand="true">
-
 				<!-- Analyzer, Mastering -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ile 1">
-					<graph width.min="340" height.min="360" expand="true" fill="true">
+					<graph width.min="738" height.min="415" expand="true" fill="true">
 						<origin hpos="-1" vpos="-1" visible="false"/>
 
 						<!-- gray grid -->
@@ -102,7 +101,7 @@
 
 				<!-- Spectralizer (1 channel) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 2">
-					<graph width.min="800" height.min="360" expand="true" fill="true">
+					<graph width.min="738" height.min="415" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visible="false"/>
 
 						<!-- gray grid -->
@@ -158,7 +157,7 @@
 
 				<!-- Spectralizer (2 channels) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 3">
-					<graph width.min="800" height.min="360" expand="true" fill="true">
+					<graph width.min="738" height.min="415" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visible="false"/>
 						<origin hpos="0" vpos="1" visible="false"/>
 
@@ -230,7 +229,6 @@
 				</group>
 
 				<!-- Bottom menu -->
-
 				<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" bg.color="bg_schema">
 					<align halign="-1" fill="true">
 						<hbox spacing="8">
@@ -260,9 +258,8 @@
 			</vbox>
 
 			<!-- metering -->
-
-			<vbox fill="true" vexpand="true" spacing="4">
-				<group text="groups.metering" vexpand="true" visibility=":mode ile 1" bg.color="bg" ipadding="0">
+			<vbox fill="true" vexpand="true" visibility=":mode ile 1" spacing="4">
+				<group text="groups.metering" vexpand="true" bg.color="bg" ipadding="0">
 					<grid rows="3" cols="1" expand="true" vspacing="2">
 						<cell>
 							<grid rows="3" cols="3" transpose="true" spacing="2">
@@ -275,9 +272,9 @@
 										</hbox>
 									</vbox>
 
-										<cell expand="false" padding="0">
-									<hsep/>
-								</cell>
+									<cell expand="false" padding="0">
+										<hsep/>
+									</cell>
 
 									<vbox>
 										<label text="labels.metering.reactivity" width="58"/>
@@ -288,8 +285,8 @@
 									</vbox>
 
 									<cell rows="3" cols="1" expand="false" padding="0">
-								<vsep/>
-							</cell>
+										<vsep/>
+									</cell>
 
 									<cell rows="3" cols="2">
 										<vbox>
@@ -306,23 +303,19 @@
 						</cell>
 
 						<cell expand="false" padding="0">
-					<hsep/>
-				</cell>
-
+							<hsep/>
+						</cell>
 
 						<cell>
 							<hbox spacing="2" bg.color="bg">
-
 								<ui:attributes bg.color="bg_schema" padding="6">
 									<void fill="true" expand="true"/>
 									<vsep expand="false" padding="0"/>
 									<vbox expand="false">
 										<vbox bg.color="bg_schema">
-
 											<label text="labels.metering.frequency:hz"/>
 											<indicator id="freq" format="f6.1!" text.color="(:chn)? 'left_channel' : 'right_channel'"/>
 										</vbox>
-
 										<vbox>
 											<label text="labels.metering.level:db"/>
 											<indicator id="lvl" format="+-f5.1!" text.color="(:chn)? 'left_channel' : 'right_channel'"/>
@@ -334,11 +327,9 @@
 					</grid>
 				</group>
 
-
-				<group text="groups.channels" vexpand="true" visibility=":mode ile 1" bg.color="bg" ipadding="0">
+				<group text="groups.channels" vexpand="true" bg.color="bg" ipadding="0">
 					<grid rows="3" cols="3" hfill="false" spacing="2">
 						<ui:attributes bg.color="bg_schema">
-
 							<label text="labels.specials.idx" text:id="0" padding="6"/>
 							<vsep expand="false" padding="0"/>
 
@@ -363,7 +354,7 @@
 								<hsep/>
 							</cell>
 
-							<label text="labels.specials.idx" text:id="0" padding="6"/>
+							<label text="labels.specials.idx" text:id="1" padding="6"/>
 							<vsep expand="false" padding="0"/>
 
 							<hbox>
@@ -382,7 +373,6 @@
 									</vbox>
 								</hbox>
 							</hbox>
-
 						</ui:attributes>
 					</grid>
 				</group>
@@ -396,42 +386,38 @@
 					<grid rows="3" cols="1" expand="true" vspacing="4">
 						<cell>
 							<vbox bg.color="bg_schema" padding="6">
-								<label text="labels.metering.preamp"/>
-								<knob id="pamp" width="60"/>
+								<label text="labels.metering.preamp" padding.bottom="6"/>
+								<knob id="pamp" width="60" padding.bottom="6"/>
 								<value id="pamp" same_line="true" width="60"/>
 							</vbox>
 						</cell>
 
 						<cell>
 							<vbox bg.color="bg_schema" padding="6">
-								<label text="labels.metering.reactivity" width="58"/>
-								<knob id="react" width="60"/>
+								<label text="labels.metering.reactivity" width="58" padding.bottom="6"/>
+								<knob id="react" width="60" padding.bottom="6"/>
 								<value id="react" same_line="true" width="60"/>
 							</vbox>
 						</cell>
 
 						<cell visibility=":mode ieq 2">
 							<vbox bg.color="bg_schema" padding="6">
-								<label text="labels.metering.channel" width="58"/>
+								<label text="labels.metering.channel" width="58" padding.bottom="6"/>
 								<combo id="chn" width="48"/>
 							</vbox>
 						</cell>
 					</grid>
-
 				</group>
 
 				<group text="groups.channels" vexpand="true" bg.color="bg" ipadding="0">
 					<grid rows="3" cols="3" hfill="false" spacing="2">
 						<ui:attributes bg.color="bg_schema">
-
 							<cell padding="6">
 								<label text="labels.specials.idx" text:id="0"/>
 							</cell>
-
 							<cell expand="false" padding="0">
 								<vsep/>
 							</cell>
-
 							<cell>
 								<vbox>
 									<ui:attributes padding="6">
@@ -442,19 +428,15 @@
 									</ui:attributes>
 								</vbox>
 							</cell>
-
 							<cell rows="1" cols="3" expand="false" padding="0">
 								<hsep/>
 							</cell>
-
 							<cell padding="6">
 								<label text="labels.specials.idx" text:id="0"/>
 							</cell>
-
 							<cell expand="false" padding="0">
 								<vsep/>
 							</cell>
-
 							<cell>
 								<vbox>
 									<ui:attributes bg.color="bg_schema" padding="6">
@@ -469,10 +451,6 @@
 					</grid>
 				</group>
 			</vbox>
-
 		</hbox>
-
-
 	</vbox>
-
 </plugin>
