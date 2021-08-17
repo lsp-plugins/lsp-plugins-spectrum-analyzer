@@ -24,17 +24,17 @@
 						<origin hpos="-1" vpos="-1" visible="false"/>
 
 						<!-- gray grid -->
-						<ui:attributes ox="0" oy="1">
+						<ui:attributes ox="0" oy="1" color="graph_alt_4">
 							<ui:for id="f" first="20" last="90" step="10">
-								<marker value="${f}" color="graph_alt_4"/>
+								<marker value="${f}" />
 							</ui:for>
 							<ui:for id="f" first="200" last="900" step="100">
-								<marker value="${f}" color="graph_alt_4"/>
+								<marker value="${f}" />
 							</ui:for>
 							<ui:for id="f" first="2000" last="9000" step="1000">
-								<marker value="${f}" color="graph_alt_4"/>
+								<marker value="${f}" />
 							</ui:for>
-							<marker value="20000" color="graph_alt_4"/>
+							<marker value="20000" />
 						</ui:attributes>
 
 						<ui:for id="g" first="-60" last="12" step="24">
@@ -78,27 +78,23 @@
 						<marker id="lvl" basis="1" parallel="0"/>
 
 						<!-- Text -->
-						<ui:attributes y="0" ox="0" oy="2" halign="1" valign="1" color="graph_prim">
+						<ui:attributes y="0" ox="0" oy="2" halign="1" valign="1">
 							<text x="10" text="graph.units.hz"/>
 							<text x="100" text="100"/>
 							<text x="1000" text="graph.values.1k"/>
 							<text x="10000" text="graph.values.10k"/>
 						</ui:attributes>
-
 						<ui:for id="t" first="-60" last="12" step="12">
-							<text x="10" y="${t} db" text="${t}" halign="1" valign="1" color="graph_prim"/>
+							<text x="10" y="${t} db" text="${t}" halign="1" valign="1" />
 						</ui:for>
-						<text x="10" y="1" ox="0" oy="2" text="graph.units.db" halign="1" valign="-1" color="graph_prim"/>
-
-						<!-- Additional text -->
-						<ui:attributes x="10" halign="1" valign="1" color="graph_prim" visibility=":zoom le -18 db">
+						<text x="10" y="1" ox="0" oy="2" text="graph.units.db" halign="1" valign="-1" />
+						<ui:attributes x="10" halign="1" valign="1" visibility=":zoom le -18 db">
 							<text y="-42 db" text="-42"/>
 							<text y="-30 db" text="-30"/>
 							<text y="-18 db" text="-18"/>
 							<text y="-6 db" text="-6"/>
 						</ui:attributes>
-
-						<ui:attributes x="10" halign="1" valign="1" color="graph_prim" visibility=":zoom le -33 db">
+						<ui:attributes x="10" halign="1" valign="1" visibility=":zoom le -33 db">
 							<text y="-33 db" text="-33"/>
 							<text y="-27 db" text="-27"/>
 							<text y="-21 db" text="-21"/>
