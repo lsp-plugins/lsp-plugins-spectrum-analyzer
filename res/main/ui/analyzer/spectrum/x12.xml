@@ -261,7 +261,6 @@
 			</vbox>
 
 			<!-- Metering -->
-
 			<group text="groups.metering" visibility="(:mode ieq 0) or (:mode ieq 2)" bg.color="bg" ipadding="0">
 				<grid rows="5" cols="2" expand="true" spacing="4">
 					<cell rows="1" cols="2">
@@ -435,25 +434,19 @@
 								</hbox>
 							</vbox>
 						</cell>
-
 						<vbox width="61">
 							<label text="labels.metering.preamp" padding.bottom="4"/>
 							<knob id="pamp" padding.bottom="4"/>
 							<value id="pamp" same_line="true"/>
 						</vbox>
-
 						<vbox width="61">
 							<label text="labels.metering.reactivity" padding.bottom="4"/>
 							<knob id="react" padding.bottom="4"/>
 							<value id="react" same_line="true"/>
 						</vbox>
-
 					</ui:attributes>
-
 				</grid>
-
 			</group>
-
 		</hbox>
 	</vbox>
 </plugin>

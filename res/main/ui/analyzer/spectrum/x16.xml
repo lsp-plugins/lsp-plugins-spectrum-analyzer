@@ -262,12 +262,7 @@
 				<value id="zoom" width="40"/>
 			</vbox>
 
-			<!-- <group text="groups.metering" visibility="(:mode ieq 0) or (:mode ieq 2)"> <grid rows="15" cols="1" expand="true"> <label text="labels.metering.preamp"/> <knob id="pamp"/> <value id="pamp" same_line="true"/> <label
-			text="labels.metering.reactivity"/> <knob id="react"/> <value id="react" same_line="true"/> <label text="labels.metering.channel"/> <combo id="chn" width="48"/> <label text="labels.metering.selector"/> <knob id="sel"/> <value id="sel"
-			same_line="true"/> <label text="labels.metering.frequency:hz"/> <indicator id="freq" format="f6.1!" text_color="green"/> <label text="labels.metering.level:db"/> <indicator id="lvl" format="+-f4.1!" text_color="green"/> </grid> </group> </hbox> -->
-
 			<!-- Metering -->
-
 			<group text="groups.metering" visibility="(:mode ieq 0) or (:mode ieq 2)" bg.color="bg" ipadding="0">
 				<grid rows="5" cols="2" expand="true" spacing="4">
 					<cell rows="1" cols="2">
@@ -449,13 +444,9 @@
 							<knob id="react" padding.bottom="4"/>
 							<value id="react" same_line="true"/>
 						</vbox>
-
 					</ui:attributes>
-
 				</grid>
-
 			</group>
-
 		</hbox>
 	</vbox>
 </plugin>

@@ -252,8 +252,7 @@
 				<value id="zoom" width="40"/>
 			</vbox>
 
-			<!-- metering -->
-
+			<!-- Metering -->
 			<group text="groups.metering" vexpand="true" bg.color="bg" ipadding="0">
 				<grid rows="19" cols="1" expand="true" vspacing="2">
 					<ui:attributes bg.color="bg_schema" padding="6">
@@ -352,11 +351,9 @@
 							<indicator id="lvl" format="+-f5.1!" text.color="left_channel"/>
 						</vbox>
 					</ui:attributes>
-
 				</grid>
 			</group>
 		</hbox>
-
 	</vbox>
 
 </plugin>

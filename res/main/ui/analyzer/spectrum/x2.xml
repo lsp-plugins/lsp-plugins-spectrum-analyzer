@@ -380,7 +380,6 @@
 			</vbox>
 
 			<!-- Spectralizer (1 channel) -->
-
 			<vbox fill="true" vexpand="true" spacing="4" visibility=":mode ige 2">
 				<group text="groups.metering" vexpand="true" bg.color="bg" ipadding="0">
 					<grid rows="3" cols="1" expand="true" vspacing="4">
