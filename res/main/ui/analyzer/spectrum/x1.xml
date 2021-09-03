@@ -20,47 +20,47 @@
 
 						<!-- gray grid -->
 						<ui:for id="f" first="20" last="90" step="10">
-							<marker value="${f}" color="graph_alt_4"/>
+							<marker value="${f}" color="graph_sec"/>
 						</ui:for>
 						<ui:for id="f" first="200" last="900" step="100">
-							<marker value="${f}" color="graph_alt_4"/>
+							<marker value="${f}" color="graph_sec"/>
 						</ui:for>
 						<ui:for id="f" first="2000" last="9000" step="1000">
-							<marker value="${f}" color="graph_alt_4"/>
+							<marker value="${f}" color="graph_sec"/>
 						</ui:for>
-						<marker value="20000" color="graph_alt_4"/>
+						<marker value="20000" color="graph_sec"/>
 						<ui:for id="g" first="-60" last="12" step="24">
-							<marker value="${g} db" ox="1" oy="0" color="graph_alt_4"/>
+							<marker value="${g} db" ox="1" oy="0" color="graph_sec"/>
 						</ui:for>
 
 						<!-- Additional markers for zoom -->
 						<ui:for id="t" first="-42" last="-6" step="12">
-							<marker value="${t} db" color="graph_alt_4" basis="1" parallel="0" visibility=":zoom le -18 db"/>
+							<marker value="${t} db" color="graph_sec" basis="1" parallel="0" visibility=":zoom le -18 db"/>
 						</ui:for>
 
 						<ui:for id="t" first="-33" last="-15" step="6">
-							<marker value="${t} db" color="graph_alt_4" basis="1" parallel="0" visibility=":zoom le -33 db"/>
+							<marker value="${t} db" color="graph_sec" basis="1" parallel="0" visibility=":zoom le -33 db"/>
 						</ui:for>
 
 						<!-- Bright gray Grid -->
-						<marker value="100" ox="0" oy="1" color="graph_alt_2"/>
-						<marker value="1000" ox="0" oy="1" color="graph_alt_2"/>
-						<marker value="10000" ox="0" oy="1" color="graph_alt_2"/>
+						<marker value="100" ox="0" oy="1" color="graph_prim"/>
+						<marker value="1000" ox="0" oy="1" color="graph_prim"/>
+						<marker value="10000" ox="0" oy="1" color="graph_prim"/>
 
-						<marker value="0 db" ox="1" oy="0" color="graph_alt_2"/>
-						<marker value="-24 db" ox="1" oy="0" color="graph_alt_2"/>
-						<marker value="-48 db" ox="1" oy="0" color="graph_alt_2"/>
+						<marker value="0 db" ox="1" oy="0" color="graph_prim"/>
+						<marker value="-24 db" ox="1" oy="0" color="graph_prim"/>
+						<marker value="-48 db" ox="1" oy="0" color="graph_prim"/>
 
 						<!-- Meshes -->
 						<mesh xi="0" yi="1" id="spd" width="3" color="left_channel" visibility_id="on_0"/>
 
 						<!-- Boundaries -->
-						<marker ox="2" oy="0" value="1" color="graph_alt_2" visible="false"/>
-						<marker ox="0" oy="1" value="24000" color="graph_alt_2" visible="false"/>
+						<marker ox="2" oy="0" value="1" color="graph_prim" visible="false"/>
+						<marker ox="0" oy="1" value="24000" color="graph_prim" visible="false"/>
 
 						<!-- Axis -->
-						<axis angle="0.0" min="10" max="24000" color="graph_alt_2" log="true" visible="false"/>
-						<axis angle="0.5" min="-72 db / :zoom" max="24 db * :zoom" color="graph_alt_2" log="true" visible="false"/>
+						<axis angle="0.0" min="10" max="24000" color="graph_prim" log="true" visible="false"/>
+						<axis angle="0.5" min="-72 db / :zoom" max="24 db * :zoom" color="graph_prim" log="true" visible="false"/>
 						<axis angle="0.5" min="-1" max="1" visible="false"/>
 
 						<!-- Marker -->
@@ -104,39 +104,39 @@
 
 						<!-- gray grid -->
 						<ui:for id="f" first="20" last="90" step="10">
-							<marker value="${f}" color="graph_alt_4"/>
+							<marker value="${f}" color="graph_sec"/>
 						</ui:for>
 						<ui:for id="f" first="200" last="900" step="100">
-							<marker value="${f}" color="graph_alt_4"/>
+							<marker value="${f}" color="graph_sec"/>
 						</ui:for>
 						<ui:for id="f" first="2000" last="9000" step="1000">
-							<marker value="${f}" color="graph_alt_4"/>
+							<marker value="${f}" color="graph_sec"/>
 						</ui:for>
-						<marker value="20000" color="graph_alt_4"/>
+						<marker value="20000" color="graph_sec"/>
 
 						<ui:for id="t" first="1" last="7" step="2">
-							<marker value="${t}" ox="1" oy="0" color="graph_alt_4"/>
+							<marker value="${t}" ox="1" oy="0" color="graph_sec"/>
 						</ui:for>
 
 						<!-- Bright gray Grid -->
-						<marker value="100" color="graph_alt_2"/>
-						<marker value="1000" color="graph_alt_2"/>
-						<marker value="10000" color="graph_alt_2"/>
+						<marker value="100" color="graph_prim"/>
+						<marker value="1000" color="graph_prim"/>
+						<marker value="10000" color="graph_prim"/>
 
 						<ui:for id="t" first="2" last="6" step="2">
-							<marker value="${t}" ox="1" oy="0" color="graph_alt_2"/>
+							<marker value="${t}" ox="1" oy="0" color="graph_prim"/>
 						</ui:for>
 
 						<!-- Frame buffer -->
-						<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="left_channel" color.hue=":hue[spc]"/>
+						<fbuffer id="fb" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="left_channel" color.hue=":hue[spc]"/>
 
 						<!-- Boundaries -->
-						<marker value="8" ox="1" oy="0" color="graph_alt_2" visible="false"/>
-						<marker value="24000" ox="0" oy="1" color="graph_alt_2" visible="false"/>
+						<marker value="8" ox="1" oy="0" color="graph_prim" visible="false"/>
+						<marker value="24000" ox="0" oy="1" color="graph_prim" visible="false"/>
 
 						<!-- Axis -->
-						<axis angle="0.0" min="10" max="24000" color="graph_alt_2" log="true"/>
-						<axis angle="1.5" min="0" max="8" color="graph_alt_2" log="false"/>
+						<axis angle="0.0" min="10" max="24000" color="graph_prim" log="true"/>
+						<axis angle="1.5" min="0" max="8" color="graph_prim" log="false"/>
 
 						<!-- Text -->
 						<ui:attributes y="8" halign="1" valign="1" color="graph_prim">
@@ -161,53 +161,52 @@
 
 						<!-- gray grid -->
 						<ui:for id="f" first="20" last="90" step="10">
-							<marker value="${f}" o="0" ox="0" oy="1" color="graph_alt_4"/>
-							<marker value="${f}" o="1" ox="2" oy="1" color="graph_alt_4"/>
+							<marker value="${f}" o="0" ox="0" oy="1" color="graph_sec"/>
+							<marker value="${f}" o="1" ox="2" oy="1" color="graph_sec"/>
 						</ui:for>
 						<ui:for id="f" first="200" last="900" step="100">
-							<marker value="${f}" o="0" ox="0" oy="1" color="graph_alt_4"/>
-							<marker value="${f}" o="1" ox="2" oy="1" color="graph_alt_4"/>
+							<marker value="${f}" o="0" ox="0" oy="1" color="graph_sec"/>
+							<marker value="${f}" o="1" ox="2" oy="1" color="graph_sec"/>
 						</ui:for>
 						<ui:for id="f" first="2000" last="9000" step="1000">
-							<marker value="${f}" o="0" ox="0" oy="1" color="graph_alt_4"/>
-							<marker value="${f}" o="1" ox="2" oy="1" color="graph_alt_4"/>
+							<marker value="${f}" o="0" ox="0" oy="1" color="graph_sec"/>
+							<marker value="${f}" o="1" ox="2" oy="1" color="graph_sec"/>
 						</ui:for>
-						<marker value="20000" o="0" ox="0" oy="1" color="graph_alt_4"/>
-						<marker value="20000" o="1" ox="2" oy="1" color="graph_alt_4"/>
+						<marker value="20000" o="0" ox="0" oy="1" color="graph_sec"/>
+						<marker value="20000" o="1" ox="2" oy="1" color="graph_sec"/>
 
 						<ui:for id="t" first="1" last="7" step="2">
-							<marker value="${t}" ox="1" oy="0" color="graph_alt_4"/>
+							<marker value="${t}" ox="1" oy="0" color="graph_sec"/>
 						</ui:for>
 
 						<!-- Bright gray Grid -->
 						<ui:attributes ox="0" oy="1">
 							<ui:for id="c" first="0" last="1">
-								<marker value="100" o="${c}" color="graph_alt_2"/>
+								<marker value="100" o="${c}" color="graph_prim"/>
 								<!-- 100 Hz -->
-								<marker value="1000" o="${c}" color="graph_alt_2"/>
+								<marker value="1000" o="${c}" color="graph_prim"/>
 								<!-- 1 kHz -->
-								<marker value="10000" o="${c}" color="graph_alt_2"/>
+								<marker value="10000" o="${c}" color="graph_prim"/>
 								<!-- 10 kHz -->
 							</ui:for>
 						</ui:attributes>
 
 						<ui:for id="t" first="2" last="6" step="2">
-							<marker value="${t}" color="graph_alt_2" basis="1" parallel="0"/>
+							<marker value="${t}" color="graph_prim" basis="1" parallel="0"/>
 						</ui:for>
 
 						<!-- Frame buffer -->
-						<fbuffer id="fb0" x="-1" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="left_channel"/>
-						<fbuffer id="fb1" x="0" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="right_channel"/>
+						<fbuffer id="fb" x="-1" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="left_channel"/>
 
 						<!-- Boundaries -->
 						<marker value="8" o="0" color="graph_alt_1" ox="1" oy="0" visible="false"/>
-						<marker value="24000" o="0" color="graph_alt_2" ox="0" oy="1"/>
-						<marker value="24000" o="1" color="graph_alt_2" ox="2" oy="1" visible="false"/>
+						<marker value="24000" o="0" color="graph_prim" ox="0" oy="1"/>
+						<marker value="24000" o="1" color="graph_prim" ox="2" oy="1" visible="false"/>
 
 						<!-- Axis -->
-						<axis o="0" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" color="graph_alt_2" log="true"/>
+						<axis o="0" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" color="graph_prim" log="true"/>
 						<axis o="0" angle="1.5" min="0" max="8" color="graph_alt_1" log="false"/>
-						<axis o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" color="graph_alt_2" log="true"/>
+						<axis o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" color="graph_prim" log="true"/>
 
 						<!-- Text -->
 						<ui:for id="c" first="0" last="1">
