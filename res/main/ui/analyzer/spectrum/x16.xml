@@ -5,13 +5,7 @@
 			<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" spacing="8" fill="false" bg.color="bg_schema">
 				<label text="labels.mode"/>
 				<combo id="mode"/>
-
 				<button padding.left="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
-
-				<!-- Stereo Mode Chanels -->
-				<!-- <label padding.left="10" text="labels.channels" visibility=":mode band 1"/> <hbox spacing="2"> <combo id="spc0" width="32" visibility="(:mode ine 0) and (:mode ine 2)"/> <combo id="spc1" width="32" visibility="(:mode ieq 1) or (:mode ieq 3) or
-				(:mode ieq 5)"/> </hbox> -->
-
 			</hbox>
 		</align>
 
@@ -24,19 +18,16 @@
 						<origin hpos="-1" vpos="-1" visible="false"/>
 
 						<!-- gray grid -->
-						<ui:attributes ox="0" oy="1" color="graph_alt_4">
-							<ui:for id="f" first="20" last="90" step="10">
-								<marker value="${f}" />
-							</ui:for>
-							<ui:for id="f" first="200" last="900" step="100">
-								<marker value="${f}" />
-							</ui:for>
-							<ui:for id="f" first="2000" last="9000" step="1000">
-								<marker value="${f}" />
-							</ui:for>
-							<marker value="20000" />
-						</ui:attributes>
-
+						<ui:for id="f" first="20" last="90" step="10">
+							<marker value="${f}" color="graph_alt_4" />
+						</ui:for>
+						<ui:for id="f" first="200" last="900" step="100">
+							<marker value="${f}" color="graph_alt_4" />
+						</ui:for>
+						<ui:for id="f" first="2000" last="9000" step="1000">
+							<marker value="${f}" color="graph_alt_4" />
+						</ui:for>
+						<marker value="20000" color="graph_alt_4" />
 						<ui:for id="g" first="-60" last="12" step="24">
 							<marker value="${g} db" ox="1" oy="0" color="graph_alt_4"/>
 						</ui:for>
