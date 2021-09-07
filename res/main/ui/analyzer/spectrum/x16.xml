@@ -132,8 +132,8 @@
 						<marker value="24000" ox="0" oy="1" color="graph_prim" visible="false"/>
 
 						<!-- Axis -->
-						<axis angle="0.0" min="10" max="24000" color="graph_prim" log="true"/>
-						<axis angle="1.5" min="0" max="8" color="graph_prim" log="false"/>
+						<axis angle="0.0" min="10" max="24000" color="graph_prim" log="true" visible="false"/>
+						<axis angle="1.5" min="0" max="8" color="graph_prim" log="false" visible="false"/>
 
 						<!-- Text -->
 						<ui:attributes y="8" halign="1" valign="1" color="graph_prim">
@@ -202,9 +202,9 @@
 						<marker value="24000" o="1" color="graph_prim" ox="2" oy="1" visible="false"/>
 
 						<!-- Axis -->
-						<axis o="0" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" color="graph_prim" log="true"/>
-						<axis o="0" angle="1.5" min="0" max="8" color="graph_alt_1" log="false"/>
-						<axis o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" color="graph_prim" log="true"/>
+						<axis o="0" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" color="graph_prim" log="true" visible="false"/>
+						<axis o="0" angle="1.5" min="0" max="8" color="graph_alt_1" log="false" visible="false"/>
+						<axis o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" color="graph_prim" log="true" visible="false"/>
 
 						<!-- Text -->
 						<ui:for id="c" first="0" last="1">
