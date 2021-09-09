@@ -68,12 +68,12 @@
 						<marker id="lvl" basis="1" parallel="0"/>
 
 						<!-- Text -->
-						<ui:attributes y="0" ox="0" oy="2" halign="1" valign="1" color="graph_prim">
+						<ui:with y="0" ox="0" oy="2" halign="1" valign="1" color="graph_prim">
 							<text x="10" text="graph.units.hz"/>
 							<text x="100" text="100"/>
 							<text x="1000" text="graph.values.1k"/>
 							<text x="10000" text="graph.values.10k"/>
-						</ui:attributes>
+						</ui:with>
 
 						<ui:for id="t" first="-60" last="12" step="12">
 							<text x="10" y="${t} db" text="${t}" halign="1" valign="1" color="graph_prim"/>
@@ -81,19 +81,19 @@
 						<text x="10" y="1" ox="0" oy="2" text="graph.units.db" halign="1" valign="-1" color="graph_prim"/>
 
 						<!-- Additional text -->
-						<ui:attributes x="10" halign="1" valign="1" color="graph_prim" visibility=":zoom le -18 db">
+						<ui:with x="10" halign="1" valign="1" color="graph_prim" visibility=":zoom le -18 db">
 							<text y="-42 db" text="-42"/>
 							<text y="-30 db" text="-30"/>
 							<text y="-18 db" text="-18"/>
 							<text y="-6 db" text="-6"/>
-						</ui:attributes>
+						</ui:with>
 
-						<ui:attributes x="10" halign="1" valign="1" color="graph_prim" visibility=":zoom le -33 db">
+						<ui:with x="10" halign="1" valign="1" color="graph_prim" visibility=":zoom le -33 db">
 							<text y="-33 db" text="-33"/>
 							<text y="-27 db" text="-27"/>
 							<text y="-21 db" text="-21"/>
 							<text y="-15 db" text="-33"/>
-						</ui:attributes>
+						</ui:with>
 					</graph>
 				</group>
 
@@ -139,12 +139,12 @@
 						<axis angle="1.5" min="0" max="8" color="graph_prim" log="false" visible="false"/>
 
 						<!-- Text -->
-						<ui:attributes y="8" halign="1" valign="1" color="graph_prim">
+						<ui:with y="8" halign="1" valign="1" color="graph_prim">
 							<text x="10" text="graph.units.hz"/>
 							<text x="100" text="100" halign="1"/>
 							<text x="1000" text="graph.values.1k"/>
 							<text x="10000" text="graph.values.10k"/>
-						</ui:attributes>
+						</ui:with>
 
 						<text x="10" y="0" text="graph.axis.time" halign="1" valign="-1" color="graph_prim"/>
 						<ui:for id="t" first="1" last="7">
@@ -180,7 +180,7 @@
 						</ui:for>
 
 						<!-- Bright gray Grid -->
-						<ui:attributes ox="0" oy="1">
+						<ui:with ox="0" oy="1">
 							<ui:for id="c" first="0" last="1">
 								<marker value="100" o="${c}" color="graph_prim"/>
 								<!-- 100 Hz -->
@@ -189,7 +189,7 @@
 								<marker value="10000" o="${c}" color="graph_prim"/>
 								<!-- 10 kHz -->
 							</ui:for>
-						</ui:attributes>
+						</ui:with>
 
 						<ui:for id="t" first="2" last="6" step="2">
 							<marker value="${t}" color="graph_prim" basis="1" parallel="0"/>
@@ -210,12 +210,12 @@
 
 						<!-- Text -->
 						<ui:for id="c" first="0" last="1">
-							<ui:attributes y="8" ox="0" oy="1" halign="1" valign="1" color="graph_prim">
+							<ui:with y="8" ox="0" oy="1" halign="1" valign="1" color="graph_prim">
 								<text x="10" o="${c}" text="graph.units.hz"/>
 								<text x="100" o="${c}" text="100"/>
 								<text x="1000" o="${c}" text="graph.values.1k"/>
 								<text x="10000" o="${c}" text="graph.values.10k"/>
-							</ui:attributes>
+							</ui:with>
 
 							<ui:for id="t" first="1" last="7">
 								<text o="${c}" text="${t}" x="10" y="${t}" halign="1" valign="1" color="graph_prim"/>
@@ -251,7 +251,7 @@
 			<!-- Metering -->
 			<group text="groups.metering" vexpand="true" bg.color="bg" ipadding="0">
 				<grid rows="19" cols="1" expand="true" vspacing="2">
-					<ui:attributes bg.color="bg_schema" padding="6">
+					<ui:with bg.color="bg_schema" padding="6">
 
 						<vbox width.min="107">
 							<label text="labels.metering.preamp" padding.bottom="6"/>
@@ -346,7 +346,7 @@
 							<label text="labels.metering.level:db" padding.bottom="6"/>
 							<indicator id="lvl" format="+-f5.1!" text.color="left_channel"/>
 						</vbox>
-					</ui:attributes>
+					</ui:with>
 				</grid>
 			</group>
 		</hbox>
