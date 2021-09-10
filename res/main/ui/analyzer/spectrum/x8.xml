@@ -241,84 +241,83 @@
 		<hbox spacing="4" visibility="(:mode ieq 0) or (:mode ieq 2)">
 			<group text="groups.channels" spacing="4" bg.color="bg" ipadding="0">
 				<grid rows="6" cols="17" transpose="true" hspacing="2">
-					<ui:with padding="6">
-						<label text="labels.specials.num" bg.color="bg_schema"/>
-						<label text="labels.chan.on" bg.color="bg_schema"/>
-						<label text="labels.chan.solo_hold" bg.color="bg_schema"/>
-						<label text="labels.chan.shift" bg.color="bg_schema"/>
-						<label text="labels.chan.:db" bg.color="bg_schema"/>
-						<cell rows="1" cols="17" expand="false" hspacing="0" height="30" padding="0" >
-							<vbox>
-								<void bg.color="bg" height="4"/>
-								<hsep />
-								<void bg.color="bg_schema" expand="true"/>
-							</vbox>
-						</cell>
+					<ui:with padding="6" bg.color="bg_schema">
+						<label text="labels.specials.num" />
+						<label text="labels.chan.on" />
+						<label text="labels.chan.solo_hold" />
+						<label text="labels.chan.shift" />
+						<label text="labels.chan.:db" />
+					</ui:with>
+					<cell rows="1" cols="17" expand="false" hspacing="0" height="30" padding="0" >
+						<vbox>
+							<void bg.color="bg" height="4"/>
+							<hsep />
+							<void bg.color="bg_schema" expand="true"/>
+						</vbox>
+					</cell>
 
-						<ui:for id="i" first="0" last="7">
-							<ui:with bg.color="bg_schema">
-								<cell rows="5" cols="1" expand="false" padding="0" bg.color="bg">
-									<vsep/>
-								</cell>
-								<label text="labels.specials.idx" text:id="${i}" width="43"/>
+					<ui:for id="i" first="0" last="7">
+						<cell rows="5" cols="1" expand="false" padding="0" bg.color="bg">
+							<vsep/>
+						</cell>
+						<ui:with bg.color="bg_schema">
+							<label text="labels.specials.idx" text:id="${i}" width="43"/>
+							<button
+								ui:inject="Button_Cycle"
+								text="labels.chan.on"
+								id="on_${i}"
+								width="37"
+								height="10"
+								down.color.hue=":hue_${i}"
+								down.hover.color.hue=":hue_${i}"
+								text.down.color.hue=":hue_${i}"
+								text.down.hover.color.hue=":hue_${i}"
+								border.down.color.hue=":hue_${i}"
+								border.down.hover.color.hue=":hue_${i}"/>
+
+							<hbox fill="false" spacing="4" padding.bottom="14">
 								<button
 									ui:inject="Button_Cycle"
-									text="labels.chan.on"
-									id="on_${i}"
-									width="37"
+									id="solo_${i}"
+									text="labels.chan.S_olo"
 									height="10"
+									width="10"
 									down.color.hue=":hue_${i}"
 									down.hover.color.hue=":hue_${i}"
 									text.down.color.hue=":hue_${i}"
 									text.down.hover.color.hue=":hue_${i}"
 									border.down.color.hue=":hue_${i}"
 									border.down.hover.color.hue=":hue_${i}"/>
+								<button
+									ui:inject="Button_Cycle"
+									id="frz_${i}"
+									text="labels.chan.H_old"
+									height="10"
+									width="10"
+									down.color.hue=":hue_${i}"
+									down.hover.color.hue=":hue_${i}"
+									text.down.color.hue=":hue_${i}"
+									text.down.hover.color.hue=":hue_${i}"
+									border.down.color.hue=":hue_${i}"
+									border.down.hover.color.hue=":hue_${i}"/>
+							</hbox>
 
-								<hbox fill="false" spacing="4" padding.bottom="14">
-									<button
-										ui:inject="Button_Cycle"
-										id="solo_${i}"
-										text="labels.chan.S_olo"
-										height="10"
-										width="10"
-										down.color.hue=":hue_${i}"
-										down.hover.color.hue=":hue_${i}"
-										text.down.color.hue=":hue_${i}"
-										text.down.hover.color.hue=":hue_${i}"
-										border.down.color.hue=":hue_${i}"
-										border.down.hover.color.hue=":hue_${i}"/>
-									<button
-										ui:inject="Button_Cycle"
-										id="frz_${i}"
-										text="labels.chan.H_old"
-										height="10"
-										width="10"
-										down.color.hue=":hue_${i}"
-										down.hover.color.hue=":hue_${i}"
-										text.down.color.hue=":hue_${i}"
-										text.down.hover.color.hue=":hue_${i}"
-										border.down.color.hue=":hue_${i}"
-										border.down.hover.color.hue=":hue_${i}"/>
-								</hbox>
-
-								<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
-								<value id="sh_${i}" detailed="false"/>
-							</ui:with>
-						</ui:for>
-					</ui:with>
+							<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
+							<value id="sh_${i}" detailed="false"/>
+						</ui:with>
+					</ui:for>
 				</grid>
 			</group>
 
 			<!-- Metering -->
-
 			<group text="groups.metering" bg.color="bg" ipadding="0">
 				<grid rows="2" cols="3" expand="true" spacing="4">
 
 					<!-- Selector, frequency, level -->
 					<cell rows="2" cols="1" bg.color="bg">
 						<grid rows="3" cols="1" vspacing="4">
-							<ui:with bg.color="bg_schema" padding="6">
-								<cell height="55">
+							<ui:with bg.color="bg_schema">
+								<cell height="55" padding="6">
 									<vbox>
 										<label text="labels.metering.selector" padding.bottom="4"/>
 										<hbox>
@@ -327,13 +326,13 @@
 										</hbox>
 									</vbox>
 								</cell>
-								<cell height="44">
+								<cell height="44" padding="6">
 									<vbox>
 										<label text="labels.metering.frequency:hz" padding.bottom="4"/>
 										<indicator id="freq" format="f6.1!" text.color.hue=":hue[chn]"/>
 									</vbox>
 								</cell>
-								<cell height="44">
+								<cell height="44" padding="6">
 									<vbox >
 										<label text="labels.metering.level:db" padding.bottom="4"/>
 										<indicator id="lvl" format="+-f5.1!" text.color.hue=":hue[chn]"/>
@@ -343,7 +342,7 @@
 						</grid>
 					</cell>
 
-					<!-- Chanell -->
+					<!-- Chanel -->
 					<cell rows="1" cols="2" bg.color="bg_schema" padding="6">
 						<vbox>
 							<label text="labels.metering.channel"/>
@@ -372,11 +371,11 @@
 		<hbox spacing="4" visibility="(:mode ine 0) and (:mode ine 2)">
 			<group text="groups.channels" expand="true" fill="true" spacing="4" bg.color="bg" ipadding="0">
 				<grid rows="5" cols="17" transpose="true" fill="true" hspacing="2">
-					<ui:with padding="6">
-						<label text="labels.channel" bg.color="bg_schema"/>
-						<label text="labels.chan.hold" bg.color="bg_schema"/>
-						<label text="labels.chan.shift" bg.color="bg_schema"/>
-						<label text="labels.chan.:db" bg.color="bg_schema"/>
+					<ui:with padding="6" bg.color="bg_schema">
+						<label text="labels.channel" />
+						<label text="labels.chan.hold" />
+						<label text="labels.chan.shift" />
+						<label text="labels.chan.:db" />
 					</ui:with>
 					<cell rows="1" cols="17" expand="true" hspacing="0">
 						<vbox>
@@ -387,10 +386,10 @@
 					</cell>
 
 					<ui:for id="i" first="0" last="7">
+						<cell rows="4" cols="1" expand="false" padding="0" bg.color="bg">
+							<vsep/>
+						</cell>
 						<ui:with bg.color="bg_schema">
-							<cell rows="4" cols="1" expand="false" padding="0" bg.color="bg">
-								<vsep/>
-							</cell>
 							<label text="labels.specials.idx" text:id="${i}" />
 							<button
 								ui:inject="Button_Cycle"
@@ -413,8 +412,8 @@
 
 			<group text="groups.metering" bg.color="bg" ipadding="0">
 				<grid rows="2" cols="2" expand="true" spacing="4">
-					<ui:with bg.color="bg_schema" padding="6">
-						<cell rows="1" cols="2">
+					<ui:with bg.color="bg_schema">
+						<cell rows="1" cols="2" padding="6">
 							<vbox>
 								<label text="labels.channel" visibility=":mode ieq 4" padding.bottom="4"/>
 								<label text="labels.channels" visibility=":mode band 1" padding.bottom="4"/>
@@ -425,13 +424,13 @@
 							</vbox>
 						</cell>
 
-						<vbox width="61">
+						<vbox width="61" padding="6">
 							<label text="labels.metering.preamp" padding.bottom="4"/>
 							<knob id="pamp" padding.bottom="4"/>
 							<value id="pamp" same_line="true"/>
 						</vbox>
 
-						<vbox width="61">
+						<vbox width="61" padding="6">
 							<label text="labels.metering.reactivity" padding.bottom="4"/>
 							<knob id="react" padding.bottom="4"/>
 							<value id="react" same_line="true"/>

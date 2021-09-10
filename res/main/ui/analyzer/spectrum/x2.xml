@@ -240,8 +240,8 @@ s						<ui:with x="10" halign="1" valign="1" visibility=":zoom le -18 db">
 					<grid rows="3" cols="1" expand="true" vspacing="2">
 						<cell>
 							<grid rows="3" cols="3" transpose="true" spacing="2">
-								<ui:with bg.color="bg_schema" padding="6">
-									<vbox>
+								<ui:with bg.color="bg_schema">
+									<vbox padding="6">
 										<label text="labels.metering.preamp"/>
 										<hbox>
 											<knob id="pamp" width="60"/>
@@ -249,11 +249,11 @@ s						<ui:with x="10" halign="1" valign="1" visibility=":zoom le -18 db">
 										</hbox>
 									</vbox>
 
-									<cell expand="false" padding="0">
+									<cell expand="false">
 										<hsep/>
 									</cell>
 
-									<vbox>
+									<vbox padding="6">
 										<label text="labels.metering.reactivity" width="58"/>
 										<hbox>
 											<knob id="react" width="60"/>
@@ -261,11 +261,11 @@ s						<ui:with x="10" halign="1" valign="1" visibility=":zoom le -18 db">
 										</hbox>
 									</vbox>
 
-									<cell rows="3" cols="1" expand="false" padding="0">
+									<cell rows="3" cols="1" expand="false">
 										<vsep/>
 									</cell>
 
-									<cell rows="3" cols="2">
+									<cell rows="3" cols="2" padding="6">
 										<vbox>
 											<label text="labels.metering.channel" width="58"/>
 											<combo id="chn" width="48"/>
@@ -285,10 +285,10 @@ s						<ui:with x="10" halign="1" valign="1" visibility=":zoom le -18 db">
 
 						<cell>
 							<hbox spacing="2" bg.color="bg">
-								<ui:with bg.color="bg_schema" padding="6">
-									<void fill="true" expand="true"/>
+								<ui:with bg.color="bg_schema">
+									<void fill="true" expand="true" padding="6"/>
 									<vsep expand="false" padding="0"/>
-									<vbox expand="false">
+									<vbox expand="false" padding="6">
 										<vbox bg.color="bg_schema">
 											<label text="labels.metering.frequency:hz"/>
 											<indicator id="freq" format="f6.1!" text.color="(:chn)? 'left_channel' : 'right_channel'"/>
