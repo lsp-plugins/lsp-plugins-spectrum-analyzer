@@ -1,12 +1,11 @@
 <plugin resizable="true">
-
 	<vbox spacing="4">
 		<!-- Head settings -->
 		<align halign="-1" fill="true">
-			<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" spacing="8" fill="false" bg.color="bg_schema">
+			<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" spacing="8" fill="false" bg.color="bg_schema">
 				<label text="labels.mode"/>
 				<combo id="mode"/>
-				<button padding.left="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
+				<button pad.l="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
 			</hbox>
 		</align>
 
@@ -29,7 +28,7 @@
 							<ui:for id="g" first="-60" last="12" step="24">
 								<marker v="${g} db" ox="1" oy="0" />
 							</ui:for>
-							
+
 							<ui:for id="t" first="-42" last="-6" step="12">
 								<marker v="${t} db" ox="1" oy="0" visibility=":zoom le -18 db"/>
 							</ui:for>
@@ -43,17 +42,17 @@
 							<marker v="100" />
 							<marker v="1000" />
 							<marker v="10000" />
-	
+
 							<marker v="0 db" ox="1" oy="0" />
 							<marker v="-24 db" ox="1" oy="0" />
 							<marker v="-48 db" ox="1" oy="0" />
-							
+
 							<marker v="1" ox="2" oy="0" visibility="false"/>
 							<marker v="24000" visibility="false"/>
 						</ui:with>
 
 						<!-- Meshes -->
-						<mesh xi="0" yi="1" id="spd" width="3" color="left_channel" visibility_id="on_0"/>
+						<mesh xi="0" yi="1" id="spd" width="3" color="mono" visibility_id="on_0"/>
 
 						<!-- Axis -->
 						<axis angle="0.0" min="10" max="24000" log="true" visibility="false"/>
@@ -121,7 +120,7 @@
 						</ui:with>
 
 						<!-- Frame buffer -->
-						<fbuffer id="fb" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="left_channel" color.hue=":hue[spc]"/>
+						<fbuffer id="fb" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="mono" color.hue=":hue[spc]"/>
 
 						<!-- Axis -->
 						<axis angle="0.0" min="10" max="24000" log="true" visibility="false"/>
@@ -142,15 +141,15 @@
 				</group>
 
 				<!-- Bottom menu -->
-				<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" bg.color="bg_schema">
+				<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" bg.color="bg_schema">
 					<align halign="-1" fill="true">
 						<hbox spacing="8">
 							<label text="labels.fft.window"/>
-							<combo id="wnd" padding.right="15"/>
+							<combo id="wnd" pad.r="15"/>
 							<label text="labels.fft.tolerance"/>
-							<combo id="tol" padding.right="15"/>
+							<combo id="tol" pad.r="15"/>
 							<label text="labels.fft.envelope"/>
-							<combo id="env" padding.right="15"/>
+							<combo id="env" pad.r="15"/>
 						</hbox>
 					</align>
 				</hbox>
@@ -158,7 +157,7 @@
 
 			<!-- Zoom Fader -->
 			<vbox visibility=":mode ile 1" vexpand="true" bg.color="bg_schema">
-				<label font.name="lsp-icons" font.size="12" font.antialias="true" text="E" color="text_icon" padding.bottom="4" padding.top="4"/>
+				<label font.name="lsp-icons" font.size="12" font.antialias="true" text="E" color="text_icon" pad.b="4" pad.t="4"/>
 				<fader id="zoom" angle="1" vexpand="true" bg.inherit="true" flat="true"/>
 				<value id="zoom" width="40"/>
 			</vbox>
@@ -168,10 +167,10 @@
 				<grid rows="19" cols="1" expand="true" vspacing="2">
 					<ui:with bg.color="bg_schema">
 						<vbox width.min="107" padding="6">
-							<label text="labels.metering.preamp" padding.bottom="6"/>
+							<label text="labels.metering.preamp" pad.b="6"/>
 							<hbox>
 								<knob id="pamp" width="60"/>
-								<value id="pamp" same_line="true" width="60"/>
+								<value id="pamp" sline="true" width="60"/>
 							</hbox>
 						</vbox>
 
@@ -180,10 +179,10 @@
 						</cell>
 
 						<vbox padding="6">
-							<label text="labels.metering.reactivity" width="58" padding.bottom="6"/>
+							<label text="labels.metering.reactivity" width="58" pad.b="6"/>
 							<hbox>
 								<knob id="react" width="60"/>
-								<value id="react" same_line="true" width="60"/>
+								<value id="react" sline="true" width="60"/>
 							</hbox>
 						</vbox>
 
@@ -192,10 +191,10 @@
 						</cell>
 
 						<vbox visibility=":mode ile 1" padding="6">
-							<label text="labels.metering.selector" width="58" padding.bottom="6"/>
+							<label text="labels.metering.selector" width="58" pad.b="6"/>
 							<hbox>
-								<knob id="sel" scolor="left_channel" width="60"/>
-								<value id="sel" same_line="true" width="60"/>
+								<knob id="sel" scolor="mono" width="60"/>
+								<value id="sel" sline="true" width="60"/>
 							</hbox>
 						</vbox>
 
@@ -204,10 +203,10 @@
 						</cell>
 
 						<vbox padding="6">
-							<label text="labels.chan.shift" width="58" padding.bottom="6"/>
+							<label text="labels.chan.shift" width="58" pad.b="6"/>
 							<hbox>
-								<knob id="sh_0" scolor="left_channel" width="60"/>
-								<value id="sh_0" detailed="true" same_line="true" width="60"/>
+								<knob id="sh_0" scolor="mono" width="60"/>
+								<value id="sh_0" detailed="true" sline="true" width="60"/>
 							</hbox>
 						</vbox>
 
@@ -216,7 +215,7 @@
 						</cell>
 
 						<vbox padding="6">
-							<button ui:inject="Button_left" id="frz_0" text="labels.chan.hold" size="16" width="60"/>
+							<button ui:inject="Button_mono" id="frz_0" text="labels.chan.hold" size="16" width="60"/>
 						</vbox>
 
 						<cell expand="false" bg.color="bg" visibility=":mode ige 2">
@@ -232,7 +231,7 @@
 						</cell>
 
 						<vbox visibility=":mode ige 2" padding="6">
-							<label text="labels.spectrogram" padding.bottom="6"/>
+							<label text="labels.spectrogram" pad.b="6"/>
 							<combo id="spm"/>
 						</vbox>
 
@@ -247,8 +246,8 @@
 						</cell>
 
 						<vbox visibility=":mode ile 1" padding="6">
-							<label text="labels.metering.frequency:hz" padding.bottom="6"/>
-							<indicator id="freq" format="f6.1!" text.color="left_channel"/>
+							<label text="labels.metering.frequency:hz" pad.b="6"/>
+							<indicator id="freq" format="f6.1!" tcolor="mono"/>
 						</vbox>
 
 						<cell expand="false" bg.color="bg" visibility=":mode ile 1">
@@ -256,13 +255,12 @@
 						</cell>
 
 						<vbox visibility=":mode ile 1" padding="6">
-							<label text="labels.metering.level:db" padding.bottom="6"/>
-							<indicator id="lvl" format="+-f5.1!" text.color="left_channel"/>
+							<label text="labels.metering.level:db" pad.b="6"/>
+							<indicator id="lvl" format="+-f5.1!" tcolor="mono"/>
 						</vbox>
 					</ui:with>
 				</grid>
 			</group>
 		</hbox>
 	</vbox>
-
 </plugin>

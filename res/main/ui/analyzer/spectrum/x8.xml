@@ -2,10 +2,10 @@
 	<vbox spacing="4">
 		<!-- Head settings -->
 		<align halign="-1" fill="true">
-			<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" spacing="8" fill="false" bg.color="bg_schema">
+			<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" spacing="8" fill="false" bg.color="bg_schema">
 				<label text="labels.mode"/>
 				<combo id="mode"/>
-				<button padding.left="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
+				<button pad.l="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
 			</hbox>
 		</align>
 
@@ -28,7 +28,7 @@
 							<ui:for id="g" first="-60" last="12" step="24">
 								<marker v="${g} db" ox="1" oy="0" />
 							</ui:for>
-							
+
 							<ui:for id="t" first="-42" last="-6" step="12">
 								<marker v="${t} db" ox="1" oy="0" visibility=":zoom le -18 db"/>
 							</ui:for>
@@ -42,11 +42,11 @@
 							<marker v="100" />
 							<marker v="1000" />
 							<marker v="10000" />
-	
+
 							<marker v="0 db" ox="1" oy="0" />
 							<marker v="-24 db" ox="1" oy="0" />
 							<marker v="-48 db" ox="1" oy="0" />
-							
+
 							<marker v="1" ox="2" oy="0" visibility="false"/>
 							<marker v="24000" visibility="false"/>
 						</ui:with>
@@ -155,7 +155,7 @@
 								<marker v="${:f}" />
 								<marker v="${:f * 10}" />
 								<marker v="${:f * 100}" />
-						
+
 								<marker v="${:f}" o="1" ox="2" oy="1" />
 								<marker v="${:f * 10}" o="1" ox="2" oy="1" />
 								<marker v="${:f * 100}" o="1" ox="2" oy="1" />
@@ -208,22 +208,22 @@
 				</group>
 
 				<!-- Bottom menu -->
-				<hbox padding.left="6" padding.right="6" padding.top="4" padding.bottom="4" bg.color="bg_schema">
+				<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" bg.color="bg_schema">
 					<align halign="-1" fill="true">
 						<hbox spacing="8">
 							<label text="labels.fft.window"/>
-							<combo id="wnd" padding.right="15"/>
+							<combo id="wnd" pad.r="15"/>
 							<label text="labels.fft.tolerance"/>
-							<combo id="tol" padding.right="15"/>
+							<combo id="tol" pad.r="15"/>
 							<label text="labels.fft.envelope"/>
-							<combo id="env" padding.right="15"/>
+							<combo id="env" pad.r="15"/>
 						</hbox>
 					</align>
 					<align halign="1" fill="true">
 						<hbox spacing="8">
 							<label text="labels.spectrogram" visibility=":mode ige 4"/>
 							<combo id="spm" visibility=":mode ige 4"/>
-							<button ui:inject="Button_yellow" text="labels.log_scale" id="splog" size="16" visibility=":mode ige 4" padding.left="15"/>
+							<button ui:inject="Button_yellow" text="labels.log_scale" id="splog" size="16" visibility=":mode ige 4" pad.l="15"/>
 						</hbox>
 					</align>
 				</hbox>
@@ -231,7 +231,7 @@
 
 			<!-- Zoom Fader -->
 			<vbox visibility=":mode ilt 4" vexpand="true" bg.color="bg_schema">
-				<label font.name="lsp-icons" font.size="12" font.antialias="true" text="E" color="text_icon" padding.bottom="4" padding.top="4"/>
+				<label font.name="lsp-icons" font.size="12" font.antialias="true" text="E" color="text_icon" pad.b="4" pad.t="4"/>
 				<fader id="zoom" angle="1" vexpand="true" bg.inherit="true" flat="true"/>
 				<value id="zoom" width="40"/>
 			</vbox>
@@ -275,7 +275,7 @@
 								border.down.color.hue=":hue_${i}"
 								border.down.hover.color.hue=":hue_${i}"/>
 
-							<hbox fill="false" spacing="4" padding.bottom="14">
+							<hbox fill="false" spacing="4" pad.b="14">
 								<button
 									ui:inject="Button_Cycle"
 									id="solo_${i}"
@@ -319,23 +319,23 @@
 							<ui:with bg.color="bg_schema">
 								<cell height="55" padding="6">
 									<vbox>
-										<label text="labels.metering.selector" padding.bottom="4"/>
+										<label text="labels.metering.selector" pad.b="4"/>
 										<hbox>
 											<knob id="sel" scolor.hue=":hue[chn]"/>
-											<value id="sel" same_line="true" width="60"/>
+											<value id="sel" sline="true" width="60"/>
 										</hbox>
 									</vbox>
 								</cell>
 								<cell height="44" padding="6">
 									<vbox>
-										<label text="labels.metering.frequency:hz" padding.bottom="4"/>
-										<indicator id="freq" format="f6.1!" text.color.hue=":hue[chn]"/>
+										<label text="labels.metering.frequency:hz" pad.b="4"/>
+										<indicator id="freq" format="f6.1!" tcolor.hue=":hue[chn]"/>
 									</vbox>
 								</cell>
 								<cell height="44" padding="6">
 									<vbox >
-										<label text="labels.metering.level:db" padding.bottom="4"/>
-										<indicator id="lvl" format="+-f5.1!" text.color.hue=":hue[chn]"/>
+										<label text="labels.metering.level:db" pad.b="4"/>
+										<indicator id="lvl" format="+-f5.1!" tcolor.hue=":hue[chn]"/>
 									</vbox>
 								</cell>
 							</ui:with>
@@ -354,14 +354,14 @@
 					<vbox bg.color="bg_schema" width="61" padding="6" height="75">
 						<label text="labels.metering.preamp"/>
 						<knob id="pamp"/>
-						<value id="pamp" same_line="true"/>
+						<value id="pamp" sline="true"/>
 					</vbox>
 
 					<!-- Reactivity -->
 					<vbox bg.color="bg_schema" width="61" padding="6" height="75">
 						<label text="labels.metering.reactivity"/>
 						<knob id="react"/>
-						<value id="react" same_line="true"/>
+						<value id="react" sline="true"/>
 					</vbox>
 				</grid>
 			</group>
@@ -415,8 +415,8 @@
 					<ui:with bg.color="bg_schema">
 						<cell rows="1" cols="2" padding="6">
 							<vbox>
-								<label text="labels.channel" visibility=":mode ieq 4" padding.bottom="4"/>
-								<label text="labels.channels" visibility=":mode band 1" padding.bottom="4"/>
+								<label text="labels.channel" visibility=":mode ieq 4" pad.b="4"/>
+								<label text="labels.channels" visibility=":mode band 1" pad.b="4"/>
 								<hbox spacing="4">
 									<combo id="spc0" fill="true" visibility="(:mode ine 0) and (:mode ine 2)"/>
 									<combo id="spc1" fill="true" visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)"/>
@@ -425,15 +425,15 @@
 						</cell>
 
 						<vbox width="61" padding="6">
-							<label text="labels.metering.preamp" padding.bottom="4"/>
-							<knob id="pamp" padding.bottom="4"/>
-							<value id="pamp" same_line="true"/>
+							<label text="labels.metering.preamp" pad.b="4"/>
+							<knob id="pamp" pad.b="4"/>
+							<value id="pamp" sline="true"/>
 						</vbox>
 
 						<vbox width="61" padding="6">
-							<label text="labels.metering.reactivity" padding.bottom="4"/>
-							<knob id="react" padding.bottom="4"/>
-							<value id="react" same_line="true"/>
+							<label text="labels.metering.reactivity" pad.b="4"/>
+							<knob id="react" pad.b="4"/>
+							<value id="react" sline="true"/>
 						</vbox>
 					</ui:with>
 				</grid>
