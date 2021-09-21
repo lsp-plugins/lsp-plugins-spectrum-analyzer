@@ -60,8 +60,11 @@
 						<axis angle="0.5" min="-1" max="1" visibility="false"/>
 
 						<!-- Marker -->
-						<marker id="freq" />
-						<marker id="lvl" ox="1" oy="0" />
+						<marker id="freq" ox="0" oy="1" width="2" color="graph_marker_left" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_0) and (:chn ieq 0)))"/>
+						<marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_left" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_0) and (:chn ieq 0)))"/>
+
+						<marker id="freq" ox="0" oy="1" width="2" color="graph_marker_right" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_1) and (:chn ieq 1)))"/>
+						<marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_right" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_1) and (:chn ieq 1)))"/>
 
 						<!-- Text -->
 						<ui:with y="0" ox="0" oy="2" halign="1" valign="1" >
@@ -264,17 +267,18 @@
 									<cell rows="3" cols="1" expand="false">
 										<vsep/>
 									</cell>
-
+<ui:with bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
 									<cell rows="3" cols="2" padding="6">
 										<vbox>
 											<label text="labels.metering.channel" width="58"/>
 											<combo id="chn" width="48"/>
 											<label text="labels.metering.selector" width="58"/>
-											<knob id="sel" scolor="(:chn)? 'right' : 'left'"/>
+											<knob id="sel" scolor="(:on[chn]) ? ((:chn) ? 'right' : 'left') : ((:chn) ? 'right_inactive' : 'left_inactive')"/>
 											<void/>
 											<value id="sel" sline="true"/>
 										</vbox>
 									</cell>
+									</ui:with>
 								</ui:with>
 							</grid>
 						</cell>
@@ -285,17 +289,17 @@
 
 						<cell>
 							<hbox spacing="2" bg.color="bg">
-								<ui:with bg.color="bg_schema">
+								<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
 									<void fill="true" expand="true" padding="6"/>
 									<vsep expand="false" padding="0"/>
 									<vbox expand="false" padding="6">
 										<vbox bg.color="bg_schema">
 											<label text="labels.metering.frequency:hz"/>
-											<indicator id="freq" format="f6.1!" tcolor="(:chn)? 'right' : 'left'"/>
+											<indicator id="freq" format="f6.1!" tcolor="(:on[chn]) ? ((:chn) ? 'right' : 'left') : ((:chn) ? 'right_inactive' : 'left_inactive')"/>
 										</vbox>
 										<vbox>
 											<label text="labels.metering.level:db"/>
-											<indicator id="lvl" format="+-f5.1!" tcolor="(:chn)? 'right' : 'left'"/>
+											<indicator id="lvl" format="+-f5.1!" tcolor="(:on[chn]) ? ((:chn) ? 'right' : 'left') : ((:chn) ? 'right_inactive' : 'left_inactive')"/>
 										</vbox>
 									</vbox>
 								</ui:with>

@@ -62,12 +62,10 @@
 						<axis angle="0.5" min="-1" max="1" visibility="false"/>
 
 						<!-- Marker -->
-						<!-- <marker id="freq" />
-						<marker id="lvl" ox="1" oy="0" /> -->
 
 						<ui:for id="i" first="0" last="15">
 							<marker id="freq" ox="0" oy="1" width="2" color="graph_marker_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))"/>
-							<marker id="lvl" ox="1" oy="0" color="graph_marker_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))"/>
+							<marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))"/>
 						</ui:for>
 
 						<!-- Text -->
@@ -241,10 +239,6 @@
 				<value id="zoom" width="40"/>
 			</vbox>
 
-			<!-- Note and Octave -->
-			<!-- <ui:set id="test23" value="(:freq ieq 15804) ? '1' : '0'"/> -->
-			<ui:set id="test23" value="1452"/>
-
 			<!-- Metering -->
 			<group text="groups.metering" visibility="(:mode ieq 0) or (:mode ieq 2)" bg.color="bg" ipadding="0">
 				<grid rows="5" cols="2" expand="true" spacing="4">
@@ -269,31 +263,51 @@
 					</cell>
 
 					<cell rows="1" cols="2">
-						<grid rows="3" cols="2" hfill="true" hspacing="4">
-							<ui:with bg.color="bg_schema">
+						<grid rows="3" cols="3" hfill="true" spacing="0">
+							<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
 								<label text="labels.metering.channel" width="58"/>
+								<cell rows="3" bg.color="bg">
+									<label width.min="4" expand="false"/>
+								</cell>
 								<label text="labels.metering.selector" width="58"/>
-								<combo id="chn" width="48"/>
-								<knob id="sel" scolor="cycle" scolor.hue=":hue[chn]"/>
+								<cell>
+									<vbox>
+										<combo id="chn" width="48"/>
+									<button
+										ui:inject="Button_Cycle"
+										text="labels.chan.on"
+										id="on[chn]"
+										width="48"
+										height="10"
+										down.color.hue=":hue[chn]"
+										down.hover.color.hue=":hue[chn]"
+										text.down.color.hue=":hue[chn]"
+										text.down.hover.color.hue=":hue[chn]"
+										border.down.color.hue=":hue[chn]"
+										border.down.hover.color.hue=":hue[chn]"/>
+									</vbox>
+							</cell>
+								<knob id="sel" scolor="(:on[chn]) ? 'cycle' : 'cycle_inactive'" scolor.hue=":hue[chn]"/>
 								<void/>
 								<value id="sel" sline="true"/>
 							</ui:with>
 						</grid>
 					</cell>
 
+					<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
 					<cell rows="1" cols="2">
 						<vbox bg.color="bg_schema">
 							<label text="labels.metering.frequency:hz"/>
-							<indicator id="freq" format="f6.1!" tcolor="cycle" tcolor.hue=":hue[chn]" padding="6"/>
+							<indicator id="freq" format="f6.1!" tcolor="(:on[chn]) ? 'cycle' : 'cycle_inactive'" tcolor.hue=":hue[chn]" padding="6"/>
 						</vbox>
 					</cell>
 					<cell rows="1" cols="2" bg.color="bg_schema">
 						<vbox>
 							<label text="labels.metering.level:db"/>
-							<indicator id="lvl" format="+-f5.1!" tcolor="cycle" tcolor.hue=":hue[chn]"/>
-							<label id="test23" textcolor.hue=":hue[chn]"/>
+							<indicator id="lvl" format="+-f5.1!" tcolor="(:on[chn]) ? 'cycle' : 'cycle_inactive'" tcolor.hue=":hue[chn]"/>
 						</vbox>
 					</cell>
+				</ui:with>
 				</grid>
 			</group>
 		</hbox>

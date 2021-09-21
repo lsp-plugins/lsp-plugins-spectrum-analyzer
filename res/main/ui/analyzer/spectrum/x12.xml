@@ -53,7 +53,7 @@
 
 						<!-- Meshes -->
 						<ui:for id="i" first="0" last="11">
-							<mesh xi="0" yi="${:i + 1}" id="spd" width="3" color="graph_mesh" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
+							<mesh xi="0" yi="${:i + 1}" id="spd" width="3" color="graph_mesh_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
 						</ui:for>
 
 						<!-- Axis -->
@@ -62,8 +62,10 @@
 						<axis angle="0.5" min="-1" max="1" visibility="false"/>
 
 						<!-- Marker -->
-						<marker id="freq" />
-						<marker id="lvl" ox="1" oy="0" />
+						<ui:for id="i" first="0" last="11">
+							<marker id="freq" ox="0" oy="1" width="2" color="graph_marker_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))"/>
+							<marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))"/>
+						</ui:for>
 
 						<!-- Text -->
 						<ui:with y="0" ox="0" oy="2" halign="1" valign="1" >
@@ -261,30 +263,51 @@
 					</cell>
 
 					<cell rows="1" cols="2">
-						<grid rows="3" cols="2" hfill="true" hspacing="4">
-							<ui:with bg.color="bg_schema">
+						<grid rows="3" cols="3" hfill="true" spacing="0">
+							<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
 								<label text="labels.metering.channel" width="58"/>
+								<cell rows="3" bg.color="bg">
+									<label width.min="4" expand="false"/>
+								</cell>
 								<label text="labels.metering.selector" width="58"/>
-								<combo id="chn" width="48"/>
-								<knob id="sel" scolor.hue=":hue[chn]"/>
+								<cell>
+									<vbox>
+										<combo id="chn" width="48"/>
+									<button
+										ui:inject="Button_Cycle"
+										text="labels.chan.on"
+										id="on[chn]"
+										width="48"
+										height="10"
+										down.color.hue=":hue[chn]"
+										down.hover.color.hue=":hue[chn]"
+										text.down.color.hue=":hue[chn]"
+										text.down.hover.color.hue=":hue[chn]"
+										border.down.color.hue=":hue[chn]"
+										border.down.hover.color.hue=":hue[chn]"/>
+									</vbox>
+							</cell>
+								<knob id="sel" scolor="(:on[chn]) ? 'cycle' : 'cycle_inactive'" scolor.hue=":hue[chn]"/>
 								<void/>
 								<value id="sel" sline="true"/>
 							</ui:with>
 						</grid>
 					</cell>
 
+					<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
 					<cell rows="1" cols="2">
 						<vbox bg.color="bg_schema">
 							<label text="labels.metering.frequency:hz"/>
-							<indicator id="freq" format="f6.1!" tcolor.hue=":hue[chn]" padding="6"/>
+							<indicator id="freq" format="f6.1!" tcolor="(:on[chn]) ? 'cycle' : 'cycle_inactive'" tcolor.hue=":hue[chn]" padding="6"/>
 						</vbox>
 					</cell>
 					<cell rows="1" cols="2" bg.color="bg_schema">
 						<vbox>
 							<label text="labels.metering.level:db"/>
-							<indicator id="lvl" format="+-f5.1!" tcolor.hue=":hue[chn]"/>
+							<indicator id="lvl" format="+-f5.1!" tcolor="(:on[chn]) ? 'cycle' : 'cycle_inactive'" tcolor.hue=":hue[chn]"/>
 						</vbox>
 					</cell>
+				</ui:with>
 				</grid>
 			</group>
 		</hbox>
@@ -312,8 +335,6 @@
 							id="on_${i}"
 							width="37"
 							height="10"
-
-
 							down.color.hue=":hue_${i}"
 							down.hover.color.hue=":hue_${i}"
 							text.down.color.hue=":hue_${i}"
@@ -348,7 +369,7 @@
 								border.down.hover.color.hue=":hue_${i}"/>
 						</hbox>
 
-						<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
+						<knob id="sh_${i}" scolor="cycle" scolor.hue=":hue_${i}" size="20"/>
 						<value id="sh_${i}" detailed="false"/>
 					</ui:with>
 				</ui:for>
@@ -391,7 +412,7 @@
 								text.down.hover.color.hue=":hue_${i}"
 								border.down.color.hue=":hue_${i}"
 								border.down.hover.color.hue=":hue_${i}"/>
-							<knob id="sh_${i}" scolor.hue=":hue_${i}" size="20"/>
+							<knob id="sh_${i}" scolor="cycle" scolor.hue=":hue_${i}" size="20"/>
 							<value id="sh_${i}" detailed="false"/>
 						</ui:with>
 					</ui:for>
