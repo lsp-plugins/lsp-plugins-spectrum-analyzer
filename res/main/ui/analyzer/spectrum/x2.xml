@@ -267,7 +267,7 @@
 									<cell rows="3" cols="1" expand="false">
 										<vsep/>
 									</cell>
-<ui:with bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
+<ui:with bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : :const_bg_darken">
 									<cell rows="3" cols="2" padding="6">
 										<vbox>
 											<label text="labels.metering.channel" width="58"/>
@@ -289,7 +289,7 @@
 
 						<cell>
 							<hbox spacing="2" bg.color="bg">
-								<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
+								<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : :const_bg_darken">
 									<void fill="true" expand="true" padding="6"/>
 									<vsep expand="false" padding="0"/>
 									<vbox expand="false" padding="6">

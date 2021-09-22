@@ -324,7 +324,7 @@
 					<!-- Selector, frequency, level -->
 					<cell rows="2" cols="1" bg.color="bg">
 						<grid rows="3" cols="1" vspacing="4">
-							<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
+							<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : :const_bg_darken">
 								<cell height="55" padding="6">
 									<vbox>
 										<label text="labels.metering.selector" pad.b="4"/>
@@ -356,7 +356,7 @@
 
 					<grid rows="3" cols="2" spacing="4">
 						<!-- Chanell -->
-						<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
+						<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : :const_bg_darken">
 						<cell rows="1" cols="2" bg.color="bg_schema" padding="6">
 							<vbox>
 								<label text="labels.metering.channel"/>

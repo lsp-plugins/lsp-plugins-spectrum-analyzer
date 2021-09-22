@@ -264,12 +264,12 @@
 
 					<cell rows="1" cols="2">
 						<grid rows="3" cols="3" hfill="true" spacing="0">
-							<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
-								<label text="labels.metering.channel" width="58"/>
-								<cell rows="3" bg.color="bg">
-									<label width.min="4" expand="false"/>
-								</cell>
-								<label text="labels.metering.selector" width="58"/>
+							<label text="labels.metering.channel" width="58" bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : :const_bg_darken"/>
+							<cell rows="3" bg.color="bg">
+								<label width.min="4" expand="false"/>
+							</cell>
+							<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : :const_bg_darken">
+							<label text="labels.metering.selector" width="58"/>
 								<cell>
 									<vbox>
 										<combo id="chn" width="48"/>
@@ -294,7 +294,7 @@
 						</grid>
 					</cell>
 
-					<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : 0.75">
+					<ui:with bg.color="bg_schema" bright="(:on[chn]) ? 1.0 : 0.75" bg.bright="(:on[chn]) ? 1.0 : :const_bg_darken">
 					<cell rows="1" cols="2">
 						<vbox bg.color="bg_schema">
 							<label text="labels.metering.frequency:hz"/>
