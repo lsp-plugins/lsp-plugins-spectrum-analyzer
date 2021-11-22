@@ -199,10 +199,10 @@ namespace lsp
             return true;
         }
 
-        void spectrum_analyzer::init(plug::IWrapper *wrapper)
+        void spectrum_analyzer::init(plug::IWrapper *wrapper, plug::IPort **ports)
         {
             // Pass wrapper
-            plug::Module::init(wrapper);
+            plug::Module::init(wrapper, ports);
 
             // Determine number of channels
             size_t channels     = 0;
@@ -228,27 +228,13 @@ namespace lsp
 
             // Seek for first input port
             size_t port_id = 0;
-            while (port_id < vPorts.size())
-            {
-                plug::IPort *vp = vPorts[port_id];
-                if (vp == NULL)
-                    continue;
-                const meta::port_t *p = vp->metadata();
-                if (p == NULL)
-                    continue;
-                if ((p->id != NULL) && (meta::is_audio_port(p)) && (meta::is_in_port(p)))
-                    break;
-                port_id++;
-            }
-
-            lsp_trace("port_id = %d", int(port_id));
 
             // Now we are available to map the ports for channels
             for (size_t i=0; i<nChannels; ++i)
             {
                 lsp_trace("binding channel %d", int(i));
 
-                plug::IPort *vp = vPorts[port_id];
+                plug::IPort *vp = ports[port_id];
                 if (vp == NULL)
                     break;
                 const meta::port_t *p = vp->metadata();
@@ -258,13 +244,13 @@ namespace lsp
                     break;
 
                 sa_channel_t *c     = &vChannels[i];
-                c->pIn              = vPorts[port_id++];
-                c->pOut             = vPorts[port_id++];
-                c->pOn              = vPorts[port_id++];
-                c->pSolo            = vPorts[port_id++];
-                c->pFreeze          = vPorts[port_id++];
-                c->pHue             = vPorts[port_id++];
-                c->pShift           = vPorts[port_id++];
+                c->pIn              = ports[port_id++];
+                c->pOut             = ports[port_id++];
+                c->pOn              = ports[port_id++];
+                c->pSolo            = ports[port_id++];
+                c->pFreeze          = ports[port_id++];
+                c->pHue             = ports[port_id++];
+                c->pShift           = ports[port_id++];
 
                 // Sync metadata
                 const meta::port_t *meta  = c->pSolo->metadata();
@@ -278,34 +264,34 @@ namespace lsp
             }
 
             // Initialize basic ports
-            pBypass         = vPorts[port_id++];
-            pMode           = vPorts[port_id++];
+            pBypass         = ports[port_id++];
+            pMode           = ports[port_id++];
             port_id++; // Skip spectralizer mode
-            pLogScale       = vPorts[port_id++];
-            pFreeze         = vPorts[port_id++];
-            pTolerance      = vPorts[port_id++];
-            pWindow         = vPorts[port_id++];
-            pEnvelope       = vPorts[port_id++];
-            pPreamp         = vPorts[port_id++];
-            pZoom           = vPorts[port_id++];
-            pReactivity     = vPorts[port_id++];
-            pChannel        = vPorts[port_id++];
-            pSelector       = vPorts[port_id++];
-            pFrequency      = vPorts[port_id++];
-            pLevel          = vPorts[port_id++];
-            pFftData        = vPorts[port_id++];
+            pLogScale       = ports[port_id++];
+            pFreeze         = ports[port_id++];
+            pTolerance      = ports[port_id++];
+            pWindow         = ports[port_id++];
+            pEnvelope       = ports[port_id++];
+            pPreamp         = ports[port_id++];
+            pZoom           = ports[port_id++];
+            pReactivity     = ports[port_id++];
+            pChannel        = ports[port_id++];
+            pSelector       = ports[port_id++];
+            pFrequency      = ports[port_id++];
+            pLevel          = ports[port_id++];
+            pFftData        = ports[port_id++];
 
             // Bind spectralizer ports
             if (nChannels > 1)
-                vSpc[0].pPortId     = vPorts[port_id++];
-            vSpc[0].pFBuffer    = vPorts[port_id++];
+                vSpc[0].pPortId     = ports[port_id++];
+            vSpc[0].pFBuffer    = ports[port_id++];
             vSpc[0].nChannelId  = -1;
 
             if (nChannels >= 2)
             {
                 if (nChannels > 2)
-                    vSpc[1].pPortId     = vPorts[port_id++];
-                vSpc[1].pFBuffer    = vPorts[port_id++];
+                    vSpc[1].pPortId     = ports[port_id++];
+                vSpc[1].pFBuffer    = ports[port_id++];
                 vSpc[1].nChannelId  = -1;
             }
 
