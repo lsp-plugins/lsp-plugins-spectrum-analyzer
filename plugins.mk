@@ -18,13 +18,6 @@
 # along with lsp-plugins-spectrum-analyzer.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-# Package version
-ARTIFACT_ID                 = LSP_PLUGINS_SPECTRUM_ANALYZER
-ARTIFACT_NAME               = lsp-plugins-spectrum-analyzer
-ARTIFACT_TYPE               = plug
-ARTIFACT_DESC               = LSP Spectrum Analyzer Plugin Series
-ARTIFACT_HEADERS            = lsp-plug.in
-ARTIFACT_VERSION            = 1.0.5-devel
-
-
-
+# Variables that describe dependencies
+PLUGIN_DEPENDENCIES     = LSP_PLUGINS_SPECTRUM_ANALYZER
+PLUGIN_PACKAGE_NAME     = lsp-plugins
