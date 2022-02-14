@@ -1,0 +1,7 @@
+{
+	"spectrum_analyzer": {
+		"name": "Spectrum Analyzer",
+		"description": "This plugin performs spectral analysis of up to 16 channels. Stereo channels\nalso are possible to analyze by utilizing special modes and selecting\ncorresponsing channels. It does not affect any changes to the input signal,\nso can be placed anywhere where the metering is needed."
+	}
+}
+
