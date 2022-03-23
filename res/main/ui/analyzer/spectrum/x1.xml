@@ -1,0 +1,276 @@
+<plugin resizable="true">
+	<vbox spacing="4">
+		<!-- Head settings -->
+		<align halign="-1" fill="true">
+			<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" spacing="8" fill="false" bg.color="bg_schema">
+				<label text="labels.mode"/>
+				<combo id="mode"/>
+				<button pad.l="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
+			</hbox>
+		</align>
+
+		<hbox expand="true" spacing="4">
+			<vbox spacing="4" expand="true">
+
+				<!-- Analyzer, Mastering -->
+				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ile 1">
+					<graph width.min="832" height.min="400" expand="true" fill="true">
+						<origin hpos="-1" vpos="-1" visibility="false"/>
+
+						<!-- Secondary grid -->
+						<ui:with color="graph_sec">
+							<ui:for id="f" first="20" last="90" step="10">
+								<marker v="${:f}" />
+								<marker v="${:f * 10}" />
+								<marker v="${:f * 100}" />
+							</ui:for>
+							<marker v="20000" />
+							<ui:for id="g" first="-60" last="12" step="24">
+								<marker v="${g} db" ox="1" oy="0" />
+							</ui:for>
+
+							<ui:for id="t" first="-42" last="-6" step="12">
+								<marker v="${t} db" ox="1" oy="0" visibility=":zoom le -18 db"/>
+							</ui:for>
+							<ui:for id="t" first="-33" last="-15" step="6">
+								<marker v="${t} db" ox="1" oy="0" visibility=":zoom le -33 db"/>
+							</ui:for>
+						</ui:with>
+
+						<!-- Primary Grid -->
+						<ui:with color="graph_prim">
+							<marker v="100" />
+							<marker v="1000" />
+							<marker v="10000" />
+
+							<marker v="0 db" ox="1" oy="0" />
+							<marker v="-24 db" ox="1" oy="0" />
+							<marker v="-48 db" ox="1" oy="0" />
+
+							<marker v="1" ox="2" oy="0" visibility="false"/>
+							<marker v="24000" visibility="false"/>
+						</ui:with>
+
+						<!-- Meshes -->
+						<mesh xi="0" yi="1" id="spd" width="3" color="mono" visibility_id="on_0"/>
+
+						<!-- Axis -->
+						<axis angle="0.0" min="10" max="24000" log="true" visibility="false"/>
+						<axis angle="0.5" min="-72 db / :zoom" max="24 db * :zoom" log="true" visibility="false"/>
+						<axis angle="0.5" min="-1" max="1" visibility="false"/>
+
+						<!-- Marker -->
+						<marker id="freq" ox="0" oy="1" color="graph_marker_mono"/>
+						<marker id="lvl" ox="1" oy="0" color="graph_marker_mono"/>
+
+						<!-- Text -->
+						<ui:with ox="0" oy="2" y="0" halign="1" valign="1">
+						  <text x="10" text="graph.units.hz"/>
+						  <text x="20" text="20"/>
+						  <text x="30" text="30"/>
+						  <text x="50" text="50"/>
+						  <text x="100" text="100"/>
+						  <text x="200" text="200"/>
+						  <text x="300" text="300"/>
+						  <text x="500" text="500"/>
+						  <text x="1000" text="graph.values.x_k" text:value="1"/>
+						  <text x="2000" text="graph.values.x_k" text:value="2"/>
+						  <text x="3000" text="graph.values.x_k" text:value="3"/>
+						  <text x="5000" text="graph.values.x_k" text:value="5"/>
+						  <text x="10000" text="graph.values.x_k" text:value="10"/>
+						  <text x="20000" text="graph.values.x_k" text:value="20"/>
+						</ui:with>
+						<ui:for id="t" first="-60" last="12" step="12">
+							<text x="10" y="${t} db" text="${t}" halign="1" valign="1" />
+						</ui:for>
+						<text x="10" y="1" ox="0" oy="2" text="graph.units.db" halign="1" valign="-1" />
+						<ui:with x="10" halign="1" valign="1" visibility=":zoom le -18 db">
+							<text y="-42 db" text="-42"/>
+							<text y="-30 db" text="-30"/>
+							<text y="-18 db" text="-18"/>
+							<text y="-6 db" text="-6"/>
+						</ui:with>
+						<ui:with x="10" halign="1" valign="1" visibility=":zoom le -33 db">
+							<text y="-33 db" text="-33"/>
+							<text y="-27 db" text="-27"/>
+							<text y="-21 db" text="-21"/>
+							<text y="-15 db" text="-33"/>
+						</ui:with>
+					</graph>
+				</group>
+
+				<!-- Spectralizer (1 channel) -->
+				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 2">
+					<graph width.min="738" height.min="415" expand="true" fill="true">
+						<origin hpos="-1" vpos="1" visibility="false"/>
+
+						<!-- Secondary grid -->
+						<ui:with color="graph_sec">
+							<ui:for id="f" first="20" last="90" step="10">
+								<marker v="${:f}" />
+								<marker v="${:f * 10}" />
+								<marker v="${:f * 100}" />
+							</ui:for>
+							<marker v="20000" color="graph_sec"/>
+							<ui:for id="t" first="1" last="7" step="2">
+								<marker v="${t}" ox="1" oy="0" />
+							</ui:for>
+						</ui:with>
+
+						<!-- Primary grid -->
+						<ui:with color="graph_prim">
+							<marker v="100" />
+							<marker v="1000" />
+							<marker v="10000" />
+							<ui:for id="t" first="2" last="6" step="2">
+								<marker v="${t}" ox="1" oy="0" />
+							</ui:for>
+							<marker v="8" ox="1" oy="0" visibility="false"/>
+							<marker v="24000" ox="0" oy="1" visibility="false"/>
+						</ui:with>
+
+						<!-- Frame buffer -->
+						<fbuffer id="fb" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="mono" color.hue=":hue[spc]"/>
+
+						<!-- Axis -->
+						<axis angle="0.0" min="10" max="24000" log="true" visibility="false"/>
+						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
+
+						<!-- Text -->
+						<ui:with y="8" halign="1" valign="1" >
+							<text x="10" text="graph.units.hz"/>
+							<text x="100" text="100" halign="1"/>
+							<text x="1000" text="graph.values.1k"/>
+							<text x="10000" text="graph.values.10k"/>
+							<text x="10" y="0" text="graph.axis.time" valign="-1" />
+							<ui:for id="t" first="1" last="7">
+								<text x="10" y="${t}" text="${t}" />
+							</ui:for>
+						</ui:with>
+					</graph>
+				</group>
+
+				<!-- Bottom menu -->
+				<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" bg.color="bg_schema">
+					<align halign="-1" fill="true">
+						<hbox spacing="8">
+							<label text="labels.fft.window"/>
+							<combo id="wnd" pad.r="15"/>
+							<label text="labels.fft.tolerance"/>
+							<combo id="tol" pad.r="15"/>
+							<label text="labels.fft.envelope"/>
+							<combo id="env" pad.r="15"/>
+						</hbox>
+					</align>
+				</hbox>
+			</vbox>
+
+			<!-- Zoom Fader -->
+			<vbox visibility=":mode ile 1" vexpand="true" bg.color="bg_schema">
+				<label font.name="lsp-icons" font.size="12" font.antialias="true" text="E" color="text_icon" pad.b="4" pad.t="4"/>
+				<fader id="zoom" angle="1" vexpand="true" bg.inherit="true" flat="true"/>
+				<value id="zoom" width="40"/>
+			</vbox>
+
+			<!-- Metering -->
+			<group text="groups.metering" vexpand="true" bg.color="bg" ipadding="0">
+				<grid rows="19" cols="1" expand="true" vspacing="2">
+					<ui:with bg.color="bg_schema">
+						<vbox width.min="107" padding="6">
+							<label text="labels.metering.preamp" pad.b="6"/>
+							<hbox>
+								<knob id="pamp" width="60"/>
+								<value id="pamp" sline="true" width="60"/>
+							</hbox>
+						</vbox>
+
+						<cell expand="false" bg.color="bg">
+							<hsep/>
+						</cell>
+
+						<vbox padding="6">
+							<label text="labels.metering.reactivity" width="58" pad.b="6"/>
+							<hbox>
+								<knob id="react" width="60"/>
+								<value id="react" sline="true" width="60"/>
+							</hbox>
+						</vbox>
+
+						<cell expand="false" bg.color="bg" visibility=":mode ile 1">
+							<hsep/>
+						</cell>
+
+						<vbox visibility=":mode ile 1" padding="6">
+							<label text="labels.metering.selector" width="58" pad.b="6"/>
+							<hbox>
+								<knob id="sel" scolor="mono" width="60"/>
+								<value id="sel" sline="true" width="60"/>
+							</hbox>
+						</vbox>
+
+						<cell expand="false" bg.color="bg">
+							<hsep/>
+						</cell>
+
+						<vbox padding="6">
+							<label text="labels.chan.shift" width="58" pad.b="6"/>
+							<hbox>
+								<knob id="sh_0" scolor="mono" width="60"/>
+								<value id="sh_0" detailed="true" sline="true" width="60"/>
+							</hbox>
+						</vbox>
+
+						<cell expand="false" bg.color="bg">
+							<hsep/>
+						</cell>
+
+						<vbox padding="6">
+							<button ui:inject="Button_mono" id="frz_0" text="labels.chan.hold" size="16" width="60"/>
+						</vbox>
+
+						<cell expand="false" bg.color="bg" visibility=":mode ige 2">
+							<hsep/>
+						</cell>
+
+						<vbox visibility=":mode ige 2" padding="6">
+							<button ui:inject="Button_yellow" text="labels.log_scale" id="splog" size="16"/>
+						</vbox>
+
+						<cell expand="false" bg.color="bg" visibility=":mode ige 2">
+							<hsep/>
+						</cell>
+
+						<vbox visibility=":mode ige 2" padding="6">
+							<label text="labels.spectrogram" pad.b="6"/>
+							<combo id="spm"/>
+						</vbox>
+
+						<cell expand="false" bg.color="bg" visibility=":mode ige 2">
+							<hsep/>
+						</cell>
+
+						<void height.min="84" visibility=":mode ige 2" padding="6"/>
+
+						<cell expand="false" bg.color="bg" visibility=":mode ile 1">
+							<hsep/>
+						</cell>
+
+						<vbox visibility=":mode ile 1" padding="6">
+							<label text="labels.metering.frequency:hz" pad.b="6"/>
+							<indicator id="freq" format="f6.1!" tcolor="mono"/>
+						</vbox>
+
+						<cell expand="false" bg.color="bg" visibility=":mode ile 1">
+							<hsep/>
+						</cell>
+
+						<vbox visibility=":mode ile 1" padding="6">
+							<label text="labels.metering.level:db" pad.b="6"/>
+							<indicator id="lvl" format="+-f5.1!" tcolor="mono"/>
+						</vbox>
+					</ui:with>
+				</grid>
+			</group>
+		</hbox>
+	</vbox>
+</plugin>
