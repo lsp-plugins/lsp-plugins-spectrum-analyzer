@@ -65,7 +65,7 @@ namespace lsp
             { "Analyzer",       "spectrum.analyzer" },
             { "Mastering",      "spectrum.mastering" },
             { "Spectralizer",   "spectrum.spectralizer" },
-            NULL
+            { NULL,             NULL }
         };
 
         static const port_item_t spectrum_analyzer_x2_channels[]=
