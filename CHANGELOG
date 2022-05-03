@@ -6,6 +6,7 @@
 * Updated plugin metadata (contributed by Dennis Braun).
 * Fixed clang warnings.
 * Updated dependencies and build scripts.
+* Updated build scripts and dependencies.
 
 === 1.0.5 ===
 * Initial release.
