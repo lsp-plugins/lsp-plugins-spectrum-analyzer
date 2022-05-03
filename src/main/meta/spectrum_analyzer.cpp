@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MAJOR         1
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MINOR         0
-#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         5
+#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         6
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -65,7 +65,7 @@ namespace lsp
             { "Analyzer",       "spectrum.analyzer" },
             { "Mastering",      "spectrum.mastering" },
             { "Spectralizer",   "spectrum.spectralizer" },
-            NULL
+            { NULL,             NULL }
         };
 
         static const port_item_t spectrum_analyzer_x2_channels[]=
@@ -279,7 +279,7 @@ namespace lsp
             "Spectrum Analyzer",
             B_ANALYZERS,
             "N4OjF2sJUHg",
-            "This plugin performs spectral analysis of up to 16 channels. Stereo channels\nalso are possible to analyze by utilizing special modes and selecting\ncorresponsing channels. It does not affect any changes to the input signal,\nso can be placed anywhere where the metering is needed."
+            "This plugin performs spectral analysis of up to 16 channels. Stereo channels\nalso are possible to analyze by utilizing special modes and selecting\ncorresponding channels. It does not affect any changes to the input signal,\nso can be placed anywhere where the metering is needed."
         };
 
         const plugin_t spectrum_analyzer_x1 =
