@@ -3,8 +3,9 @@
 *******************************************************************************
 
 === 1.0.6 ===
-- Updated plugin metadata (contributed by Dennis Braun).
-- Fixed clang warnings.
+* Updated plugin metadata (contributed by Dennis Braun).
+* Fixed clang warnings.
+* Updated dependencies and build scripts.
 
 === 1.0.5 ===
 * Initial release.
