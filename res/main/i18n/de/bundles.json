@@ -1,0 +1,7 @@
+{
+	"spectrum_analyzer": {
+		"name": "Spektrumanalysator",
+		"description": "Dieses Plugin erlaubt die spektrale Analyse von bis zu 16 Kanälen. \nAuch Stereokanäle können analysiert werden indem spezielle Modi verwendet \nwerden und die entsprechenden Kanäle ausgewählt werden. \nDas Signal wird in keiner Weise verändert, so dass das Plugin an jedem \nPunkt der Signalkette verwendet werden kann."
+	}
+}
+
