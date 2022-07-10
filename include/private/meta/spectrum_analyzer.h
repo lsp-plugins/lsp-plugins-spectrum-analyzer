@@ -35,43 +35,43 @@ namespace lsp
         // Spectrum analyzer metadata
         struct spectrum_analyzer
         {
-            static const float          FREQ_MIN            = SPEC_FREQ_MIN;
-            static const float          FREQ_DFL            = 1000.0f;
-            static const float          FREQ_MAX            = SPEC_FREQ_MAX;
+            static constexpr float          FREQ_MIN            = SPEC_FREQ_MIN;
+            static constexpr float          FREQ_DFL            = 1000.0f;
+            static constexpr float          FREQ_MAX            = SPEC_FREQ_MAX;
 
-            static const size_t         PORTS_PER_INPUT     = 6;
-            static const size_t         RANK_MIN            = 10;
-            static const size_t         RANK_DFL            = 12;
-            static const size_t         RANK_MAX            = 14;
-            static const size_t         MESH_POINTS         = 640;
+            static constexpr size_t         PORTS_PER_INPUT     = 6;
+            static constexpr size_t         RANK_MIN            = 10;
+            static constexpr size_t         RANK_DFL            = 12;
+            static constexpr size_t         RANK_MAX            = 14;
+            static constexpr size_t         MESH_POINTS         = 640;
 
-            static const float          THRESH_HI_DB        = 0.0f;
-            static const float          THRESH_LO_DB        = -48.0f;
-            static const float          SPECTRALIZER_BOOST  = 16.0f;
-            static const size_t         MMESH_STEP          = 16;
-            static const size_t         WND_DFL             = dspu::windows::HANN;
-            static const size_t         ENV_DFL             = dspu::envelope::PINK_NOISE;
-            static const size_t         FB_ROWS             = 360;
-            static const float          FB_TIME             = 8.0f;
+            static constexpr float          THRESH_HI_DB        = 0.0f;
+            static constexpr float          THRESH_LO_DB        = -48.0f;
+            static constexpr float          SPECTRALIZER_BOOST  = 16.0f;
+            static constexpr size_t         MMESH_STEP          = 16;
+            static constexpr size_t         WND_DFL             = dspu::windows::HANN;
+            static constexpr size_t         ENV_DFL             = dspu::envelope::PINK_NOISE;
+            static constexpr size_t         FB_ROWS             = 360;
+            static constexpr float          FB_TIME             = 8.0f;
 
-            static const float          REACT_TIME_MIN      = 0.000;
-            static const float          REACT_TIME_MAX      = 1.000;
-            static const float          REACT_TIME_DFL      = 0.200;
-            static const float          REACT_TIME_STEP     = 0.001;
+            static constexpr float          REACT_TIME_MIN      = 0.000;
+            static constexpr float          REACT_TIME_MAX      = 1.000;
+            static constexpr float          REACT_TIME_DFL      = 0.200;
+            static constexpr float          REACT_TIME_STEP     = 0.001;
 
-            static const float          SELECTOR_MIN        = 0.01f;
-            static const float          SELECTOR_DFL        = 0.01f;
-            static const float          SELECTOR_MAX        = 100.0f;
-            static const float          SELECTOR_STEP       = 0.005f;
+            static constexpr float          SELECTOR_MIN        = 0.01f;
+            static constexpr float          SELECTOR_DFL        = 0.01f;
+            static constexpr float          SELECTOR_MAX        = 100.0f;
+            static constexpr float          SELECTOR_STEP       = 0.005f;
 
-            static const float          ZOOM_MIN            = GAIN_AMP_M_36_DB;
-            static const float          ZOOM_MAX            = GAIN_AMP_0_DB;
-            static const float          ZOOM_DFL            = GAIN_AMP_0_DB;
-            static const float          ZOOM_STEP           = 0.025f;
+            static constexpr float          ZOOM_MIN            = GAIN_AMP_M_36_DB;
+            static constexpr float          ZOOM_MAX            = GAIN_AMP_0_DB;
+            static constexpr float          ZOOM_DFL            = GAIN_AMP_0_DB;
+            static constexpr float          ZOOM_STEP           = 0.025f;
 
-            static const float          PREAMP_DFL          = 1.0;
+            static constexpr float          PREAMP_DFL          = 1.0;
 
-            static const size_t         REFRESH_RATE        = 20;
+            static constexpr size_t         REFRESH_RATE        = 20;
         };
 
         extern const plugin_t spectrum_analyzer_x1;
