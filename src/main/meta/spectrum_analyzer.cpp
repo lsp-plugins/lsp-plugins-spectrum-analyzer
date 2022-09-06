@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MAJOR         1
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MINOR         0
-#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         8
+#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         9
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -51,12 +51,6 @@ namespace lsp
             { "4096", NULL },
             { "8192", NULL },
             { "16384", NULL },
-            { NULL, NULL }
-        };
-
-        static const port_item_t spectrum_analyzer_x1_channels[]=
-        {
-            R("0"),
             { NULL, NULL }
         };
 

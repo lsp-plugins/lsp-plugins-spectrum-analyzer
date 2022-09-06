@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.9 ===
+* Fixed clang warnings.
+
 === 1.0.8 ===
 * Updated build scripts and dependencies.
 
