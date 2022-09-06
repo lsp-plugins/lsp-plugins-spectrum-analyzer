@@ -54,12 +54,6 @@ namespace lsp
             { NULL, NULL }
         };
 
-        static const port_item_t spectrum_analyzer_x1_channels[]=
-        {
-            R("0"),
-            { NULL, NULL }
-        };
-
         static const port_item_t spectrum_analyzer_x1_modes[]=
         {
             { "Analyzer",       "spectrum.analyzer" },
