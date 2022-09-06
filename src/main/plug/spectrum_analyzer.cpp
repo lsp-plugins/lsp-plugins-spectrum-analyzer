@@ -275,7 +275,8 @@ namespace lsp
             pPreamp         = ports[port_id++];
             pZoom           = ports[port_id++];
             pReactivity     = ports[port_id++];
-            pChannel        = ports[port_id++];
+            if (nChannels > 1)
+                pChannel        = ports[port_id++];
             pSelector       = ports[port_id++];
             pFrequency      = ports[port_id++];
             pLevel          = ports[port_id++];
@@ -448,7 +449,7 @@ namespace lsp
         {
             // Update global settings
             bBypass                 = pBypass->value();
-            nChannel                = pChannel->value();
+            nChannel                = (pChannel != NULL) ? pChannel->value() : 0;
             fSelector               = pSelector->value() * 0.01f;
             fPreamp                 = pPreamp->value();
             fZoom                   = pZoom->value();
