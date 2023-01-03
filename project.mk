@@ -24,6 +24,7 @@ ARTIFACT_NAME               = lsp-plugins-spectrum-analyzer
 ARTIFACT_TYPE               = plug
 ARTIFACT_DESC               = LSP Spectrum Analyzer Plugin Series
 ARTIFACT_HEADERS            = lsp-plug.in
+ARTIFACT_EXPORT_HEADERS     = 0
 ARTIFACT_VERSION            = 1.0.11-devel
 
 
