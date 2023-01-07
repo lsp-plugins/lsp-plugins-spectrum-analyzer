@@ -40,7 +40,8 @@ namespace lsp
     {
         //-------------------------------------------------------------------------
         // Spectrum analyser: x1, x8, x12, x16, x24, x32
-        static const int spectrum_analyzer_classes[] = { C_ANALYSER, -1 };
+        static const int plugin_classes[]           = { C_ANALYSER, -1 };
+        static const int clap_features[]            = { CF_ANALYZER, CF_UTILITY, -1 };
 
         #define R(x) { x, NULL }
 
@@ -293,8 +294,10 @@ namespace lsp
             "qtez",
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 0,
             LSP_LADSPA_URI("spectrum_analyzer_x1"),
+            LSP_CLAP_URI("spectrum_analyzer_x1"),
             LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION,
-            spectrum_analyzer_classes,
+            plugin_classes,
+            clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x1_ports,
             "analyzer/spectrum/x1.xml",
@@ -315,8 +318,10 @@ namespace lsp
             "aw7r",
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 1,
             LSP_LADSPA_URI("spectrum_analyzer_x2"),
+            LSP_CLAP_URI("spectrum_analyzer_x2"),
             LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION,
-            spectrum_analyzer_classes,
+            plugin_classes,
+            clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x2_ports,
             "analyzer/spectrum/x2.xml",
@@ -337,8 +342,10 @@ namespace lsp
             "xzgo",
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 2,
             LSP_LADSPA_URI("spectrum_analyzer_x4"),
+            LSP_CLAP_URI("spectrum_analyzer_x4"),
             LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION,
-            spectrum_analyzer_classes,
+            plugin_classes,
+            clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x4_ports,
             "analyzer/spectrum/x4.xml",
@@ -359,8 +366,10 @@ namespace lsp
             "e5hb",
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 3,
             LSP_LADSPA_URI("spectrum_analyzer_x8"),
+            LSP_CLAP_URI("spectrum_analyzer_x8"),
             LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION,
-            spectrum_analyzer_classes,
+            plugin_classes,
+            clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x8_ports,
             "analyzer/spectrum/x8.xml",
@@ -381,8 +390,10 @@ namespace lsp
             "tj3l",
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 4,
             LSP_LADSPA_URI("spectrum_analyzer_x12"),
+            LSP_CLAP_URI("spectrum_analyzer_x12"),
             LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION,
-            spectrum_analyzer_classes,
+            plugin_classes,
+            clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x12_ports,
             "analyzer/spectrum/x12.xml",
@@ -403,8 +414,10 @@ namespace lsp
             "nuzi",
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 5,
             LSP_LADSPA_URI("spectrum_analyzer_x16"),
+            LSP_CLAP_URI("spectrum_analyzer_x16"),
             LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION,
-            spectrum_analyzer_classes,
+            plugin_classes,
+            clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x16_ports,
             "analyzer/spectrum/x16.xml",
@@ -412,5 +425,5 @@ namespace lsp
             NULL,
             &spectrum_analyzer_bundle
         };
-    }
-}
+    } /* namespace meta */
+} /* namespace lsp */
