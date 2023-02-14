@@ -60,11 +60,11 @@
 						<axis angle="0.5" min="-1" max="1" visibility="false"/>
 
 						<!-- Marker -->
-						<marker id="freq" ox="0" oy="1" width="2" color="graph_marker_left" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_0) and (:chn ieq 0)))"/>
-						<marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_left" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_0) and (:chn ieq 0)))"/>
+						<marker id="freq" ox="0" oy="1" width="2" color="graph_marker_left" visibility="(((:mode ieq 0) or (:mode ieq 1)) and ((:on_0) and (:chn ieq 0)))"/>
+						<marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_left" visibility="(((:mode ieq 0) or (:mode ieq 1)) and ((:on_0) and (:chn ieq 0)))"/>
 
-						<marker id="freq" ox="0" oy="1" width="2" color="graph_marker_right" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_1) and (:chn ieq 1)))"/>
-						<marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_right" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_1) and (:chn ieq 1)))"/>
+						<marker id="freq" ox="0" oy="1" width="2" color="graph_marker_right" visibility="(((:mode ieq 0) or (:mode ieq 1)) and ((:on_1) and (:chn ieq 1)))"/>
+						<marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_right" visibility="(((:mode ieq 0) or (:mode ieq 1)) and ((:on_1) and (:chn ieq 1)))"/>
 
 						<!-- Text -->
 						<ui:with ox="0" oy="2" y="0" halign="1" valign="1">
