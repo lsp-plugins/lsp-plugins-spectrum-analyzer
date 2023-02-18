@@ -1,0 +1,17 @@
+{
+	"spectrum": {
+		"analyzer": "Analyseur",
+		"analyzer_s": "Analyseur stéréo",
+		"mastering": "Mastering",
+		"mastering_s": "Mastering stéréo",
+		"spc": {
+			"color": "Couleur",
+			"fog": "Brume",
+			"lightness": "Légèreté",
+			"lightning": "Foudre",
+			"rainbow": "Arc-en-ciel"
+		},
+		"spectralizer": "Spectraliseur",
+		"spectralizer_s": "Spectraliseur stéréo"
+	}
+}

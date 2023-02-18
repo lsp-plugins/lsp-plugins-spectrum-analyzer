@@ -450,7 +450,7 @@ namespace lsp
             // Update global settings
             bBypass                 = pBypass->value();
             nChannel                = (pChannel != NULL) ? pChannel->value() : 0;
-            fSelector               = pSelector->value() * 0.01f;
+            fSelector               = lsp_limit((pSelector->value() * 2.0f) / fSampleRate, 0.0f, 1.0f);
             fPreamp                 = pPreamp->value();
             fZoom                   = pZoom->value();
             bLogScale               = (pLogScale != NULL) && (pLogScale->value() >= 0.5f);
@@ -933,8 +933,8 @@ namespace lsp
             v->write_object("pIDisplay", pIDisplay);
         }
 
-    } // namespace plugins
-} // namespace lsp
+    } /* namespace plugins */
+} /* namespace lsp */
 
 
 

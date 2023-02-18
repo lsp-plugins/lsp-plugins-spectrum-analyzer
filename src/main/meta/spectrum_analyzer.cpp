@@ -159,8 +159,7 @@ namespace lsp
             { "react",          "Reactivity",       U_SEC,          R_CONTROL, F_IN | F_UPPER | F_LOWER | F_STEP | F_LOG, \
                  spectrum_analyzer::REACT_TIME_MIN, spectrum_analyzer::REACT_TIME_MAX, spectrum_analyzer::REACT_TIME_DFL, spectrum_analyzer::REACT_TIME_STEP, NULL }, \
             channel(c) \
-            { "sel", "Selector", U_PERCENT, R_CONTROL, F_IN | F_UPPER | F_LOWER | F_STEP | F_LOG, \
-                 spectrum_analyzer::SELECTOR_MIN, spectrum_analyzer::SELECTOR_MAX, spectrum_analyzer::SELECTOR_DFL, spectrum_analyzer::SELECTOR_STEP, NULL }, \
+            LOG_CONTROL("sel", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
             { "freq", "Frequency", U_HZ, R_METER, F_OUT | F_UPPER | F_LOWER, \
                 spectrum_analyzer::FREQ_MIN, spectrum_analyzer::FREQ_MAX, spectrum_analyzer::FREQ_DFL, 0, NULL }, \
             { "lvl", "Level", U_GAIN_AMP, R_METER, F_OUT | F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
