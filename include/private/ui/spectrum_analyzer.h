@@ -43,6 +43,10 @@ namespace lsp
 
             protected:
                 size_t                      nChannels;
+                tk::Graph                  *wMainGraph;
+                ssize_t                     nXAxisIndex;
+                size_t                      nMainGraphBtn;
+
                 ui::IPort                  *pSelector;          // Selector frequency
                 ui::IPort                  *pSelChannel;        // Selected channel
                 ui::IPort                  *pFftFreq;           // Actual FFT frequency
@@ -54,7 +58,16 @@ namespace lsp
                 ui::IPort      *find_port(const char *prefix, size_t id);
 
             protected:
+                static status_t slot_main_graph_mouse_down(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_main_graph_mouse_move(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_main_graph_mouse_up(tk::Widget *sender, void *ptr, void *data);
+
+            protected:
                 void            update_selector_text();
+                ssize_t         find_axis(tk::Graph *graph, const char *id);
+                void            on_main_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev);
+                void            on_main_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev);
+                void            on_main_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev);
 
             public:
                 explicit spectrum_analyzer_ui(const meta::plugin_t *meta);

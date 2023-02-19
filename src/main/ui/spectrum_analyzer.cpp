@@ -72,6 +72,10 @@ namespace lsp
             else
                 nChannels   = 1;
 
+            wMainGraph      = NULL;
+            nXAxisIndex     = -1;
+            nMainGraphBtn   = 0;
+
             pSelector       = NULL;
             pSelChannel     = NULL;
             pFftFreq        = NULL;
@@ -124,6 +128,16 @@ namespace lsp
 
                 ch->pUI         = this;
                 ch->wFrequency  = find_widget<tk::GraphText>("selector_freq", i);
+            }
+
+            // Bind graph click handler
+            wMainGraph          = pWrapper->controller()->widgets()->get<tk::Graph>("main_graph");
+            if (wMainGraph != NULL)
+            {
+                wMainGraph->slots()->bind(tk::SLOT_MOUSE_DOWN, slot_main_graph_mouse_down, this);
+                wMainGraph->slots()->bind(tk::SLOT_MOUSE_MOVE, slot_main_graph_mouse_move, this);
+                wMainGraph->slots()->bind(tk::SLOT_MOUSE_UP, slot_main_graph_mouse_up, this);
+                nXAxisIndex         = find_axis(wMainGraph, "main_graph_ox");
             }
 
             // Update selector text after init
@@ -197,6 +211,96 @@ namespace lsp
             }
             else
                 ch->wFrequency->text()->set("lists.spectrum.display.unknown", &params);
+        }
+
+        ssize_t spectrum_analyzer_ui::find_axis(tk::Graph *graph, const char *id)
+        {
+            if (graph == NULL)
+                return -1;
+
+            ctl::Window *wnd    = pWrapper->controller();
+            tk::GraphAxis *axis = tk::widget_cast<tk::GraphAxis>(wnd->widgets()->find(id));
+            if (axis == NULL)
+                return -1;
+
+            for (size_t i=0; ; ++i)
+            {
+                tk::GraphAxis *ax = graph->axis(i);
+                if (ax == NULL)
+                    break;
+                else if (ax == axis)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        status_t spectrum_analyzer_ui::slot_main_graph_mouse_down(tk::Widget *sender, void *ptr, void *data)
+        {
+            spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
+            if (_this == NULL)
+                return STATUS_BAD_STATE;
+
+            ws::event_t *ev = static_cast<ws::event_t *>(data);
+            _this->on_main_graph_mouse_down(sender, ev);
+
+            return STATUS_OK;
+        }
+
+        status_t spectrum_analyzer_ui::slot_main_graph_mouse_move(tk::Widget *sender, void *ptr, void *data)
+        {
+            spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
+            if (_this == NULL)
+                return STATUS_BAD_STATE;
+
+            ws::event_t *ev = static_cast<ws::event_t *>(data);
+            _this->on_main_graph_mouse_move(sender, ev);
+
+            return STATUS_OK;
+        }
+
+        status_t spectrum_analyzer_ui::slot_main_graph_mouse_up(tk::Widget *sender, void *ptr, void *data)
+        {
+            spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
+            if (_this == NULL)
+                return STATUS_BAD_STATE;
+
+            ws::event_t *ev = static_cast<ws::event_t *>(data);
+            _this->on_main_graph_mouse_up(sender, ev);
+
+            return STATUS_OK;
+        }
+
+        void spectrum_analyzer_ui::on_main_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev)
+        {
+            nMainGraphBtn |= (1 << ev->nCode);
+            on_main_graph_mouse_move(sender, ev);
+        }
+
+        void spectrum_analyzer_ui::on_main_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev)
+        {
+            nMainGraphBtn &= ~(1 << ev->nCode);
+        }
+
+        void spectrum_analyzer_ui::on_main_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev)
+        {
+            if ((wMainGraph == NULL) || (nXAxisIndex < 0))
+                return;
+            if (nMainGraphBtn != (1 << ws::MCB_LEFT))
+                return;
+
+            float freq = 0.0f;
+            if (wMainGraph->xy_to_axis(nXAxisIndex, &freq, ev->nLeft, ev->nTop) != STATUS_OK)
+                return;
+
+            lsp_trace("Graph apply: x=%d, y=%d, freq=%.2f", ev->nLeft, ev->nTop, freq);
+
+            // Obtain which port set (left/right/mid/side) should be updated
+            if (pSelector != NULL)
+            {
+                pSelector->set_value(freq);
+                pSelector->notify_all();
+            }
         }
 
     } /* namespace plugui */
