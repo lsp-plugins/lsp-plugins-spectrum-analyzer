@@ -165,6 +165,9 @@ namespace lsp
             { "lvl", "Level", U_GAIN_AMP, R_METER, F_OUT | F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
             MESH("spd", "Spectrum Data", c + 1, spectrum_analyzer::MESH_POINTS)
 
+        #define SA_SGROUP(id) \
+            SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0)
+
         #define SA_CHANNEL(c)   { "chn", "Channel", U_ENUM, R_CONTROL, F_IN, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels },
         #define SA_SKIP(c)
 
@@ -180,7 +183,9 @@ namespace lsp
         {
             SA_INPUT(0, 2),
             SA_INPUT(1, 2),
+            SA_SGROUP(0),
             SA_COMMON(2, SA_CHANNEL),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc", "Spectralizer channel", 0, spectrum_analyzer_x2_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             FBUFFER("fb1", "Spectralizer buffer 1", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
@@ -193,7 +198,10 @@ namespace lsp
             SA_INPUT(1, 4),
             SA_INPUT(2, 4),
             SA_INPUT(3, 4),
+            SA_SGROUP(0),
+            SA_SGROUP(1),
             SA_COMMON(4, SA_CHANNEL),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x4_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             COMBO("spc1", "Spectralizer channel 1", 1, spectrum_analyzer_x4_channels),
@@ -211,7 +219,12 @@ namespace lsp
             SA_INPUT(5, 8),
             SA_INPUT(6, 8),
             SA_INPUT(7, 8),
+            SA_SGROUP(0),
+            SA_SGROUP(1),
+            SA_SGROUP(2),
+            SA_SGROUP(3),
             SA_COMMON(8, SA_CHANNEL),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x8_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             COMBO("spc1", "Spectralizer channel 1", 1, spectrum_analyzer_x8_channels),
@@ -233,7 +246,14 @@ namespace lsp
             SA_INPUT(9, 12),
             SA_INPUT(10, 12),
             SA_INPUT(11, 12),
+            SA_SGROUP(0),
+            SA_SGROUP(1),
+            SA_SGROUP(2),
+            SA_SGROUP(3),
+            SA_SGROUP(4),
+            SA_SGROUP(5),
             SA_COMMON(12, SA_CHANNEL),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x12_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             COMBO("spc1", "Spectralizer channel 1", 1, spectrum_analyzer_x12_channels),
@@ -259,7 +279,16 @@ namespace lsp
             SA_INPUT(13, 16),
             SA_INPUT(14, 16),
             SA_INPUT(15, 16),
+            SA_SGROUP(0),
+            SA_SGROUP(1),
+            SA_SGROUP(2),
+            SA_SGROUP(3),
+            SA_SGROUP(4),
+            SA_SGROUP(5),
+            SA_SGROUP(6),
+            SA_SGROUP(7),
             SA_COMMON(16, SA_CHANNEL),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x16_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             COMBO("spc1", "Spectralizer channel 1", 1, spectrum_analyzer_x16_channels),

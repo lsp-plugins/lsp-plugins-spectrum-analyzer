@@ -341,8 +341,9 @@
 
 		<!-- Channel for metering configuration -->
 		<group text="groups.channels" visibility="(:mode ieq 0) or (:mode ieq 2)" vspacing="4" bg.color="bg" ipadding="0">
-			<grid rows="5" cols="33" transpose="true" hspacing="2">
+			<grid rows="6" cols="33" transpose="true" hspacing="2">
 				<ui:with padding="6" bg.color="bg_schema">
+					<void />
 					<label text="labels.specials.num" />
 					<label text="labels.chan.on" />
 					<label text="labels.chan.solo_hold" />
@@ -350,10 +351,29 @@
 					<label text="labels.chan.:db" />
 				</ui:with>
 
-				<ui:for id="i" first="0" last="15">
-					<cell rows="5" cols="1" expand="false" padding="0" bg.color="bg">
+				<ui:for id="i" first="0" count="16">
+					<cell rows="${6 - (:i % 2)}" cols="1" expand="false" padding="0" bg.color="bg">
 						<vsep/>
 					</cell>
+					
+					<ui:if test=":i % 2 ieq 0">
+						<cell cols="3">
+							<button
+							 	bg.color="bg_schema"
+								ui:inject="Button_Cycle"
+								text="labels.chan.mid_side"
+								id="ms_${:i idiv 2}"
+								width="37"
+								height="10"
+								down.color.hue=":hue_${i}"
+								down.hover.color.hue=":hue_${i}"
+								text.down.color.hue=":hue_${i}"
+								text.down.hover.color.hue=":hue_${i}"
+								border.down.color.hue=":hue_${i}"
+								border.down.hover.color.hue=":hue_${i}"/>
+						</cell>
+					</ui:if>
+					
 					<ui:with bg.color="bg_schema">
 						<label text="labels.specials.idx" text:id="${i}"/>
 						<button
@@ -451,6 +471,7 @@
 							<vbox>
 								<label text="labels.channel" visibility=":mode ieq 4" pad.b="4"/>
 								<label text="labels.channels" visibility=":mode band 1" pad.b="4"/>
+								<button ui:inject="Button_Cycle" id="ms" text="labels.chan.mid_side" />
 								<hbox spacing="4">
 									<combo id="spc0" fill="true" visibility="(:mode ine 0) and (:mode ine 2)"/>
 									<combo id="spc1" fill="true" visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)"/>

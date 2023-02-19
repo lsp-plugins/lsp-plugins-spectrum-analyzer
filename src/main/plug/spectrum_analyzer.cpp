@@ -32,6 +32,7 @@
 #include <lsp-plug.in/shared/id_colors.h>
 
 #define TRACE_PORT(p)       lsp_trace("  port id=%s", (p)->metadata()->id);
+#define BUFFER_SIZE         0x1000u
 
 namespace lsp
 {
@@ -78,6 +79,7 @@ namespace lsp
             fZoom           = 0.0f;
             enMode          = SA_ANALYZER;
             bLogScale       = false;
+            bMSSwitch       = false;
 
             pBypass         = NULL;
             pMode           = NULL;
@@ -93,6 +95,7 @@ namespace lsp
             pLevel          = NULL;
             pLogScale       = NULL;
             pFftData        = NULL;
+            pMSSwitch       = NULL;
 
             pFreeze         = NULL;
             pSpp            = NULL;
@@ -124,12 +127,14 @@ namespace lsp
             size_t mfreq_buf_size   = align_size(sizeof(float) * meta::spectrum_analyzer::MESH_POINTS, 64);
             size_t ind_buf_size     = align_size(sizeof(uint32_t) * meta::spectrum_analyzer::MESH_POINTS, 64);
             size_t analyze_size     = align_size(sizeof(float *) * channels, 16);
-            size_t alloc            = hdr_size + freq_buf_size + mfreq_buf_size + ind_buf_size + analyze_size;
+            size_t buffers          = BUFFER_SIZE * sizeof(float) * channels;
+            size_t alloc            = hdr_size + freq_buf_size + mfreq_buf_size + ind_buf_size + analyze_size + buffers;
 
             lsp_trace("header_size      = %d", int(hdr_size));
             lsp_trace("freq_buf_size    = %d", int(freq_buf_size));
             lsp_trace("mfreq_buf_size   = %d", int(mfreq_buf_size));
             lsp_trace("ind_buf_size     = %d", int(ind_buf_size));
+            lsp_trace("buffers          = %d", int(buffers));
             lsp_trace("alloc            = %d", int(alloc));
 
             // Allocate data
@@ -178,20 +183,28 @@ namespace lsp
 
                 // Initialize fields
                 c->bOn              = false;
+                c->bFreeze          = false;
                 c->bSolo            = false;
                 c->bSend            = false;
+                c->bMSSwitch        = false;
                 c->fGain            = 1.0f;
                 c->fHue             = 0.0f;
                 c->vIn              = NULL;
                 c->vOut             = NULL;
+                c->vBuffer          = reinterpret_cast<float *>(ptr);
+                ptr                += BUFFER_SIZE * sizeof(float);
 
                 // Port references
                 c->pIn              = NULL;
                 c->pOut             = NULL;
+                c->pMSSwitch        = NULL;
                 c->pOn              = NULL;
                 c->pFreeze          = NULL;
                 c->pHue             = NULL;
                 c->pShift           = NULL;
+
+                // Clear the buffer
+                dsp::fill_zero(c->vBuffer, BUFFER_SIZE);
             }
 
             lsp_assert(ptr <= &guard[alloc]);
@@ -263,6 +276,19 @@ namespace lsp
                 lsp_trace("channel %d successful bound", int(i));
             }
 
+            // Bind mid/side switches
+            if (nChannels >= 0)
+            {
+                for (size_t i=0; i<nChannels; i += 2)
+                {
+                    sa_channel_t *l     = &vChannels[i];
+                    sa_channel_t *r     = &vChannels[i+1];
+
+                    l->pMSSwitch        = ports[port_id++];
+                    r->pMSSwitch        = l->pMSSwitch;
+                }
+            }
+
             // Initialize basic ports
             pBypass         = ports[port_id++];
             pMode           = ports[port_id++];
@@ -283,8 +309,11 @@ namespace lsp
             pFftData        = ports[port_id++];
 
             // Bind spectralizer ports
-            if (nChannels > 1)
+            if (nChannels >= 2)
+            {
+                pMSSwitch           = ports[port_id++];
                 vSpc[0].pPortId     = ports[port_id++];
+            }
             vSpc[0].pFBuffer    = ports[port_id++];
             vSpc[0].nChannelId  = -1;
 
@@ -385,10 +414,12 @@ namespace lsp
                 c->bFreeze          = (freeze_all) || (c->pFreeze->value() >= 0.5f);
                 c->bSolo            = c->pSolo->value() >= 0.5f;
                 c->bSend            = (c->bOn) && ((has_solo == 0) || ((has_solo > 0) && (c->bSolo)));
+                c->bMSSwitch        = (c->pMSSwitch != NULL) ? c->pMSSwitch->value() >= 0.5f : false;
                 c->fGain            = c->pShift->value();
                 c->fHue             = c->pHue->value();
             }
 
+            bMSSwitch               = false;
             vSpc[0].nChannelId      = -1;
             vSpc[1].nChannelId      = -1;
         }
@@ -411,10 +442,14 @@ namespace lsp
                 c->bFreeze          = (freeze_all) || (c->pFreeze->value() >= 0.5f);
                 c->bSolo            = false;
                 c->bSend            = c->bOn;
+                c->bMSSwitch        = false;
                 c->fGain            = c->pShift->value();
                 c->fHue             = c->pHue->value();
             }
 
+            bMSSwitch               = (pMSSwitch != NULL) ? pMSSwitch->value() >= 0.5f : false;
+            vSpc[0].nPortId         = ch1;
+            vSpc[1].nPortId         = ch2;
             vSpc[0].nChannelId      = -1;
             vSpc[1].nChannelId      = -1;
         }
@@ -437,10 +472,14 @@ namespace lsp
                 c->bFreeze          = (freeze_all) || (c->pFreeze->value() >= 0.5f);
                 c->bSolo            = false;
                 c->bSend            = false; // We do not need to send mesh data because utilizing framebuffer ports
+                c->bMSSwitch        = false;
                 c->fGain            = c->pShift->value();
                 c->fHue             = c->pHue->value();
             }
 
+            bMSSwitch               = (pMSSwitch != NULL) ? pMSSwitch->value() >= 0.5f : false;
+            vSpc[0].nPortId         = ch1;
+            vSpc[1].nPortId         = ch2;
             vSpc[0].nChannelId      = ch1;
             vSpc[1].nChannelId      = ch2;
         }
@@ -485,7 +524,7 @@ namespace lsp
 
                 case SA_SPECTRALIZER:
                     if (nChannels > 2)
-                        update_spectralizer_x2_settings(vSpc[0].pPortId->value(), vSpc[1].pPortId->value());
+                        update_spectralizer_x2_settings(vSpc[0].pPortId->value(), -1);
                     else if (nChannels == 2)
                         update_spectralizer_x2_settings(vSpc[0].pPortId->value(), -1);
                     else
@@ -607,6 +646,62 @@ namespace lsp
             }
         }
 
+        void spectrum_analyzer::prepare_buffers(size_t count)
+        {
+            if (nChannels > 1)
+            {
+                if (!bMSSwitch)
+                {
+                    for (size_t i=0; i<nChannels; i += 2)
+                    {
+                        sa_channel_t *l     = &vChannels[i];
+                        sa_channel_t *r     = &vChannels[i + 1];
+
+                        if ((l->bMSSwitch) || (r->bMSSwitch))
+                        {
+                            dsp::lr_to_ms(l->vBuffer, r->vBuffer, l->vIn, r->vIn, count);
+                            vAnalyze[i]         = l->vBuffer;
+                            vAnalyze[i+1]       = r->vBuffer;
+                        }
+                        else
+                        {
+                            vAnalyze[i]     = l->vIn;
+                            vAnalyze[i+1]   = r->vIn;
+                        }
+                    }
+                }
+                else
+                {
+                    // Copy pointers to all buffers as is
+                    for (size_t i=0; i<nChannels; ++i)
+                        vAnalyze[i]         = vChannels[i].vIn;
+
+                    // Special case: do MS convert for two (or one) channels
+                    ssize_t l_id        = vSpc[0].nPortId;
+                    ssize_t r_id        = vSpc[1].nPortId;
+                    if (r_id < 0)
+                        r_id                = l_id;
+
+                    sa_channel_t *l     = &vChannels[l_id];
+                    sa_channel_t *r     = &vChannels[r_id];
+
+                    if (l_id != r_id)
+                    {
+                        dsp::lr_to_ms(l->vBuffer, r->vBuffer, l->vIn, r->vIn, count);
+                        vAnalyze[l_id]      = l->vBuffer;
+                        vAnalyze[r_id]      = r->vBuffer;
+                    }
+                    else
+                    {
+                        dsp::lr_to_mid(l->vBuffer, l->vIn, r->vIn, count);
+                        vAnalyze[l_id]      = l->vBuffer;
+                    }
+                }
+            }
+            else
+                vAnalyze[0]     = vChannels[0].vIn;
+        }
+
         void spectrum_analyzer::process(size_t samples)
         {
             // Always query for drawing
@@ -635,7 +730,7 @@ namespace lsp
             for (size_t n=samples; n > 0;)
             {
                 // Get number of samples to process
-                size_t count = lsp_min(sCounter.pending(), n);
+                size_t count = lsp_min(sCounter.pending(), n, BUFFER_SIZE);
                 bool fired = sCounter.submit(count);
 
                 // Always bypass signal
@@ -658,8 +753,7 @@ namespace lsp
                 else
                 {
                     // Prepare analysis data
-                    for (size_t i=0; i<nChannels; ++i)
-                        vAnalyze[i]     = vChannels[i].vIn;
+                    prepare_buffers(count);
 
                     // Perform analysis
                     sAnalyzer.process(vAnalyze, count);
@@ -858,6 +952,7 @@ namespace lsp
                         v->write("bFreeze", c->bFreeze);
                         v->write("bSolo", c->bSolo);
                         v->write("bSend", c->bSend);
+                        v->write("bMSSwitch", c->bMSSwitch);
                         v->write("fGain", c->fGain);
                         v->write("fHue", c->fHue);
                         v->write("vIn", c->vIn);
@@ -865,6 +960,7 @@ namespace lsp
 
                         v->write("pIn", c->pIn);
                         v->write("pOut", c->pOut);
+                        v->write("pMSSwitch", c->pMSSwitch);
                         v->write("pOn", c->pOn);
                         v->write("pSolo", c->pSolo);
                         v->write("pFreeze", c->pFreeze);
@@ -908,6 +1004,7 @@ namespace lsp
             v->write("pLevel", pLevel);
             v->write("pLogScale", pLogScale);
             v->write("pFftData", pFftData);
+            v->write("pMSSwitch", pMSSwitch);
 
             v->write("pFreeze", pFreeze);
             v->write("pSpp", pSpp);
