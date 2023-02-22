@@ -414,9 +414,7 @@
 					<ui:if test=":i % 2 ieq 0">
 						<cell cols="3" pad.h="6" pad.v="4" bg.color="bg_schema">
 							<button bg.color="bg_schema" text="labels.chan.mid_side"
-								id="ms_${:i idiv 2}" height="19" hfill="true"
-								bright="(:on_${i}) and (:on_${:i+1}) ? 1.0 : 0.75"
-								bg.bright="(:on_${i}) and (:on_${:i+1}) ? 1.0 : :const_bg_darken" />
+								id="ms_${:i idiv 2}" height="19" hfill="true" />
 						</cell>
 						<cell cols="3">
 							<hsep hfill="true" vreduce="true" pad.v="2" />
@@ -508,7 +506,7 @@
 									pad.b="4" />
 								<button bg.color="bg_schema" text="labels.chan.mid_side"
 									id="ms" height="19" hfill="true" pad.b="8"
-									visibility="(:mode ieq 1) or (:mode ieq 3)" />
+									visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)" />
 								<hbox spacing="4">
 									<combo id="spc0" fill="true"
 										visibility="(:mode ine 0) and (:mode ine 2)" />
