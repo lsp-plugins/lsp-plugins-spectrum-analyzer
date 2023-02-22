@@ -50,6 +50,7 @@ namespace lsp
                 ui::IPort                  *pSelector;          // Selector frequency
                 ui::IPort                  *pSelChannel;        // Selected channel
                 ui::IPort                  *pFftFreq;           // Actual FFT frequency
+                ui::IPort                  *pLevel;             // Actual level
                 lltl::darray<channel_t>     vChannels;
 
             protected:

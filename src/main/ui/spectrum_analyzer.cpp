@@ -79,6 +79,7 @@ namespace lsp
             pSelector       = NULL;
             pSelChannel     = NULL;
             pFftFreq        = NULL;
+            pLevel          = NULL;
         }
 
         spectrum_analyzer_ui::~spectrum_analyzer_ui()
@@ -119,6 +120,10 @@ namespace lsp
             if (pFftFreq != NULL)
                 pFftFreq->bind(this);
 
+            pLevel = pWrapper->port("lvl");
+            if (pLevel != NULL)
+                pLevel->bind(this);
+
             // Initialize channels
             for (size_t i=0; i<nChannels; ++i)
             {
@@ -148,13 +153,19 @@ namespace lsp
 
         void spectrum_analyzer_ui::notify(ui::IPort *port)
         {
-            if ((pSelector == port) || (pSelChannel == port) || (pFftFreq == port))
+            if ((pSelector == port) ||
+                (pSelChannel == port) ||
+                (pFftFreq == port) ||
+                (pLevel == port))
                 update_selector_text();
         }
 
         void spectrum_analyzer_ui::update_selector_text()
         {
-            if ((pSelChannel == NULL) || (pSelector == NULL) || (pFftFreq == NULL))
+            if ((pSelChannel == NULL) ||
+                (pSelector == NULL) ||
+                (pFftFreq == NULL) ||
+                (pLevel == NULL))
                 return;
 
             // Get the channel to process
@@ -165,6 +176,7 @@ namespace lsp
 
             float freq = pSelector->value();
             float fft_freq = pFftFreq->value();
+            float level = pLevel->value();
 
             // Updatee the note name displayed in the text
             // Fill the parameters
@@ -180,6 +192,10 @@ namespace lsp
             // FFT Frequency
             text.fmt_ascii("%.2f", fft_freq);
             params.set_string("fft_frequency", &text);
+
+            // Gain Level
+            params.set_float("level", level);
+            params.set_float("level_db", dspu::gain_to_db(level));
 
             // Note
             float note_full = dspu::frequency_to_note(freq);
