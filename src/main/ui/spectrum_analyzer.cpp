@@ -173,6 +173,8 @@ namespace lsp
             channel_t *ch = vChannels.get(ch_idx);
             if (ch == NULL)
                 return;
+            if (ch->wFrequency == NULL)
+                return;
 
             float freq = pSelector->value();
             float fft_freq = pFftFreq->value();
