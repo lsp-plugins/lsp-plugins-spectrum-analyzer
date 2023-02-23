@@ -277,7 +277,7 @@ namespace lsp
             }
 
             // Bind mid/side switches
-            if (nChannels >= 0)
+            if (nChannels > 1)
             {
                 for (size_t i=0; i<nChannels; i += 2)
                 {

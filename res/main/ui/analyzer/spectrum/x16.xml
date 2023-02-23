@@ -79,9 +79,6 @@
 								color.hue=":hue_${i}" hcolor.hue=":hue_${i}" pointer="hsize"
 								visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))"
 								editable="true" />
-							<!-- marker id="lvl" ox="1" oy="0" width="2" color="graph_marker_cycle" 
-								color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) 
-								and (:chn ieq ${i})))"/ -->
 						</ui:for>
 
 						<!-- Text -->

@@ -162,14 +162,13 @@ namespace lsp
 
         void spectrum_analyzer_ui::update_selector_text()
         {
-            if ((pSelChannel == NULL) ||
-                (pSelector == NULL) ||
+            if ((pSelector == NULL) ||
                 (pFftFreq == NULL) ||
                 (pLevel == NULL))
                 return;
 
             // Get the channel to process
-            ssize_t ch_idx = pSelChannel->value();
+            ssize_t ch_idx = (pSelChannel != NULL) ? pSelChannel->value() : 0;
             channel_t *ch = vChannels.get(ch_idx);
             if (ch == NULL)
                 return;
