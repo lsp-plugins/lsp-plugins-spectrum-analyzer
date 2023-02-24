@@ -432,7 +432,7 @@
 						<hbox hfill="true" spacing="4" pad.b="14">
 							<button ui:inject="Button_green_8" id="solo_${i}"
 								text="labels.chan.S_olo" height="10" hfill="true" pad.l="6" />
-							<button ui:inject="Button_red_8" id="frz_${i}"
+							<button ui:inject="Button_cyan_8" id="frz_${i}"
 								text="labels.chan.H_old" height="10" hfill="true" pad.r="6" />
 						</hbox>
 						<knob id="sh_${i}"
