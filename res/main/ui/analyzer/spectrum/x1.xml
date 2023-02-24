@@ -20,13 +20,13 @@
 						<!-- Secondary grid -->
 						<ui:with color="graph_sec">
 							<ui:for id="f" first="20" last="90" step="10">
-								<marker v="${:f}" />
-								<marker v="${:f * 10}" />
-								<marker v="${:f * 100}" />
+								<marker v="${:f}"/>
+								<marker v="${:f * 10}"/>
+								<marker v="${:f * 100}"/>
 							</ui:for>
-							<marker v="20000" />
+							<marker v="20000"/>
 							<ui:for id="g" first="-60" last="12" step="24">
-								<marker v="${g} db" ox="1" oy="0" />
+								<marker v="${g} db" ox="1" oy="0"/>
 							</ui:for>
 
 							<ui:for id="t" first="-42" last="-6" step="12">
@@ -39,13 +39,13 @@
 
 						<!-- Primary Grid -->
 						<ui:with color="graph_prim">
-							<marker v="100" />
-							<marker v="1000" />
-							<marker v="10000" />
+							<marker v="100"/>
+							<marker v="1000"/>
+							<marker v="10000"/>
 
-							<marker v="0 db" ox="1" oy="0" />
-							<marker v="-24 db" ox="1" oy="0" />
-							<marker v="-48 db" ox="1" oy="0" />
+							<marker v="0 db" ox="1" oy="0"/>
+							<marker v="-24 db" ox="1" oy="0"/>
+							<marker v="-48 db" ox="1" oy="0"/>
 
 							<marker v="1" ox="2" oy="0" visibility="false"/>
 							<marker v="24000" visibility="false"/>
@@ -64,25 +64,25 @@
 
 						<!-- Text -->
 						<ui:with ox="0" oy="2" y="0" halign="1" valign="1">
-						  <text x="10" text="graph.units.hz"/>
-						  <text x="20" text="20"/>
-						  <text x="30" text="30"/>
-						  <text x="50" text="50"/>
-						  <text x="100" text="100"/>
-						  <text x="200" text="200"/>
-						  <text x="300" text="300"/>
-						  <text x="500" text="500"/>
-						  <text x="1000" text="graph.values.x_k" text:value="1"/>
-						  <text x="2000" text="graph.values.x_k" text:value="2"/>
-						  <text x="3000" text="graph.values.x_k" text:value="3"/>
-						  <text x="5000" text="graph.values.x_k" text:value="5"/>
-						  <text x="10000" text="graph.values.x_k" text:value="10"/>
-						  <text x="20000" text="graph.values.x_k" text:value="20"/>
+							<text x="10" text="graph.units.hz"/>
+							<text x="20" text="20"/>
+							<text x="30" text="30"/>
+							<text x="50" text="50"/>
+							<text x="100" text="100"/>
+							<text x="200" text="200"/>
+							<text x="300" text="300"/>
+							<text x="500" text="500"/>
+							<text x="1000" text="graph.values.x_k" text:value="1"/>
+							<text x="2000" text="graph.values.x_k" text:value="2"/>
+							<text x="3000" text="graph.values.x_k" text:value="3"/>
+							<text x="5000" text="graph.values.x_k" text:value="5"/>
+							<text x="10000" text="graph.values.x_k" text:value="10"/>
+							<text x="20000" text="graph.values.x_k" text:value="20"/>
 						</ui:with>
 						<ui:for id="t" first="-60" last="12" step="12">
-							<text x="10" y="${t} db" text="${t}" halign="1" valign="1" />
+							<text x="10" y="${t} db" text="${t}" halign="1" valign="1"/>
 						</ui:for>
-						<text x="10" y="1" ox="0" oy="2" text="graph.units.db" halign="1" valign="-1" />
+						<text x="10" y="1" ox="0" oy="2" text="graph.units.db" halign="1" valign="-1"/>
 						<ui:with x="10" halign="1" valign="1" visibility=":zoom le -18 db">
 							<text y="-42 db" text="-42"/>
 							<text y="-30 db" text="-30"/>
@@ -95,17 +95,9 @@
 							<text y="-21 db" text="-21"/>
 							<text y="-15 db" text="-33"/>
 						</ui:with>
-						
+
 						<!-- Selector text -->
-						<text ui:id="selector_freq_0" x=":sel"
-							color="graph_marker_mono"
-							visibility="((:mode ieq 0) or (:mode ieq 1))"
-							halign="(:sel lt 500) ? 1 : -1"
-							text.halign="(:sel lt 500) ? -1 : 1" 
-							ox="0" oy="2" y="1" 
-							valign="-1"
-							pad.h="4"
-							font.bold="true"/>								
+						<text ui:id="selector_freq_0" x=":sel" color="graph_marker_mono" visibility="((:mode ieq 0) or (:mode ieq 1))" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1" ox="0" oy="2" y="1" valign="-1" pad.h="4" font.bold="true"/>
 					</graph>
 				</group>
 
@@ -117,23 +109,23 @@
 						<!-- Secondary grid -->
 						<ui:with color="graph_sec">
 							<ui:for id="f" first="20" last="90" step="10">
-								<marker v="${:f}" />
-								<marker v="${:f * 10}" />
-								<marker v="${:f * 100}" />
+								<marker v="${:f}"/>
+								<marker v="${:f * 10}"/>
+								<marker v="${:f * 100}"/>
 							</ui:for>
 							<marker v="20000" color="graph_sec"/>
 							<ui:for id="t" first="1" last="7" step="2">
-								<marker v="${t}" ox="1" oy="0" />
+								<marker v="${t}" ox="1" oy="0"/>
 							</ui:for>
 						</ui:with>
 
 						<!-- Primary grid -->
 						<ui:with color="graph_prim">
-							<marker v="100" />
-							<marker v="1000" />
-							<marker v="10000" />
+							<marker v="100"/>
+							<marker v="1000"/>
+							<marker v="10000"/>
 							<ui:for id="t" first="2" last="6" step="2">
-								<marker v="${t}" ox="1" oy="0" />
+								<marker v="${t}" ox="1" oy="0"/>
 							</ui:for>
 							<marker v="8" ox="1" oy="0" visibility="false"/>
 							<marker v="24000" ox="0" oy="1" visibility="false"/>
@@ -147,14 +139,14 @@
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
 
 						<!-- Text -->
-						<ui:with y="8" halign="1" valign="1" >
+						<ui:with y="8" halign="1" valign="1">
 							<text x="10" text="graph.units.hz"/>
 							<text x="100" text="100" halign="1"/>
 							<text x="1000" text="graph.values.1k"/>
 							<text x="10000" text="graph.values.10k"/>
-							<text x="10" y="0" text="graph.axis.time" valign="-1" />
+							<text x="10" y="0" text="graph.axis.time" valign="-1"/>
 							<ui:for id="t" first="1" last="7">
-								<text x="10" y="${t}" text="${t}" />
+								<text x="10" y="${t}" text="${t}"/>
 							</ui:for>
 						</ui:with>
 					</graph>
@@ -235,7 +227,7 @@
 						</cell>
 
 						<vbox padding="6">
-							<button ui:inject="Button_mono" id="frz_0" text="labels.chan.hold" size="16" width="60"/>
+							<button ui:inject="Button_cyan" id="frz_0" text="labels.chan.hold" size="16" width="60"/>
 						</vbox>
 
 						<cell expand="false" bg.color="bg" visibility=":mode ige 2">
@@ -265,8 +257,8 @@
 							<hsep/>
 						</cell>
 
-						<vbox visibility=":mode ile 1" padding="6">
-							<label text="labels.metering.frequency:hz" pad.b="6"/>
+						<vbox visibility=":mode ile 1" padding="6" vfill="false">
+							<label text="labels.metering.fft_frequency:hz" pad.b="6"/>
 							<indicator id="freq" format="f6.1!" tcolor="mono"/>
 						</vbox>
 
@@ -274,7 +266,7 @@
 							<hsep/>
 						</cell>
 
-						<vbox visibility=":mode ile 1" padding="6">
+						<vbox visibility=":mode ile 1" padding="6" vfill="false">
 							<label text="labels.metering.level:db" pad.b="6"/>
 							<indicator id="lvl" format="+-f5.1!" tcolor="mono"/>
 						</vbox>
