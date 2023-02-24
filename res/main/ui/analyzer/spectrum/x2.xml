@@ -393,7 +393,7 @@
 			<!-- Spectralizer (1 channel) -->
 			<vbox fill="true" vexpand="true" spacing="4" visibility=":mode ige 2">
 				<group text="groups.metering" vexpand="true" bg.color="bg" ipadding="0">
-					<grid rows="4" cols="1" expand="true" vspacing="4">
+					<grid rows="3" cols="1" expand="true" vspacing="4">
 						<cell>
 							<vbox bg.color="bg_schema" padding="6">
 								<label text="labels.metering.preamp" pad.b="6"/>
@@ -416,13 +416,10 @@
 								<combo id="chn" width="48"/>
 							</vbox>
 						</cell>
-												<cell visibility=":mode ieq 3">
-						<button bg.color="bg_schema" text="labels.chan.mid_side"
-							id="ms" height="19" hfill="true" pad.v="4" pad.h="6"/>
-							</cell>
 					</grid>
 				</group>
-
+				<button bg.color="bg_schema" text="labels.chan.mid_side"
+					id="ms" height="19" hfill="true" pad.v="4" pad.h="6" visibility=":mode ieq 3"/>
 				<group text="groups.channels" vexpand="true" bg.color="bg" ipadding="0">
 					<grid rows="3" cols="3" hfill="false" spacing="2">
 						<ui:with bg.color="bg_schema">
