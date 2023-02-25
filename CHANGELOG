@@ -3,6 +3,9 @@
 *******************************************************************************
 
 === 1.0.14 ===
+* Added support of Mid/Side analysis for Spectrum analyzer.
+* x2 and above version of Spectrum Analyzer now enable analysis for first two
+  channels by default.
 * Updated build scripts and dependencies.
 
 === 1.0.13 ===
