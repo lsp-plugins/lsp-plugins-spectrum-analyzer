@@ -307,6 +307,16 @@ namespace lsp
             if (nMainGraphBtn != (1 << ws::MCB_LEFT))
                 return;
 
+            // Check that channel is enabled
+            LSPString port_id;
+            ssize_t channel = (pSelChannel != NULL) ? pSelChannel->value() : 0;
+            port_id.fmt_ascii("on_%d", int(channel));
+            ui::IPort *channel_on = pWrapper->port(&port_id);
+            bool channel_enabled = (channel_on != NULL) ? channel_on->value() >= 0.5f : true;
+            if (!channel_enabled)
+                return;
+
+            // Translate coordinates
             float freq = 0.0f;
             if (wMainGraph->xy_to_axis(nXAxisIndex, &freq, ev->nLeft, ev->nTop) != STATUS_OK)
                 return;
