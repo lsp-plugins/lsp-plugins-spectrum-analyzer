@@ -21,8 +21,14 @@
 	<?php } ?>
 	It does not affect any changes to the input signal, so can be placed anywhere where the metering is needed.
 </p>
+<?php if ($nc > 1) {?>
+<p>
+	Additional feature of Mid/Side analysis allows to transform stereo input pairs into Mid/Side and perform spectral
+	analysis of Mid and Side parts instead of Left and Right ones.
+</p>
+<?php }?>
 
-<p><b>Controls:</b></p>
+<p><b>Common controls:</b></p>
 <ul>
 	<li><b>Bypass</b> - bypass switch, when turned on (led indicator is shining), the plugin does not work.</li>
 	<li><b>Mode</b> - depending on operating modes, different analysis can be performed:</li>
@@ -51,18 +57,23 @@
 	</ul>
     <?php if ($nc > 1) {?>
 		<li><b>Channel(s)</b> - numbers of channels currently displayed on the graph.</li>
+		<li><b>Mid/Side</b> - allows to switch selected channels from stereo analysis to the Mid/Side analysis.</li>
 	<?php } ?>
 	<li><b>Log scale</b> - the way how dots on the spectrogram are rendered. When button is down, logarithmic scale is used to translate amplitude into dot's color.</li>
+</ul>
+
+<p><b>Channel controls:</b></p>
+<ul>
 	<li><b>On</b> - turns on the analysis of the channel.</li>
 	<?php if ($nc > 1) { ?>
 	<li><b>Solo</b> - allows to individually inspect the corresponding channel.</li>
 	<?php } ?>
 	<li><b>Hold</b> - forces the frequency graph of the channel to freeze.</li>
-	<li><b>Hue</b> - allows to adjust the color (hue) of the channel.</li>
 	<li><b>Shift</b> - allows to adjust the gain of the channel.</li>
 	<li><b>Preamp</b> - allows to adjust the overall gain of the analysis.</li>
 	<?php if ($nc > 1) { ?>
 	<li><b>Channel</b> - allows to select the channel for level metering.</li>
+	<li><b>Mid/Side</b> - allows to switch the channel pair (which consists of two near subsequent channels) to the Mid/Side analysis mode.</li>
 	<?php } ?>
 	<li><b>Selector</b> - allows to select the available frequency for level metering.</li>
 	<li><b>Reactivity</b> - the reactivity (smoothness) of the spectral analysis.</li>

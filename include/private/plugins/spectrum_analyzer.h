@@ -42,14 +42,17 @@ namespace lsp
                     bool            bFreeze;            // Freeze flag
                     bool            bSolo;              // Soloing flag
                     bool            bSend;              // Send to UI flag
+                    bool            bMSSwitch;          // Mid/side switch
                     float           fGain;              // Makeup gain
                     float           fHue;               // Hue
                     float          *vIn;                // Input buffer pointer
                     float          *vOut;               // Output buffer pointer
+                    float          *vBuffer;            // Temporary buffer
 
                     // Port references
                     plug::IPort    *pIn;                // Input samples
                     plug::IPort    *pOut;               // Output samples
+                    plug::IPort    *pMSSwitch;          // Mid/Side switch
                     plug::IPort    *pOn;                // FFT on
                     plug::IPort    *pSolo;              // Soloing flag
                     plug::IPort    *pFreeze;            // Freeze flag
@@ -59,7 +62,7 @@ namespace lsp
 
                 typedef struct sa_spectralizer_t
                 {
-                    size_t          nPortId;            // Last port identifier
+                    ssize_t         nPortId;            // Last port identifier
                     ssize_t         nChannelId;         // Channel identifier
 
                     plug::IPort    *pPortId;            // Port identifier
@@ -110,6 +113,7 @@ namespace lsp
                 float               fZoom;              // Zoom
                 mode_t              enMode;
                 bool                bLogScale;
+                bool                bMSSwitch;          // Mid/Side switch for stereo mode
 
                 plug::IPort        *pBypass;
                 plug::IPort        *pMode;
@@ -125,6 +129,7 @@ namespace lsp
                 plug::IPort        *pLevel;
                 plug::IPort        *pLogScale;
                 plug::IPort        *pFftData;
+                plug::IPort        *pMSSwitch;
 
                 plug::IPort        *pFreeze;
                 plug::IPort        *pSpp;
@@ -140,6 +145,7 @@ namespace lsp
                 void                process_multiple();
                 void                process_spectralizer();
                 void                get_spectrum(float *dst, size_t channel, size_t flags);
+                void                prepare_buffers(size_t count);
 
             public:
                 explicit spectrum_analyzer(const meta::plugin_t *metadata);
@@ -157,8 +163,9 @@ namespace lsp
 
                 virtual void        dump(dspu::IStateDumper *v) const;
         };
-    }
-}
+
+    } /* namespace plugins */
+} /* namespace lsp */
 
 
 #endif /* PRIVATE_PLUGINS_SPECTRUM_ANALYZER_H_ */
