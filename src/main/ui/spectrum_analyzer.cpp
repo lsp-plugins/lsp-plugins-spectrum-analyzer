@@ -74,10 +74,12 @@ namespace lsp
                 nChannels   = 1;
 
             wMainGraph      = NULL;
+            wMlValue        = NULL;
             nXAxisIndex     = -1;
             nMainGraphBtn   = 0;
 
             pSelector       = NULL;
+            pMlValue        = NULL;
             pSelChannel     = NULL;
             pFftFreq        = NULL;
             pLevel          = NULL;
@@ -113,6 +115,10 @@ namespace lsp
             if (pSelector != NULL)
                 pSelector->bind(this);
 
+            pMlValue   = pWrapper->port("mlval");
+            if (pMlValue != NULL)
+                pMlValue->bind(this);
+
             pSelChannel = pWrapper->port("chn");
             if (pSelChannel != NULL)
                 pSelChannel->bind(this);
@@ -146,8 +152,12 @@ namespace lsp
                 nXAxisIndex         = find_axis(wMainGraph, "main_graph_ox");
             }
 
-            // Update selector text after init
+            // Bind horizontal line
+            wMlValue            = pWrapper->controller()->widgets()->get<tk::GraphText>("mline_level");
+
+            // Update selector and horizontal line text after init
             update_selector_text();
+            update_mlvalue_text();
 
             return res;
         }
@@ -159,6 +169,22 @@ namespace lsp
                 (pFftFreq == port) ||
                 (pLevel == port))
                 update_selector_text();
+
+            if (pMlValue == port)
+                update_mlvalue_text();
+        }
+
+        void spectrum_analyzer_ui::update_mlvalue_text()
+        {
+            if (pMlValue == NULL || wMlValue == NULL)
+                return;
+
+            float mlvalue = pMlValue->value();
+            LSPString text;
+            text.fmt_ascii("%.1f", dspu::gain_to_db(mlvalue));
+
+            wMlValue->text()->params()->set_string("value", &text);
+            wMlValue->text()->set_key("labels.values.x_db");
         }
 
         void spectrum_analyzer_ui::update_selector_text()
@@ -180,7 +206,7 @@ namespace lsp
             float fft_freq = pFftFreq->value();
             float level = pLevel->value();
 
-            // Updatee the note name displayed in the text
+            // Update the note name displayed in the text
             // Fill the parameters
             expr::Parameters params;
             tk::prop::String snote;

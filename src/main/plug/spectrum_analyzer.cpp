@@ -295,6 +295,7 @@ namespace lsp
             port_id++; // Skip spectralizer mode
             pLogScale       = ports[port_id++];
             pFreeze         = ports[port_id++];
+            port_id++; // Skip horizontal line switch button
             pTolerance      = ports[port_id++];
             pWindow         = ports[port_id++];
             pEnvelope       = ports[port_id++];
@@ -304,6 +305,7 @@ namespace lsp
             if (nChannels > 1)
                 pChannel        = ports[port_id++];
             pSelector       = ports[port_id++];
+            port_id++; // Skip horizontal line value
             pFrequency      = ports[port_id++];
             pLevel          = ports[port_id++];
             pFftData        = ports[port_id++];

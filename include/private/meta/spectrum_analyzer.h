@@ -64,6 +64,11 @@ namespace lsp
             static constexpr float          SELECTOR_MAX        = SPEC_FREQ_MAX;
             static constexpr float          SELECTOR_STEP       = 0.005f;
 
+            static constexpr float          HLINE_MIN           = GAIN_AMP_M_72_DB;
+            static constexpr float          HLINE_DFL           = GAIN_AMP_0_DB;
+            static constexpr float          HLINE_MAX           = GAIN_AMP_P_24_DB;
+            static constexpr float          HLINE_STEP          = 0.005f;
+
             static constexpr float          ZOOM_MIN            = GAIN_AMP_M_36_DB;
             static constexpr float          ZOOM_MAX            = GAIN_AMP_0_DB;
             static constexpr float          ZOOM_DFL            = GAIN_AMP_0_DB;

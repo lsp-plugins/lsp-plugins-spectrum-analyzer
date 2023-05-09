@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.15 ===
+* Added measure button and meter line on graph. 
 * Updated build scripts and dependencies.
 
 === 1.0.14 ===
