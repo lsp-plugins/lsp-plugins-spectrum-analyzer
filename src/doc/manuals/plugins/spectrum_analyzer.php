@@ -61,6 +61,7 @@
 	<?php } ?>
 	<li><b>Measure</b> - Additional button that enables horizontal measuring line.</li>
 	<li><b>Log scale</b> - the way how dots on the spectrogram are rendered. When button is down, logarithmic scale is used to translate amplitude into dot's color.</li>
+	<li><b>Line size</b> - the combo box that allows to change the thickness of the lines on the spectrum graph.</li>
 </ul>
 
 <p><b>Channel controls:</b></p>
