@@ -52,7 +52,7 @@
 						</ui:with>
 
 						<!-- Meshes -->
-						<mesh xi="0" yi="1" id="spd" width="3" color="mono" visibility_id="on_0"/>
+						<mesh xi="0" yi="1" id="spd" width=":lthick+1" color="mono" visibility_id="on_0"/>
 
 						<!-- Axis -->
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" log="true" visibility="false"/>
@@ -185,6 +185,8 @@
 			
 					<void hexpand="true" />
 					<hbox spacing="8">
+						<label text="labels.line_size" visibility=":mode ilt 2"/>
+						<combo id="lthick" visibility=":mode ilt 4" />
 						<button ui:inject="Button_cyan"
 							text="labels.metering.measure_line" id="mline" size="16"
 							visibility=":mode ilt 2" pad.l="15" />

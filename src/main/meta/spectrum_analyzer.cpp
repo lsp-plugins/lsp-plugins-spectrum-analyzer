@@ -55,6 +55,16 @@ namespace lsp
             { NULL, NULL }
         };
 
+        static const port_item_t line_thick_modes[]=
+        {
+            { "Thinnest",       "spectrum.line_thick.thinnest" },
+            { "Thin",           "spectrum.line_thick.thin" },
+            { "Normal",         "spectrum.line_thick.normal" },
+            { "Semibold",       "spectrum.line_thick.semibold" },
+            { "Bold",           "spectrum.line_thick.bold" },
+            { NULL,             NULL }
+        };
+
         static const port_item_t spectrum_analyzer_x1_modes[]=
         {
             { "Analyzer",       "spectrum.analyzer" },
@@ -148,6 +158,7 @@ namespace lsp
         #define SA_COMMON(c, channel) \
             BYPASS, \
             COMBO("mode", "Analyzer mode", 0, spectrum_analyzer_x ## c ## _modes), \
+            COMBO("lthick", "Mesh thickness", 2, line_thick_modes), \
             COMBO("spm", "Spectralizer mode", 1, spectralizer_modes), \
             SWITCH("splog", "Spectralizer logarithmic scale", 1), \
             SWITCH("freeze", "Analyzer freeze", 0), \

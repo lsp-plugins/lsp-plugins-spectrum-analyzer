@@ -1,22 +1,28 @@
 {
-	"spectrum": {
-		"analyzer": "Анализатор",
-		"analyzer_s": "Стереоанализатор",
-		"display": {
-			"full": "{@fft_frequency} Гц\n{@note}{@octave}{@cents}\n{@level_db%+.2f} дБ",
-			"unknown": "{@fft_frequency} Гц"
-		},
-		"mastering": "Мастеринг",
-		"mastering_s": "Стереомастеринг",
-		"spc": {
-			"color": "Цвет",
-			"fog": "Туман",
-			"lightness": "Яркость",
-			"lightning": "Молния",
-			"rainbow": "Радуга"
-		},
-		"spectralizer": "Спектрализатор",
-		"spectralizer_s": "Стереоспектрализатор"
-	}
+  "spectrum" : {
+    "analyzer" : "Анализатор",
+    "analyzer_s" : "Стереоанализатор",
+    "display" : {
+      "full" : "{@fft_frequency} Гц\n{@note}{@octave}{@cents}\n{@level_db%+.2f} дБ",
+      "unknown" : "{@fft_frequency} Гц"
+    },
+    "line_thick" : {
+      "bold" : "Жирный",
+      "normal" : "Нормальный",
+      "semibold" : "Полужирный",
+      "thin" : "Тонкий",
+      "thinnest" : "Тончайший"
+    },
+    "mastering" : "Мастеринг",
+    "mastering_s" : "Стереомастеринг",
+    "spc" : {
+      "color" : "Цвет",
+      "fog" : "Туман",
+      "lightness" : "Яркость",
+      "lightning" : "Молния",
+      "rainbow" : "Радуга"
+    },
+    "spectralizer" : "Спектрализатор",
+    "spectralizer_s" : "Стереоспектрализатор"
+  }
 }
-

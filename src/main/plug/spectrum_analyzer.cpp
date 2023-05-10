@@ -292,6 +292,7 @@ namespace lsp
             // Initialize basic ports
             pBypass         = ports[port_id++];
             pMode           = ports[port_id++];
+            port_id++; // Skip mesh thickness
             port_id++; // Skip spectralizer mode
             pLogScale       = ports[port_id++];
             pFreeze         = ports[port_id++];
