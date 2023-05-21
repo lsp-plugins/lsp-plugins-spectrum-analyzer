@@ -1,22 +1,28 @@
 {
-	"spectrum": {
-		"analyzer": "Analyzer",
-		"analyzer_s": "Analyzer Stereo",
-		"display": {
-			"full": "{@fft_frequency} Hz\n{@note}{@octave}{@cents}\n{@level_db%+.2f} dB",
-			"unknown": "{@fft_frequency} Hz"
-		},
-		"mastering": "Mastering",
-		"mastering_s": "Mastering Stereo",
-		"spc": {
-			"color": "Color",
-			"fog": "Fog",
-			"lightness": "Lightness",
-			"lightning": "Lightning",
-			"rainbow": "Rainbow"
-		},
-		"spectralizer": "Spectralizer",
-		"spectralizer_s": "Spectralizer Stereo"
-	}
+  "spectrum" : {
+    "analyzer" : "Analyzer",
+    "analyzer_s" : "Analyzer Stereo",
+    "display" : {
+      "full" : "{@fft_frequency} Hz\n{@note}{@octave}{@cents}\n{@level_db%+.2f} dB",
+      "unknown" : "{@fft_frequency} Hz"
+    },
+    "line_thick" : {
+      "bold" : "Bold",
+      "normal" : "Normal",
+      "semibold" : "Semibold",
+      "thin" : "Thin",
+      "thinnest" : "Thinnest"
+    },
+    "mastering" : "Mastering",
+    "mastering_s" : "Mastering Stereo",
+    "spc" : {
+      "color" : "Color",
+      "fog" : "Fog",
+      "lightness" : "Lightness",
+      "lightning" : "Lightning",
+      "rainbow" : "Rainbow"
+    },
+    "spectralizer" : "Spectralizer",
+    "spectralizer_s" : "Spectralizer Stereo"
+  }
 }
-
