@@ -162,7 +162,7 @@ namespace lsp
             return res;
         }
 
-        void spectrum_analyzer_ui::notify(ui::IPort *port)
+        void spectrum_analyzer_ui::notify(ui::IPort *port, size_t flags)
         {
             if ((pSelector == port) ||
                 (pSelChannel == port) ||
@@ -353,7 +353,7 @@ namespace lsp
             if (pSelector != NULL)
             {
                 pSelector->set_value(freq);
-                pSelector->notify_all();
+                pSelector->notify_all(ui::PORT_USER_EDIT);
             }
         }
 
