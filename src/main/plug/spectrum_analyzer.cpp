@@ -410,12 +410,15 @@ namespace lsp
         void spectrum_analyzer::update_multiple_settings()
         {
             // Check that there are soloing channels
-            size_t has_solo         = 0;
+            bool has_solo           = false;
             for (size_t i=0; i<nChannels; ++i)
             {
                 sa_channel_t *c     = &vChannels[i];
                 if (c->pSolo->value() >= 0.5f)
-                    has_solo++;
+                {
+                    has_solo            = true;
+                    break;
+                }
             }
 
             // Process channel parameters
@@ -428,7 +431,7 @@ namespace lsp
                 c->bOn              = c->pOn->value() >= 0.5f;
                 c->bFreeze          = (freeze_all) || (c->pFreeze->value() >= 0.5f);
                 c->bSolo            = c->pSolo->value() >= 0.5f;
-                c->bSend            = (c->bOn) && ((has_solo == 0) || ((has_solo > 0) && (c->bSolo)));
+                c->bSend            = (c->bOn) && ((!has_solo) || (c->bSolo));
                 c->bMSSwitch        = (c->pMSSwitch != NULL) ? c->pMSSwitch->value() >= 0.5f : false;
                 c->fGain            = c->pShift->value();
                 c->fHue             = c->pHue->value();
