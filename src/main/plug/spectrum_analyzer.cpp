@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2021 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2021 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -31,13 +31,18 @@
 
 #include <lsp-plug.in/shared/id_colors.h>
 
-#define TRACE_PORT(p)       lsp_trace("  port id=%s", (p)->metadata()->id);
 #define BUFFER_SIZE         0x1000u
 
 namespace lsp
 {
     namespace plugins
     {
+        static plug::IPort *TRACE_PORT(plug::IPort *p)
+        {
+            lsp_trace("  port id=%s", (p)->metadata()->id);
+            return p;
+        }
+
         //---------------------------------------------------------------------
         // Plugin factory
         static const meta::plugin_t *plugins[] =
@@ -113,8 +118,7 @@ namespace lsp
 
         spectrum_analyzer::~spectrum_analyzer()
         {
-            vChannels       = NULL;
-            pIDisplay       = NULL;
+            do_destroy();
         }
 
         bool spectrum_analyzer::create_channels(size_t channels)
@@ -257,13 +261,13 @@ namespace lsp
                     break;
 
                 sa_channel_t *c     = &vChannels[i];
-                c->pIn              = ports[port_id++];
-                c->pOut             = ports[port_id++];
-                c->pOn              = ports[port_id++];
-                c->pSolo            = ports[port_id++];
-                c->pFreeze          = ports[port_id++];
-                c->pHue             = ports[port_id++];
-                c->pShift           = ports[port_id++];
+                c->pIn              = TRACE_PORT(ports[port_id++]);
+                c->pOut             = TRACE_PORT(ports[port_id++]);
+                c->pOn              = TRACE_PORT(ports[port_id++]);
+                c->pSolo            = TRACE_PORT(ports[port_id++]);
+                c->pFreeze          = TRACE_PORT(ports[port_id++]);
+                c->pHue             = TRACE_PORT(ports[port_id++]);
+                c->pShift           = TRACE_PORT(ports[port_id++]);
 
                 // Sync metadata
                 const meta::port_t *meta  = c->pSolo->metadata();
@@ -284,47 +288,47 @@ namespace lsp
                     sa_channel_t *l     = &vChannels[i];
                     sa_channel_t *r     = &vChannels[i+1];
 
-                    l->pMSSwitch        = ports[port_id++];
+                    l->pMSSwitch        = TRACE_PORT(ports[port_id++]);
                     r->pMSSwitch        = l->pMSSwitch;
                 }
             }
 
             // Initialize basic ports
-            pBypass         = ports[port_id++];
-            pMode           = ports[port_id++];
-            port_id++; // Skip mesh thickness
-            port_id++; // Skip spectralizer mode
-            pLogScale       = ports[port_id++];
-            pFreeze         = ports[port_id++];
-            port_id++; // Skip horizontal line switch button
-            pTolerance      = ports[port_id++];
-            pWindow         = ports[port_id++];
-            pEnvelope       = ports[port_id++];
-            pPreamp         = ports[port_id++];
-            pZoom           = ports[port_id++];
-            pReactivity     = ports[port_id++];
+            pBypass         = TRACE_PORT(ports[port_id++]);
+            pMode           = TRACE_PORT(ports[port_id++]);
+            TRACE_PORT(ports[port_id++]); // Skip mesh thickness
+            TRACE_PORT(ports[port_id++]); // Skip spectralizer mode
+            pLogScale       = TRACE_PORT(ports[port_id++]);
+            pFreeze         = TRACE_PORT(ports[port_id++]);
+            TRACE_PORT(ports[port_id++]); // Skip horizontal line switch button
+            pTolerance      = TRACE_PORT(ports[port_id++]);
+            pWindow         = TRACE_PORT(ports[port_id++]);
+            pEnvelope       = TRACE_PORT(ports[port_id++]);
+            pPreamp         = TRACE_PORT(ports[port_id++]);
+            pZoom           = TRACE_PORT(ports[port_id++]);
+            pReactivity     = TRACE_PORT(ports[port_id++]);
             if (nChannels > 1)
-                pChannel        = ports[port_id++];
-            pSelector       = ports[port_id++];
-            port_id++; // Skip horizontal line value
-            pFrequency      = ports[port_id++];
-            pLevel          = ports[port_id++];
-            pFftData        = ports[port_id++];
+                pChannel        = TRACE_PORT(ports[port_id++]);
+            pSelector       = TRACE_PORT(ports[port_id++]);
+            TRACE_PORT(ports[port_id++]); // Skip horizontal line value
+            pFrequency      = TRACE_PORT(ports[port_id++]);
+            pLevel          = TRACE_PORT(ports[port_id++]);
+            pFftData        = TRACE_PORT(ports[port_id++]);
 
             // Bind spectralizer ports
             if (nChannels >= 2)
             {
-                pMSSwitch           = ports[port_id++];
-                vSpc[0].pPortId     = ports[port_id++];
+                pMSSwitch           = TRACE_PORT(ports[port_id++]);
+                vSpc[0].pPortId     = TRACE_PORT(ports[port_id++]);
             }
-            vSpc[0].pFBuffer    = ports[port_id++];
+            vSpc[0].pFBuffer    = TRACE_PORT(ports[port_id++]);
             vSpc[0].nChannelId  = -1;
 
             if (nChannels >= 2)
             {
                 if (nChannels > 2)
-                    vSpc[1].pPortId     = ports[port_id++];
-                vSpc[1].pFBuffer    = ports[port_id++];
+                    vSpc[1].pPortId     = TRACE_PORT(ports[port_id++]);
+                vSpc[1].pFBuffer    = TRACE_PORT(ports[port_id++]);
                 vSpc[1].nChannelId  = -1;
             }
 
@@ -336,6 +340,12 @@ namespace lsp
         }
 
         void spectrum_analyzer::destroy()
+        {
+            plug::Module::destroy();
+            do_destroy();
+        }
+
+        void spectrum_analyzer::do_destroy()
         {
             sAnalyzer.destroy();
 
@@ -352,6 +362,8 @@ namespace lsp
                 pIDisplay->destroy();
                 pIDisplay       = NULL;
             }
+
+            vChannels       = NULL;
         }
 
         spectrum_analyzer::mode_t spectrum_analyzer::decode_mode(size_t mode)
@@ -398,12 +410,15 @@ namespace lsp
         void spectrum_analyzer::update_multiple_settings()
         {
             // Check that there are soloing channels
-            size_t has_solo         = 0;
+            bool has_solo           = false;
             for (size_t i=0; i<nChannels; ++i)
             {
                 sa_channel_t *c     = &vChannels[i];
                 if (c->pSolo->value() >= 0.5f)
-                    has_solo++;
+                {
+                    has_solo            = true;
+                    break;
+                }
             }
 
             // Process channel parameters
@@ -416,7 +431,7 @@ namespace lsp
                 c->bOn              = c->pOn->value() >= 0.5f;
                 c->bFreeze          = (freeze_all) || (c->pFreeze->value() >= 0.5f);
                 c->bSolo            = c->pSolo->value() >= 0.5f;
-                c->bSend            = (c->bOn) && ((has_solo == 0) || ((has_solo > 0) && (c->bSolo)));
+                c->bSend            = (c->bOn) && ((!has_solo) || (c->bSolo));
                 c->bMSSwitch        = (c->pMSSwitch != NULL) ? c->pMSSwitch->value() >= 0.5f : false;
                 c->fGain            = c->pShift->value();
                 c->fHue             = c->pHue->value();

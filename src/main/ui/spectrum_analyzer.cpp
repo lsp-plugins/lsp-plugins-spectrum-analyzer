@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2021 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2021 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -317,20 +317,20 @@ namespace lsp
 
         void spectrum_analyzer_ui::on_main_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev)
         {
-            nMainGraphBtn |= (1 << ev->nCode);
+            nMainGraphBtn |= (size_t(1) << ev->nCode);
             on_main_graph_mouse_move(sender, ev);
         }
 
         void spectrum_analyzer_ui::on_main_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev)
         {
-            nMainGraphBtn &= ~(1 << ev->nCode);
+            nMainGraphBtn &= ~(size_t(1) << ev->nCode);
         }
 
         void spectrum_analyzer_ui::on_main_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev)
         {
             if ((wMainGraph == NULL) || (nXAxisIndex < 0))
                 return;
-            if (nMainGraphBtn != (1 << ws::MCB_LEFT))
+            if (nMainGraphBtn != (size_t(1) << ws::MCB_LEFT))
                 return;
 
             // Check that channel is enabled

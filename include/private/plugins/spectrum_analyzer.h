@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2021 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2021 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -88,10 +88,6 @@ namespace lsp
                 };
 
             protected:
-                bool                create_channels(size_t channels);
-                mode_t              decode_mode(size_t mode);
-
-            protected:
                 dspu::Analyzer      sAnalyzer;
                 dspu::Counter       sCounter;
                 size_t              nChannels;
@@ -138,6 +134,10 @@ namespace lsp
                 core::IDBuffer     *pIDisplay;          // Inline display buffer
 
             protected:
+                bool                create_channels(size_t channels);
+                mode_t              decode_mode(size_t mode);
+                void                do_destroy();
+
                 void                update_multiple_settings();
                 void                update_x2_settings(ssize_t ch1, ssize_t ch2);
                 void                update_spectralizer_x2_settings(ssize_t ch1, ssize_t ch2);
@@ -149,19 +149,19 @@ namespace lsp
 
             public:
                 explicit spectrum_analyzer(const meta::plugin_t *metadata);
-                virtual ~spectrum_analyzer();
+                virtual ~spectrum_analyzer() override;
 
             public:
-                virtual void        init(plug::IWrapper *wrapper, plug::IPort **ports);
-                virtual void        destroy();
+                virtual void        init(plug::IWrapper *wrapper, plug::IPort **ports) override;
+                virtual void        destroy() override;
 
-                virtual void        update_settings();
-                virtual void        update_sample_rate(long sr);
+                virtual void        update_settings() override;
+                virtual void        update_sample_rate(long sr) override;
 
-                virtual void        process(size_t samples);
-                virtual bool        inline_display(plug::ICanvas *cv, size_t width, size_t height);
+                virtual void        process(size_t samples) override;
+                virtual bool        inline_display(plug::ICanvas *cv, size_t width, size_t height) override;
 
-                virtual void        dump(dspu::IStateDumper *v) const;
+                virtual void        dump(dspu::IStateDumper *v) const override;
         };
 
     } /* namespace plugins */
