@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2021 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2021 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -314,6 +314,99 @@ namespace lsp
         #undef SA_INPUT
         #undef SA_COMMON
 
+        MONO_PORT_GROUP_PORT(mono_in, "in0");
+        MONO_PORT_GROUP_PORT(mono_out, "out0");
+        STEREO_PORT_GROUP_PORTS(stereo_in0, "in0", "in1");
+        STEREO_PORT_GROUP_PORTS(stereo_in1, "in2", "in3");
+        STEREO_PORT_GROUP_PORTS(stereo_in2, "in4", "in5");
+        STEREO_PORT_GROUP_PORTS(stereo_in3, "in6", "in7");
+        STEREO_PORT_GROUP_PORTS(stereo_in4, "in8", "in9");
+        STEREO_PORT_GROUP_PORTS(stereo_in5, "in10", "in11");
+        STEREO_PORT_GROUP_PORTS(stereo_in6, "in12", "in13");
+        STEREO_PORT_GROUP_PORTS(stereo_in7, "in14", "in15");
+        STEREO_PORT_GROUP_PORTS(stereo_out0, "out0", "out1");
+        STEREO_PORT_GROUP_PORTS(stereo_out1, "out2", "out3");
+        STEREO_PORT_GROUP_PORTS(stereo_out2, "out4", "out5");
+        STEREO_PORT_GROUP_PORTS(stereo_out3, "out6", "out7");
+        STEREO_PORT_GROUP_PORTS(stereo_out4, "out8", "out9");
+        STEREO_PORT_GROUP_PORTS(stereo_out5, "out10", "out11");
+        STEREO_PORT_GROUP_PORTS(stereo_out6, "out12", "out13");
+        STEREO_PORT_GROUP_PORTS(stereo_out7, "out14", "out15");
+
+        const port_group_t spectrum_analyzer_x1_port_groups[] =
+        {
+            { "in_0",           "Input 0",       GRP_MONO,      PGF_IN | PGF_MAIN,          mono_in_ports       },
+            { "out_0",          "Output 0",      GRP_MONO,      PGF_OUT | PGF_MAIN,         mono_out_ports      },
+            PORT_GROUPS_END
+        };
+
+        const port_group_t spectrum_analyzer_x2_port_groups[] =
+        {
+            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            PORT_GROUPS_END
+        };
+
+        const port_group_t spectrum_analyzer_x4_port_groups[] =
+        {
+            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_1",           "Input 1",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
+            { "out_1",          "Output 1",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
+            PORT_GROUPS_END
+        };
+
+        const port_group_t spectrum_analyzer_x8_port_groups[] =
+        {
+            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_1",           "Input 1",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
+            { "out_1",          "Output 1",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
+            { "in_2",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
+            { "out_2",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
+            { "in_3",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
+            { "out_3",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
+            PORT_GROUPS_END
+        };
+
+        const port_group_t spectrum_analyzer_x12_port_groups[] =
+        {
+            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_1",           "Input 1",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
+            { "out_1",          "Output 1",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
+            { "in_2",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
+            { "out_2",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
+            { "in_3",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
+            { "out_3",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
+            { "in_4",           "Input 4",       GRP_STEREO,    PGF_IN,                     stereo_in4_ports    },
+            { "out_4",          "Output 4",      GRP_STEREO,    PGF_OUT,                    stereo_out4_ports   },
+            { "in_5",           "Input 5",       GRP_STEREO,    PGF_IN,                     stereo_in5_ports    },
+            { "out_5",          "Output 5",      GRP_STEREO,    PGF_OUT,                    stereo_out5_ports   },
+            PORT_GROUPS_END
+        };
+
+        const port_group_t spectrum_analyzer_x16_port_groups[] =
+        {
+            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_1",           "Input 1",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
+            { "out_1",          "Output 1",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
+            { "in_2",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
+            { "out_2",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
+            { "in_3",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
+            { "out_3",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
+            { "in_4",           "Input 4",       GRP_STEREO,    PGF_IN,                     stereo_in4_ports    },
+            { "out_4",          "Output 4",      GRP_STEREO,    PGF_OUT,                    stereo_out4_ports   },
+            { "in_5",           "Input 5",       GRP_STEREO,    PGF_IN,                     stereo_in5_ports    },
+            { "out_5",          "Output 5",      GRP_STEREO,    PGF_OUT,                    stereo_out5_ports   },
+            { "in_6",           "Input 6",       GRP_STEREO,    PGF_IN,                     stereo_in6_ports    },
+            { "out_6",          "Output 6",      GRP_STEREO,    PGF_OUT,                    stereo_out6_ports   },
+            { "in_7",           "Input 7",       GRP_STEREO,    PGF_IN,                     stereo_in7_ports    },
+            { "out_7",          "Output 7",      GRP_STEREO,    PGF_OUT,                    stereo_out7_ports   },
+            PORT_GROUPS_END
+        };
+
         const meta::bundle_t spectrum_analyzer_bundle =
         {
             "spectrum_analyzer",
@@ -343,7 +436,7 @@ namespace lsp
             spectrum_analyzer_x1_ports,
             "analyzer/spectrum/x1.xml",
             NULL,
-            NULL,
+            spectrum_analyzer_x1_port_groups,
             &spectrum_analyzer_bundle
         };
 
@@ -367,7 +460,7 @@ namespace lsp
             spectrum_analyzer_x2_ports,
             "analyzer/spectrum/x2.xml",
             NULL,
-            NULL,
+            spectrum_analyzer_x2_port_groups,
             &spectrum_analyzer_bundle
         };
 
@@ -391,7 +484,7 @@ namespace lsp
             spectrum_analyzer_x4_ports,
             "analyzer/spectrum/x4.xml",
             NULL,
-            NULL,
+            spectrum_analyzer_x4_port_groups,
             &spectrum_analyzer_bundle
         };
 
@@ -415,7 +508,7 @@ namespace lsp
             spectrum_analyzer_x8_ports,
             "analyzer/spectrum/x8.xml",
             NULL,
-            NULL,
+            spectrum_analyzer_x8_port_groups,
             &spectrum_analyzer_bundle
         };
 
@@ -439,7 +532,7 @@ namespace lsp
             spectrum_analyzer_x12_ports,
             "analyzer/spectrum/x12.xml",
             NULL,
-            NULL,
+            spectrum_analyzer_x12_port_groups,
             &spectrum_analyzer_bundle
         };
 
@@ -463,7 +556,7 @@ namespace lsp
             spectrum_analyzer_x16_ports,
             "analyzer/spectrum/x16.xml",
             NULL,
-            NULL,
+            spectrum_analyzer_x16_port_groups,
             &spectrum_analyzer_bundle
         };
     } /* namespace meta */
