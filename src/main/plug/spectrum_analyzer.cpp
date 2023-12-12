@@ -70,6 +70,7 @@ namespace lsp
             vAnalyze        = NULL;
             pData           = NULL;
             vFrequences     = NULL;
+            vMaxValues      = NULL;
             vMFrequences    = NULL;
             vIndexes        = NULL;
 
@@ -85,6 +86,7 @@ namespace lsp
             enMode          = SA_ANALYZER;
             bLogScale       = false;
             bMSSwitch       = false;
+            bMaxTracking    = true;
 
             pBypass         = NULL;
             pMode           = NULL;
@@ -103,6 +105,8 @@ namespace lsp
             pMSSwitch       = NULL;
 
             pFreeze         = NULL;
+            pMaxTrack       = NULL;
+            pMaxReset       = NULL;
             pSpp            = NULL;
 
             for (size_t i=0; i<2; ++i)
@@ -132,7 +136,7 @@ namespace lsp
             size_t ind_buf_size     = align_size(sizeof(uint32_t) * meta::spectrum_analyzer::MESH_POINTS, 64);
             size_t analyze_size     = align_size(sizeof(float *) * channels, 16);
             size_t buffers          = BUFFER_SIZE * sizeof(float) * channels;
-            size_t alloc            = hdr_size + freq_buf_size + mfreq_buf_size + ind_buf_size + analyze_size + buffers;
+            size_t alloc            = hdr_size + freq_buf_size + freq_buf_size + mfreq_buf_size + ind_buf_size + analyze_size + buffers;
 
             lsp_trace("header_size      = %d", int(hdr_size));
             lsp_trace("freq_buf_size    = %d", int(freq_buf_size));
@@ -158,27 +162,17 @@ namespace lsp
             fPreamp         = meta::spectrum_analyzer::PREAMP_DFL;
 
             // Initialize pointers and cleanup buffers
-            vChannels       = reinterpret_cast<sa_channel_t *>(ptr);
-            ptr            += hdr_size;
-            lsp_trace("vChannels = %p", vChannels);
+            vChannels       = advance_ptr_bytes<sa_channel_t>(ptr, hdr_size);
+            vFrequences     = advance_ptr_bytes<float>(ptr, freq_buf_size);
+            vMaxValues      = advance_ptr_bytes<float>(ptr, freq_buf_size);
+            vMFrequences    = advance_ptr_bytes<float>(ptr, mfreq_buf_size);
+            vIndexes        = advance_ptr_bytes<uint32_t>(ptr, ind_buf_size);
+            vAnalyze        = advance_ptr_bytes<float *>(ptr, analyze_size);
 
-            vFrequences   = reinterpret_cast<float *>(ptr);
-            ptr          += freq_buf_size;
             dsp::fill_zero(vFrequences, meta::spectrum_analyzer::MESH_POINTS);
-            lsp_trace("vFrequences = %p", vFrequences);
-
-            vMFrequences  = reinterpret_cast<float *>(ptr);
-            ptr          += mfreq_buf_size;
             dsp::fill_zero(vMFrequences, meta::spectrum_analyzer::MESH_POINTS);
-            lsp_trace("vMFrequences = %p", vMFrequences);
-
-            vIndexes      = reinterpret_cast<uint32_t *>(ptr);
-            ptr          += ind_buf_size;
+            dsp::fill_zero(vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
             memset(vIndexes, 0, ind_buf_size);
-            lsp_trace("vIndexes = %p", vIndexes);
-
-            vAnalyze    = reinterpret_cast<float **>(ptr);
-            ptr        += analyze_size;
 
             // Initialize channels
             for (size_t i=0; i<channels; ++i)
@@ -195,8 +189,7 @@ namespace lsp
                 c->fHue             = 0.0f;
                 c->vIn              = NULL;
                 c->vOut             = NULL;
-                c->vBuffer          = reinterpret_cast<float *>(ptr);
-                ptr                += BUFFER_SIZE * sizeof(float);
+                c->vBuffer          = advance_ptr_bytes<float>(ptr, BUFFER_SIZE * sizeof(float));
 
                 // Port references
                 c->pIn              = NULL;
@@ -301,6 +294,8 @@ namespace lsp
             pLogScale       = TRACE_PORT(ports[port_id++]);
             pFreeze         = TRACE_PORT(ports[port_id++]);
             TRACE_PORT(ports[port_id++]); // Skip horizontal line switch button
+            pMaxTrack       = TRACE_PORT(ports[port_id++]);
+            pMaxReset       = TRACE_PORT(ports[port_id++]);
             pTolerance      = TRACE_PORT(ports[port_id++]);
             pWindow         = TRACE_PORT(ports[port_id++]);
             pEnvelope       = TRACE_PORT(ports[port_id++]);
@@ -512,6 +507,10 @@ namespace lsp
             fZoom                   = pZoom->value();
             bLogScale               = (pLogScale != NULL) && (pLogScale->value() >= 0.5f);
             size_t rank             = pTolerance->value() + meta::spectrum_analyzer::RANK_MIN;
+            bMaxTracking            = pMaxTrack->value() >= 0.5f;
+
+            if (pMaxReset->value() >= 0.5f)
+                dsp::fill_zero(vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
 
             lsp_trace("rank         = %d",     int(rank));
             lsp_trace("channel      = %d",     int(nChannel));
@@ -722,6 +721,8 @@ namespace lsp
 
         void spectrum_analyzer::process(size_t samples)
         {
+            float *v;
+
             // Always query for drawing
             pWrapper->query_display_draw();
 
@@ -743,7 +744,15 @@ namespace lsp
                 mesh_request        = false;
 
             if (mesh_request)
-                dsp::copy(mesh->pvData[0], vFrequences, meta::spectrum_analyzer::MESH_POINTS);
+            {
+                v   = mesh->pvData[0];
+                dsp::copy(&v[2], vFrequences, meta::spectrum_analyzer::MESH_POINTS);
+
+                v[0]    = 0.0f;
+                v[1]    = v[2];
+                v[meta::spectrum_analyzer::MESH_POINTS + 2] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                v[meta::spectrum_analyzer::MESH_POINTS + 3] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+            }
 
             for (size_t n=samples; n > 0;)
             {
@@ -788,9 +797,12 @@ namespace lsp
                     // Mesh is requested?
                     if (mesh_request)
                     {
+
                         for (size_t i=0; i<nChannels; ++i)
                         {
-                            c     = &vChannels[i];
+                            c           = &vChannels[i];
+                            v           = mesh->pvData[i+2];
+
                             if (c->bSend)
                             {
                                 // Copy frequency points
@@ -798,11 +810,32 @@ namespace lsp
                                 if ((enMode == SA_MASTERING) || (enMode == SA_MASTERING_STEREO))
                                     flags |= F_SMOOTH_LOG | F_MASTERING;
 
-                                get_spectrum(mesh->pvData[i+1], i, flags);
+
+                                get_spectrum(&v[2], i, flags);
+                                v[0]    = 0.0f;
+                                v[1]    = v[2];
+                                v[meta::spectrum_analyzer::MESH_POINTS + 2] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                                v[meta::spectrum_analyzer::MESH_POINTS + 3] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+
+                                if (bMaxTracking)
+                                    dsp::pmax2(vMaxValues, &v[2], meta::spectrum_analyzer::MESH_POINTS);
                             }
                             else
-                                dsp::fill_zero(mesh->pvData[i+1], meta::spectrum_analyzer::MESH_POINTS);
+                                dsp::fill_zero(v, meta::spectrum_analyzer::MESH_POINTS + 4);
                         }
+
+                        // Report maixmums
+                        v = mesh->pvData[1];
+                        if (bMaxTracking)
+                        {
+                            dsp::copy(v, vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
+                            v[0]    = 0.0f;
+                            v[1]    = v[2];
+                            v[meta::spectrum_analyzer::MESH_POINTS + 2] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                            v[meta::spectrum_analyzer::MESH_POINTS + 3] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                        }
+                        else
+                            dsp::fill_zero(v, meta::spectrum_analyzer::MESH_POINTS + 4);
                     }
                 }
 
@@ -860,7 +893,7 @@ namespace lsp
 
             // Commit mesh data
             if (mesh_request)
-                mesh->data(nChannels + 1, meta::spectrum_analyzer::MESH_POINTS);
+                mesh->data(nChannels + 2, meta::spectrum_analyzer::MESH_POINTS);
         }
 
         bool spectrum_analyzer::inline_display(plug::ICanvas *cv, size_t width, size_t height)

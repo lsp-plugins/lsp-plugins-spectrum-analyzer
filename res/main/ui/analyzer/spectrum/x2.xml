@@ -51,8 +51,9 @@
 						</ui:with>
 
 						<!-- Meshes -->
-						<mesh xi="0" yi="1" id="spd" width=":lthick+1" color="left" visibility_id="on_0"/>
-						<mesh xi="0" yi="2" id="spd" width=":lthick+1" color="right" visibility_id="on_1"/>
+						<mesh xi="0" yi="1" id="spd" width="1" color="green" fill.color="green" fill.color.a="0.5" fill="true" visibility=":mtrack" />
+						<mesh xi="0" yi="2" id="spd" width=":lthick+1" color="left" visibility_id="on_0"/>
+						<mesh xi="0" yi="3" id="spd" width=":lthick+1" color="right" visibility_id="on_1"/>
 
 						<!-- Axis -->
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="true" visibility="false"/>
@@ -254,6 +255,13 @@
 					<hbox spacing="8">
 						<label text="labels.line_size" visibility=":mode ilt 4"/>
 						<combo id="lthick" visibility=":mode ilt 2" />
+						<button ui:inject="Button_cyan"
+							text="TRACK" id="mtrack" size="16"
+							visibility=":mode ilt 2" pad.l="15" />
+						<button ui:inject="Button_cyan"
+							text="RESET" id="mreset" size="16"
+							visibility=":mode ilt 2" pad.l="15" />
+
 						<button ui:inject="Button_cyan"
 							text="labels.metering.measure_line" id="mline" size="16"
 							visibility=":mode ilt 2" pad.l="15" />

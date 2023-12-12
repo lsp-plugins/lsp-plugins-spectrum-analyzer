@@ -163,6 +163,8 @@ namespace lsp
             SWITCH("splog", "Spectralizer logarithmic scale", 1), \
             SWITCH("freeze", "Analyzer freeze", 0), \
             SWITCH("mline", "Horizontal measuring line", 0), \
+            SWITCH("mtrack", "Track maximum values", 1), \
+            TRIGGER("mreset", "Reset maximum values"), \
             { "tol", "FFT Tolerance", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, 0, fft_tolerance }, \
             { "wnd", "FFT Window", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::WND_DFL, 0, fft_windows }, \
             { "env", "FFT Envelope", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::ENV_DFL, 0, fft_envelopes }, \
@@ -176,7 +178,7 @@ namespace lsp
             { "freq", "Frequency", U_HZ, R_METER, F_OUT | F_UPPER | F_LOWER, \
                 spectrum_analyzer::FREQ_MIN, spectrum_analyzer::FREQ_MAX, spectrum_analyzer::FREQ_DFL, 0, NULL }, \
             { "lvl", "Level", U_GAIN_AMP, R_METER, F_OUT | F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
-            MESH("spd", "Spectrum Data", c + 1, spectrum_analyzer::MESH_POINTS)
+            MESH("spd", "Spectrum Data", c + 2, spectrum_analyzer::MESH_POINTS + 4)
 
         #define SA_SGROUP(id) \
             SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0)
