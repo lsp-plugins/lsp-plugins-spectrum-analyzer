@@ -29,6 +29,7 @@
 #include <lsp-plug.in/stdlib/math.h>
 #include <lsp-plug.in/dsp/dsp.h>
 
+#include <lsp-plug.in/shared/debug.h>
 #include <lsp-plug.in/shared/id_colors.h>
 
 #define BUFFER_SIZE         0x1000u
@@ -37,12 +38,6 @@ namespace lsp
 {
     namespace plugins
     {
-        static plug::IPort *TRACE_PORT(plug::IPort *p)
-        {
-            lsp_trace("  port id=%s", (p)->metadata()->id);
-            return p;
-        }
-
         //---------------------------------------------------------------------
         // Plugin factory
         static const meta::plugin_t *plugins[] =
@@ -254,13 +249,13 @@ namespace lsp
                     break;
 
                 sa_channel_t *c     = &vChannels[i];
-                c->pIn              = TRACE_PORT(ports[port_id++]);
-                c->pOut             = TRACE_PORT(ports[port_id++]);
-                c->pOn              = TRACE_PORT(ports[port_id++]);
-                c->pSolo            = TRACE_PORT(ports[port_id++]);
-                c->pFreeze          = TRACE_PORT(ports[port_id++]);
-                c->pHue             = TRACE_PORT(ports[port_id++]);
-                c->pShift           = TRACE_PORT(ports[port_id++]);
+                c->pIn              = trace_port(ports[port_id++]);
+                c->pOut             = trace_port(ports[port_id++]);
+                c->pOn              = trace_port(ports[port_id++]);
+                c->pSolo            = trace_port(ports[port_id++]);
+                c->pFreeze          = trace_port(ports[port_id++]);
+                c->pHue             = trace_port(ports[port_id++]);
+                c->pShift           = trace_port(ports[port_id++]);
 
                 // Sync metadata
                 const meta::port_t *meta  = c->pSolo->metadata();
@@ -281,49 +276,49 @@ namespace lsp
                     sa_channel_t *l     = &vChannels[i];
                     sa_channel_t *r     = &vChannels[i+1];
 
-                    l->pMSSwitch        = TRACE_PORT(ports[port_id++]);
+                    l->pMSSwitch        = trace_port(ports[port_id++]);
                     r->pMSSwitch        = l->pMSSwitch;
                 }
             }
 
             // Initialize basic ports
-            pBypass         = TRACE_PORT(ports[port_id++]);
-            pMode           = TRACE_PORT(ports[port_id++]);
-            TRACE_PORT(ports[port_id++]); // Skip mesh thickness
-            TRACE_PORT(ports[port_id++]); // Skip spectralizer mode
-            pLogScale       = TRACE_PORT(ports[port_id++]);
-            pFreeze         = TRACE_PORT(ports[port_id++]);
-            TRACE_PORT(ports[port_id++]); // Skip horizontal line switch button
-            pMaxTrack       = TRACE_PORT(ports[port_id++]);
-            pMaxReset       = TRACE_PORT(ports[port_id++]);
-            pTolerance      = TRACE_PORT(ports[port_id++]);
-            pWindow         = TRACE_PORT(ports[port_id++]);
-            pEnvelope       = TRACE_PORT(ports[port_id++]);
-            pPreamp         = TRACE_PORT(ports[port_id++]);
-            pZoom           = TRACE_PORT(ports[port_id++]);
-            pReactivity     = TRACE_PORT(ports[port_id++]);
+            pBypass         = trace_port(ports[port_id++]);
+            pMode           = trace_port(ports[port_id++]);
+            trace_port(ports[port_id++]); // Skip mesh thickness
+            trace_port(ports[port_id++]); // Skip spectralizer mode
+            pLogScale       = trace_port(ports[port_id++]);
+            pFreeze         = trace_port(ports[port_id++]);
+            trace_port(ports[port_id++]); // Skip horizontal line switch button
+            pMaxTrack       = trace_port(ports[port_id++]);
+            pMaxReset       = trace_port(ports[port_id++]);
+            pTolerance      = trace_port(ports[port_id++]);
+            pWindow         = trace_port(ports[port_id++]);
+            pEnvelope       = trace_port(ports[port_id++]);
+            pPreamp         = trace_port(ports[port_id++]);
+            pZoom           = trace_port(ports[port_id++]);
+            pReactivity     = trace_port(ports[port_id++]);
             if (nChannels > 1)
-                pChannel        = TRACE_PORT(ports[port_id++]);
-            pSelector       = TRACE_PORT(ports[port_id++]);
-            TRACE_PORT(ports[port_id++]); // Skip horizontal line value
-            pFrequency      = TRACE_PORT(ports[port_id++]);
-            pLevel          = TRACE_PORT(ports[port_id++]);
-            pFftData        = TRACE_PORT(ports[port_id++]);
+                pChannel        = trace_port(ports[port_id++]);
+            pSelector       = trace_port(ports[port_id++]);
+            trace_port(ports[port_id++]); // Skip horizontal line value
+            pFrequency      = trace_port(ports[port_id++]);
+            pLevel          = trace_port(ports[port_id++]);
+            pFftData        = trace_port(ports[port_id++]);
 
             // Bind spectralizer ports
             if (nChannels >= 2)
             {
-                pMSSwitch           = TRACE_PORT(ports[port_id++]);
-                vSpc[0].pPortId     = TRACE_PORT(ports[port_id++]);
+                pMSSwitch           = trace_port(ports[port_id++]);
+                vSpc[0].pPortId     = trace_port(ports[port_id++]);
             }
-            vSpc[0].pFBuffer    = TRACE_PORT(ports[port_id++]);
+            vSpc[0].pFBuffer    = trace_port(ports[port_id++]);
             vSpc[0].nChannelId  = -1;
 
             if (nChannels >= 2)
             {
                 if (nChannels > 2)
-                    vSpc[1].pPortId     = TRACE_PORT(ports[port_id++]);
-                vSpc[1].pFBuffer    = TRACE_PORT(ports[port_id++]);
+                    vSpc[1].pPortId     = trace_port(ports[port_id++]);
+                vSpc[1].pFBuffer    = trace_port(ports[port_id++]);
                 vSpc[1].nChannelId  = -1;
             }
 
@@ -1008,6 +1003,7 @@ namespace lsp
                         v->write("fHue", c->fHue);
                         v->write("vIn", c->vIn);
                         v->write("vOut", c->vOut);
+                        v->write("vBuffer", c->vBuffer);
 
                         v->write("pIn", c->pIn);
                         v->write("pOut", c->pOut);
@@ -1040,6 +1036,8 @@ namespace lsp
             v->write("fZoom", fZoom);
             v->write("enMode", enMode);
             v->write("bLogScale", bLogScale);
+            v->write("bMSSwitch", bMSSwitch);
+            v->write("bMaxTracking", bMaxTracking);
 
             v->write("pBypass", pBypass);
             v->write("pMode", pMode);
@@ -1058,6 +1056,8 @@ namespace lsp
             v->write("pMSSwitch", pMSSwitch);
 
             v->write("pFreeze", pFreeze);
+            v->write("pMaxTrack", pMaxTrack);
+            v->write("pMaxReset", pMaxReset);
             v->write("pSpp", pSpp);
 
             v->begin_array("vSpc", vSpc, 2);
