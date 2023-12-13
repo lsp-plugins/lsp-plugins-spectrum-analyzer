@@ -52,6 +52,7 @@
 						</ui:with>
 
 						<!-- Meshes -->
+						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.8" color.a="0.8" fill="true" visibility=":mtrack" />
 						<ui:for id="i" first="0" count="16">
 							<mesh xi="0" yi="${:i + 2}" id="spd" width=":lthick+1" color="graph_mesh_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
 						</ui:for>
@@ -60,7 +61,7 @@
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="true" visibility="false"/>
 						<axis angle="0.5" min="-72 db / :zoom" max="24 db * :zoom" color="graph_prim" log="true" visibility="false"/>
 						<axis angle="0.5" min="-1" max="1" visibility="false"/>
-						
+
 						<!-- Marker horizontal line -->
 						<marker
 							id="mlval"
@@ -73,7 +74,7 @@
 							pointer="vsize"
 							visibility=":mline"
 							editable="true"/>
-							
+
 						<!-- Marker -->
 						<ui:for id="i" first="0" last="15">
 							<marker
@@ -90,7 +91,7 @@
 								visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))"
 								editable="true"/>
 						</ui:for>
-					
+
 
 						<!-- Text -->
 						<ui:with ox="0" oy="2" y="0" halign="1" valign="1">
@@ -131,7 +132,7 @@
 							valign="(:mlval lt 0 db) ? 1 : -1"
 							text.valign="(:mlval lt 0 db) ? -1 : 1" ox="0" oy="1" x="24000"
 							y=":mlval" halign="-1" color="graph_marker_line" font.bold="true" />
-							
+
 						<!-- Selector text -->
 						<ui:for id="i" first="0" count="16">
 							<ui:with ox="0" oy="2" y="1" valign="-1" color="graph_marker_cycle" visibility="false" pad.h="4" font.bold="true">
@@ -258,7 +259,7 @@
 				</group>
 
 				<!-- Bottom menu -->
-				<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" bg.color="bg_schema">				
+				<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" bg.color="bg_schema">
 					<hbox spacing="8">
 						<label text="labels.fft.window" />
 						<combo id="wnd" pad.r="15" />
@@ -267,18 +268,22 @@
 						<label text="labels.fft.envelope" />
 						<combo id="env" pad.r="15" />
 					</hbox>
-				
+
 					<void hexpand="true" />
 					<hbox spacing="8">
 						<label text="labels.line_size" visibility=":mode ilt 4"/>
 						<combo id="lthick" visibility=":mode ilt 4" />
+						<hbox fill="false" spacing="4" pad.h="4">
+							<button ui:inject="Button_cyan" text="labels.history" id="mtrack" size="16" visibility=":mode ilt 4"/>
+							<button ui:inject="Button_cyan" text="labels.clear" id="mreset" size="16" visibility=":mode ilt 4"/>
+						</hbox>
 						<button ui:inject="Button_cyan" text="labels.metering.measure_line" id="mline"
-							size="16" visibility=":mode ilt 4" pad.l="15" />				
+							size="16" visibility=":mode ilt 4" pad.l="15" />
 						<label text="labels.spectrogram" visibility=":mode ige 4" />
 						<combo id="spm" visibility=":mode ige 4" />
 						<button ui:inject="Button_yellow" text="labels.log_scale"
 							id="splog" size="16" visibility=":mode ige 4" pad.l="15" />
-					</hbox>				
+					</hbox>
 				</hbox>
 			</vbox>
 

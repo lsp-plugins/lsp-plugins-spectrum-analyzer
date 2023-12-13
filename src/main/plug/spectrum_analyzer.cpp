@@ -83,6 +83,11 @@ namespace lsp
             bMSSwitch       = false;
             bMaxTracking    = true;
 
+            fModeState      = 0.0f;
+            fTolState       = 0.0f;
+            fWindState      = 0.0f;
+            fEnvState       = 0.0f;
+
             pBypass         = NULL;
             pMode           = NULL;
             pTolerance      = NULL;
@@ -430,6 +435,7 @@ namespace lsp
             bMSSwitch               = false;
             vSpc[0].nChannelId      = -1;
             vSpc[1].nChannelId      = -1;
+
         }
 
         void spectrum_analyzer::update_x2_settings(ssize_t ch1, ssize_t ch2)
@@ -502,10 +508,13 @@ namespace lsp
             fZoom                   = pZoom->value();
             bLogScale               = (pLogScale != NULL) && (pLogScale->value() >= 0.5f);
             size_t rank             = pTolerance->value() + meta::spectrum_analyzer::RANK_MIN;
+
+            bool res_state          = false;  // Automatic reset maximum values
+
             bMaxTracking            = pMaxTrack->value() >= 0.5f;
 
             if (pMaxReset->value() >= 0.5f)
-                dsp::fill_zero(vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
+                res_state = true;
 
             lsp_trace("rank         = %d",     int(rank));
             lsp_trace("channel      = %d",     int(nChannel));
@@ -586,6 +595,36 @@ namespace lsp
                     fMinFreq, fMaxFreq,
                     meta::spectrum_analyzer::MESH_POINTS
                 );
+            }
+
+
+            // Check if the state of the switches has not changed
+            if (pMode->value() != fModeState)
+            {
+                res_state    = true;
+                fModeState   = pMode->value();
+            }
+            if (pWindow->value() != fWindState)
+            {
+                res_state    = true;
+                fWindState   = pWindow->value();
+            }
+            if (pTolerance->value() != fTolState)
+            {
+                res_state    = true;
+                fTolState    = pTolerance->value();
+            }
+            if (pEnvelope->value() != fEnvState)
+            {
+                res_state    = true;
+                fEnvState    = pEnvelope->value();
+            }
+
+            // if the state has changed
+            if (res_state)
+            {
+                // Resset Track Mesh
+                dsp::fill_zero(vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
             }
         }
 
@@ -743,10 +782,10 @@ namespace lsp
                 v   = mesh->pvData[0];
                 dsp::copy(&v[2], vFrequences, meta::spectrum_analyzer::MESH_POINTS);
 
-                v[0]    = 0.0f;
-                v[1]    = v[2];
-                v[meta::spectrum_analyzer::MESH_POINTS + 2] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
-                v[meta::spectrum_analyzer::MESH_POINTS + 3] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                v[0]    = SPEC_FREQ_MIN * 0.5f;
+                v[1]    = SPEC_FREQ_MIN * 0.5f;
+                v[meta::spectrum_analyzer::MESH_POINTS + 2] = SPEC_FREQ_MAX * 2.0f;
+                v[meta::spectrum_analyzer::MESH_POINTS + 3] = SPEC_FREQ_MAX * 2.0f;
             }
 
             for (size_t n=samples; n > 0;)
@@ -810,7 +849,7 @@ namespace lsp
                                 v[0]    = 0.0f;
                                 v[1]    = v[2];
                                 v[meta::spectrum_analyzer::MESH_POINTS + 2] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
-                                v[meta::spectrum_analyzer::MESH_POINTS + 3] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                                v[meta::spectrum_analyzer::MESH_POINTS + 3] = 0.0f;
 
                                 if (bMaxTracking)
                                     dsp::pmax2(vMaxValues, &v[2], meta::spectrum_analyzer::MESH_POINTS);
@@ -823,11 +862,11 @@ namespace lsp
                         v = mesh->pvData[1];
                         if (bMaxTracking)
                         {
-                            dsp::copy(v, vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
+                            dsp::copy(&v[2], vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
                             v[0]    = 0.0f;
                             v[1]    = v[2];
                             v[meta::spectrum_analyzer::MESH_POINTS + 2] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
-                            v[meta::spectrum_analyzer::MESH_POINTS + 3] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                            v[meta::spectrum_analyzer::MESH_POINTS + 3] = 0.0f;
                         }
                         else
                             dsp::fill_zero(v, meta::spectrum_analyzer::MESH_POINTS + 4);
@@ -888,7 +927,7 @@ namespace lsp
 
             // Commit mesh data
             if (mesh_request)
-                mesh->data(nChannels + 2, meta::spectrum_analyzer::MESH_POINTS);
+                mesh->data(nChannels + 2, meta::spectrum_analyzer::MESH_POINTS + 4);
         }
 
         bool spectrum_analyzer::inline_display(plug::ICanvas *cv, size_t width, size_t height)

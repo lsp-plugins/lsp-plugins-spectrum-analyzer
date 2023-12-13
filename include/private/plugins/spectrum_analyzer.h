@@ -113,6 +113,11 @@ namespace lsp
                 bool                bMSSwitch;          // Mid/Side switch for stereo mode
                 bool                bMaxTracking;       // Enable tracking of maximum values
 
+                float               fModeState;         // Variable to save the state of MODE
+                float               fTolState;          // Variable to save the state of TOLERANCE
+                float               fWindState;         // Variable to save the state of WINDOW
+                float               fEnvState;          // Variable to save the state of ENVELOPE
+
                 plug::IPort        *pBypass;
                 plug::IPort        *pMode;
                 plug::IPort        *pTolerance;
