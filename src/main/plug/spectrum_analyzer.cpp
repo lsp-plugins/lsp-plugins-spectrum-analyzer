@@ -1078,6 +1078,11 @@ namespace lsp
             v->write("bMSSwitch", bMSSwitch);
             v->write("bMaxTracking", bMaxTracking);
 
+            v->write("fModeState", fModeState);
+            v->write("fTolState", fTolState);
+            v->write("fWindState", fWindState);
+            v->write("fEnvState", fEnvState);
+
             v->write("pBypass", pBypass);
             v->write("pMode", pMode);
             v->write("pTolerance", pTolerance);
