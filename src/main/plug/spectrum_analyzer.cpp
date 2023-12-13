@@ -83,9 +83,7 @@ namespace lsp
             bMSSwitch       = false;
             bMaxTracking    = true;
 
-            fModeState      = 0.0f;
-            fTolState       = 0.0f;
-            fWindState      = 0.0f;
+            fWndState       = 0.0f;
             fEnvState       = 0.0f;
 
             pBypass         = NULL;
@@ -566,12 +564,19 @@ namespace lsp
             }
 
             // Update mode
-            enMode      = mode;
+            if (enMode != mode)
+            {
+                res_state    = true;
+                enMode       = mode;
+            }
 
             // Update analysis parameters
             bool sync_freqs         = rank != sAnalyzer.get_rank();
             if (sync_freqs)
+            {
+                res_state    = true;
                 sAnalyzer.set_rank(rank);
+            }
 
             sAnalyzer.set_reactivity(pReactivity->value());
             sAnalyzer.set_window(pWindow->value());
@@ -597,22 +602,11 @@ namespace lsp
                 );
             }
 
-
             // Check if the state of the switches has not changed
-            if (pMode->value() != fModeState)
+            if (pWindow->value() != fWndState)
             {
                 res_state    = true;
-                fModeState   = pMode->value();
-            }
-            if (pWindow->value() != fWindState)
-            {
-                res_state    = true;
-                fWindState   = pWindow->value();
-            }
-            if (pTolerance->value() != fTolState)
-            {
-                res_state    = true;
-                fTolState    = pTolerance->value();
+                fWndState    = pWindow->value();
             }
             if (pEnvelope->value() != fEnvState)
             {
@@ -660,7 +654,11 @@ namespace lsp
                         continue;
 
                     if (flags & F_SMOOTH_LOG)
-                        dsp::smooth_cubic_log(&v[off], vMFrequences[pi], vMFrequences[ni], ni-pi);
+                    {
+                        const float v_pi = lsp_max(vMFrequences[pi], GAIN_AMP_M_160_DB);
+                        const float v_ni = lsp_max(vMFrequences[ni], GAIN_AMP_M_160_DB);
+                        dsp::smooth_cubic_log(&v[off], v_pi, v_ni, ni-pi);
+                    }
                     else
                         dsp::smooth_cubic_linear(&v[off], vMFrequences[pi], vMFrequences[ni], ni-pi);
 
@@ -671,7 +669,11 @@ namespace lsp
                 if (pi < meta::spectrum_analyzer::MESH_POINTS)
                 {
                     if (flags & F_SMOOTH_LOG)
-                        dsp::smooth_cubic_log(&v[off], vMFrequences[pi], vMFrequences[ni-1], ni-pi);
+                    {
+                        const float v_pi = lsp_max(vMFrequences[pi], GAIN_AMP_M_160_DB);
+                        const float v_ni = lsp_max(vMFrequences[ni-1], GAIN_AMP_M_160_DB);
+                        dsp::smooth_cubic_log(&v[off], v_pi, v_ni, ni-pi);
+                    }
                     else
                         dsp::smooth_cubic_linear(&v[off], vMFrequences[pi], vMFrequences[ni-1], ni-pi);
                 }
@@ -1078,9 +1080,7 @@ namespace lsp
             v->write("bMSSwitch", bMSSwitch);
             v->write("bMaxTracking", bMaxTracking);
 
-            v->write("fModeState", fModeState);
-            v->write("fTolState", fTolState);
-            v->write("fWindState", fWindState);
+            v->write("fWndState", fWndState);
             v->write("fEnvState", fEnvState);
 
             v->write("pBypass", pBypass);
