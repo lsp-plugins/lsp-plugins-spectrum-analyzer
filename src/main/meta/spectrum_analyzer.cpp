@@ -422,6 +422,7 @@ namespace lsp
         {
             "Spektrumanalysator x1",
             "Spectrum Analyzer x1",
+            "Spectrum Analyzer x1",
             "SA1",
             &developers::v_sadovnikov,
             "spectrum_analyzer_x1",
@@ -445,6 +446,7 @@ namespace lsp
         const plugin_t spectrum_analyzer_x2 =
         {
             "Spektrumanalysator x2",
+            "Spectrum Analyzer x2",
             "Spectrum Analyzer x2",
             "SA2",
             &developers::v_sadovnikov,
@@ -470,6 +472,7 @@ namespace lsp
         {
             "Spektrumanalysator x4",
             "Spectrum Analyzer x4",
+            "Spectrum Analyzer x4",
             "SA4",
             &developers::v_sadovnikov,
             "spectrum_analyzer_x4",
@@ -493,6 +496,7 @@ namespace lsp
         const plugin_t spectrum_analyzer_x8 =
         {
             "Spektrumanalysator x8",
+            "Spectrum Analyzer x8",
             "Spectrum Analyzer x8",
             "SA8",
             &developers::v_sadovnikov,
@@ -518,6 +522,7 @@ namespace lsp
         {
             "Spektrumanalysator x12",
             "Spectrum Analyzer x12",
+            "Spectrum Analyzer x12",
             "SA12",
             &developers::v_sadovnikov,
             "spectrum_analyzer_x12",
@@ -541,6 +546,7 @@ namespace lsp
         const plugin_t spectrum_analyzer_x16 =
         {
             "Spektrumanalysator x16",
+            "Spectrum Analyzer x16",
             "Spectrum Analyzer x16",
             "SA16",
             &developers::v_sadovnikov,
