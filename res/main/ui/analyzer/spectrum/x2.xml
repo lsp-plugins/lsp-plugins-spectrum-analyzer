@@ -51,7 +51,7 @@
 						</ui:with>
 
 						<!-- Meshes -->
-						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.8" color.a="0.8" fill="true" visibility=":mtrack"/>
+						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
 						<mesh xi="0" yi="2" id="spd" width=":lthick+1" color="left" visibility_id="on_0"/>
 						<mesh xi="0" yi="3" id="spd" width=":lthick+1" color="right" visibility_id="on_1"/>
 
@@ -240,11 +240,11 @@
 					</hbox>
 					<void hexpand="true"/>
 					<hbox spacing="8">
-						<label text="labels.line_size" visibility=":mode ilt 4"/>
+						<label text="labels.line_size" visibility=":mode ilt 2"/>
 						<combo id="lthick" visibility=":mode ilt 2"/>
-						<hbox fill="false" spacing="4" pad.h="4">
-							<button ui:inject="Button_cyan" text="labels.history" id="mtrack" size="16" visibility=":mode ilt 2"/>
-							<button ui:inject="Button_cyan" text="labels.clear" id="mreset" size="16" visibility=":mode ilt 2"/>
+						<hbox fill="false" spacing="4" pad.h="4" visibility=":mode ilt 2">
+							<button ui:inject="Button_cyan" text="labels.history" id="mtrack" size="16" />
+							<button ui:inject="Button_cyan" text="labels.clear" id="mreset" size="16" />
 						</hbox>
 
 						<button ui:inject="Button_cyan" text="labels.metering.measure_line" id="mline" size="16" visibility=":mode ilt 2" pad.l="15"/>

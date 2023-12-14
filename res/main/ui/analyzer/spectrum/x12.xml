@@ -52,7 +52,7 @@
 						</ui:with>
 
 						<!-- Meshes -->
-						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.8" color.a="0.8" fill="true" visibility=":mtrack" />
+						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack" />
 						<ui:for id="i" first="0" count="12">
 							<mesh xi="0" yi="${:i + 2}" id="spd" width=":lthick+1" color="graph_mesh_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
 						</ui:for>
