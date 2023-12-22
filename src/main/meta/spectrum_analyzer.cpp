@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MAJOR         1
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MINOR         0
-#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         21
+#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         22
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -163,6 +163,8 @@ namespace lsp
             SWITCH("splog", "Spectralizer logarithmic scale", 1), \
             SWITCH("freeze", "Analyzer freeze", 0), \
             SWITCH("mline", "Horizontal measuring line", 0), \
+            SWITCH("mtrack", "Track maximum values", 1), \
+            TRIGGER("mreset", "Reset maximum values"), \
             { "tol", "FFT Tolerance", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, 0, fft_tolerance }, \
             { "wnd", "FFT Window", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::WND_DFL, 0, fft_windows }, \
             { "env", "FFT Envelope", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::ENV_DFL, 0, fft_envelopes }, \
@@ -176,7 +178,7 @@ namespace lsp
             { "freq", "Frequency", U_HZ, R_METER, F_OUT | F_UPPER | F_LOWER, \
                 spectrum_analyzer::FREQ_MIN, spectrum_analyzer::FREQ_MAX, spectrum_analyzer::FREQ_DFL, 0, NULL }, \
             { "lvl", "Level", U_GAIN_AMP, R_METER, F_OUT | F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
-            MESH("spd", "Spectrum Data", c + 1, spectrum_analyzer::MESH_POINTS)
+            MESH("spd", "Spectrum Data", c + 2, spectrum_analyzer::MESH_POINTS + 4)
 
         #define SA_SGROUP(id) \
             SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0)
@@ -420,6 +422,7 @@ namespace lsp
         {
             "Spektrumanalysator x1",
             "Spectrum Analyzer x1",
+            "Spectrum Analyzer x1",
             "SA1",
             &developers::v_sadovnikov,
             "spectrum_analyzer_x1",
@@ -443,6 +446,7 @@ namespace lsp
         const plugin_t spectrum_analyzer_x2 =
         {
             "Spektrumanalysator x2",
+            "Spectrum Analyzer x2",
             "Spectrum Analyzer x2",
             "SA2",
             &developers::v_sadovnikov,
@@ -468,6 +472,7 @@ namespace lsp
         {
             "Spektrumanalysator x4",
             "Spectrum Analyzer x4",
+            "Spectrum Analyzer x4",
             "SA4",
             &developers::v_sadovnikov,
             "spectrum_analyzer_x4",
@@ -491,6 +496,7 @@ namespace lsp
         const plugin_t spectrum_analyzer_x8 =
         {
             "Spektrumanalysator x8",
+            "Spectrum Analyzer x8",
             "Spectrum Analyzer x8",
             "SA8",
             &developers::v_sadovnikov,
@@ -516,6 +522,7 @@ namespace lsp
         {
             "Spektrumanalysator x12",
             "Spectrum Analyzer x12",
+            "Spectrum Analyzer x12",
             "SA12",
             &developers::v_sadovnikov,
             "spectrum_analyzer_x12",
@@ -539,6 +546,7 @@ namespace lsp
         const plugin_t spectrum_analyzer_x16 =
         {
             "Spektrumanalysator x16",
+            "Spectrum Analyzer x16",
             "Spectrum Analyzer x16",
             "SA16",
             &developers::v_sadovnikov,

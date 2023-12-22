@@ -29,6 +29,7 @@
 #include <lsp-plug.in/stdlib/math.h>
 #include <lsp-plug.in/dsp/dsp.h>
 
+#include <lsp-plug.in/shared/debug.h>
 #include <lsp-plug.in/shared/id_colors.h>
 
 #define BUFFER_SIZE         0x1000u
@@ -37,12 +38,6 @@ namespace lsp
 {
     namespace plugins
     {
-        static plug::IPort *TRACE_PORT(plug::IPort *p)
-        {
-            lsp_trace("  port id=%s", (p)->metadata()->id);
-            return p;
-        }
-
         //---------------------------------------------------------------------
         // Plugin factory
         static const meta::plugin_t *plugins[] =
@@ -70,6 +65,7 @@ namespace lsp
             vAnalyze        = NULL;
             pData           = NULL;
             vFrequences     = NULL;
+            vMaxValues      = NULL;
             vMFrequences    = NULL;
             vIndexes        = NULL;
 
@@ -85,6 +81,10 @@ namespace lsp
             enMode          = SA_ANALYZER;
             bLogScale       = false;
             bMSSwitch       = false;
+            bMaxTracking    = true;
+
+            fWndState       = 0.0f;
+            fEnvState       = 0.0f;
 
             pBypass         = NULL;
             pMode           = NULL;
@@ -103,6 +103,8 @@ namespace lsp
             pMSSwitch       = NULL;
 
             pFreeze         = NULL;
+            pMaxTrack       = NULL;
+            pMaxReset       = NULL;
             pSpp            = NULL;
 
             for (size_t i=0; i<2; ++i)
@@ -132,7 +134,7 @@ namespace lsp
             size_t ind_buf_size     = align_size(sizeof(uint32_t) * meta::spectrum_analyzer::MESH_POINTS, 64);
             size_t analyze_size     = align_size(sizeof(float *) * channels, 16);
             size_t buffers          = BUFFER_SIZE * sizeof(float) * channels;
-            size_t alloc            = hdr_size + freq_buf_size + mfreq_buf_size + ind_buf_size + analyze_size + buffers;
+            size_t alloc            = hdr_size + freq_buf_size + freq_buf_size + mfreq_buf_size + ind_buf_size + analyze_size + buffers;
 
             lsp_trace("header_size      = %d", int(hdr_size));
             lsp_trace("freq_buf_size    = %d", int(freq_buf_size));
@@ -158,27 +160,17 @@ namespace lsp
             fPreamp         = meta::spectrum_analyzer::PREAMP_DFL;
 
             // Initialize pointers and cleanup buffers
-            vChannels       = reinterpret_cast<sa_channel_t *>(ptr);
-            ptr            += hdr_size;
-            lsp_trace("vChannels = %p", vChannels);
+            vChannels       = advance_ptr_bytes<sa_channel_t>(ptr, hdr_size);
+            vFrequences     = advance_ptr_bytes<float>(ptr, freq_buf_size);
+            vMaxValues      = advance_ptr_bytes<float>(ptr, freq_buf_size);
+            vMFrequences    = advance_ptr_bytes<float>(ptr, mfreq_buf_size);
+            vIndexes        = advance_ptr_bytes<uint32_t>(ptr, ind_buf_size);
+            vAnalyze        = advance_ptr_bytes<float *>(ptr, analyze_size);
 
-            vFrequences   = reinterpret_cast<float *>(ptr);
-            ptr          += freq_buf_size;
             dsp::fill_zero(vFrequences, meta::spectrum_analyzer::MESH_POINTS);
-            lsp_trace("vFrequences = %p", vFrequences);
-
-            vMFrequences  = reinterpret_cast<float *>(ptr);
-            ptr          += mfreq_buf_size;
             dsp::fill_zero(vMFrequences, meta::spectrum_analyzer::MESH_POINTS);
-            lsp_trace("vMFrequences = %p", vMFrequences);
-
-            vIndexes      = reinterpret_cast<uint32_t *>(ptr);
-            ptr          += ind_buf_size;
+            dsp::fill_zero(vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
             memset(vIndexes, 0, ind_buf_size);
-            lsp_trace("vIndexes = %p", vIndexes);
-
-            vAnalyze    = reinterpret_cast<float **>(ptr);
-            ptr        += analyze_size;
 
             // Initialize channels
             for (size_t i=0; i<channels; ++i)
@@ -195,8 +187,7 @@ namespace lsp
                 c->fHue             = 0.0f;
                 c->vIn              = NULL;
                 c->vOut             = NULL;
-                c->vBuffer          = reinterpret_cast<float *>(ptr);
-                ptr                += BUFFER_SIZE * sizeof(float);
+                c->vBuffer          = advance_ptr_bytes<float>(ptr, BUFFER_SIZE * sizeof(float));
 
                 // Port references
                 c->pIn              = NULL;
@@ -261,13 +252,13 @@ namespace lsp
                     break;
 
                 sa_channel_t *c     = &vChannels[i];
-                c->pIn              = TRACE_PORT(ports[port_id++]);
-                c->pOut             = TRACE_PORT(ports[port_id++]);
-                c->pOn              = TRACE_PORT(ports[port_id++]);
-                c->pSolo            = TRACE_PORT(ports[port_id++]);
-                c->pFreeze          = TRACE_PORT(ports[port_id++]);
-                c->pHue             = TRACE_PORT(ports[port_id++]);
-                c->pShift           = TRACE_PORT(ports[port_id++]);
+                c->pIn              = trace_port(ports[port_id++]);
+                c->pOut             = trace_port(ports[port_id++]);
+                c->pOn              = trace_port(ports[port_id++]);
+                c->pSolo            = trace_port(ports[port_id++]);
+                c->pFreeze          = trace_port(ports[port_id++]);
+                c->pHue             = trace_port(ports[port_id++]);
+                c->pShift           = trace_port(ports[port_id++]);
 
                 // Sync metadata
                 const meta::port_t *meta  = c->pSolo->metadata();
@@ -288,47 +279,49 @@ namespace lsp
                     sa_channel_t *l     = &vChannels[i];
                     sa_channel_t *r     = &vChannels[i+1];
 
-                    l->pMSSwitch        = TRACE_PORT(ports[port_id++]);
+                    l->pMSSwitch        = trace_port(ports[port_id++]);
                     r->pMSSwitch        = l->pMSSwitch;
                 }
             }
 
             // Initialize basic ports
-            pBypass         = TRACE_PORT(ports[port_id++]);
-            pMode           = TRACE_PORT(ports[port_id++]);
-            TRACE_PORT(ports[port_id++]); // Skip mesh thickness
-            TRACE_PORT(ports[port_id++]); // Skip spectralizer mode
-            pLogScale       = TRACE_PORT(ports[port_id++]);
-            pFreeze         = TRACE_PORT(ports[port_id++]);
-            TRACE_PORT(ports[port_id++]); // Skip horizontal line switch button
-            pTolerance      = TRACE_PORT(ports[port_id++]);
-            pWindow         = TRACE_PORT(ports[port_id++]);
-            pEnvelope       = TRACE_PORT(ports[port_id++]);
-            pPreamp         = TRACE_PORT(ports[port_id++]);
-            pZoom           = TRACE_PORT(ports[port_id++]);
-            pReactivity     = TRACE_PORT(ports[port_id++]);
+            pBypass         = trace_port(ports[port_id++]);
+            pMode           = trace_port(ports[port_id++]);
+            trace_port(ports[port_id++]); // Skip mesh thickness
+            trace_port(ports[port_id++]); // Skip spectralizer mode
+            pLogScale       = trace_port(ports[port_id++]);
+            pFreeze         = trace_port(ports[port_id++]);
+            trace_port(ports[port_id++]); // Skip horizontal line switch button
+            pMaxTrack       = trace_port(ports[port_id++]);
+            pMaxReset       = trace_port(ports[port_id++]);
+            pTolerance      = trace_port(ports[port_id++]);
+            pWindow         = trace_port(ports[port_id++]);
+            pEnvelope       = trace_port(ports[port_id++]);
+            pPreamp         = trace_port(ports[port_id++]);
+            pZoom           = trace_port(ports[port_id++]);
+            pReactivity     = trace_port(ports[port_id++]);
             if (nChannels > 1)
-                pChannel        = TRACE_PORT(ports[port_id++]);
-            pSelector       = TRACE_PORT(ports[port_id++]);
-            TRACE_PORT(ports[port_id++]); // Skip horizontal line value
-            pFrequency      = TRACE_PORT(ports[port_id++]);
-            pLevel          = TRACE_PORT(ports[port_id++]);
-            pFftData        = TRACE_PORT(ports[port_id++]);
+                pChannel        = trace_port(ports[port_id++]);
+            pSelector       = trace_port(ports[port_id++]);
+            trace_port(ports[port_id++]); // Skip horizontal line value
+            pFrequency      = trace_port(ports[port_id++]);
+            pLevel          = trace_port(ports[port_id++]);
+            pFftData        = trace_port(ports[port_id++]);
 
             // Bind spectralizer ports
             if (nChannels >= 2)
             {
-                pMSSwitch           = TRACE_PORT(ports[port_id++]);
-                vSpc[0].pPortId     = TRACE_PORT(ports[port_id++]);
+                pMSSwitch           = trace_port(ports[port_id++]);
+                vSpc[0].pPortId     = trace_port(ports[port_id++]);
             }
-            vSpc[0].pFBuffer    = TRACE_PORT(ports[port_id++]);
+            vSpc[0].pFBuffer    = trace_port(ports[port_id++]);
             vSpc[0].nChannelId  = -1;
 
             if (nChannels >= 2)
             {
                 if (nChannels > 2)
-                    vSpc[1].pPortId     = TRACE_PORT(ports[port_id++]);
-                vSpc[1].pFBuffer    = TRACE_PORT(ports[port_id++]);
+                    vSpc[1].pPortId     = trace_port(ports[port_id++]);
+                vSpc[1].pFBuffer    = trace_port(ports[port_id++]);
                 vSpc[1].nChannelId  = -1;
             }
 
@@ -440,6 +433,7 @@ namespace lsp
             bMSSwitch               = false;
             vSpc[0].nChannelId      = -1;
             vSpc[1].nChannelId      = -1;
+
         }
 
         void spectrum_analyzer::update_x2_settings(ssize_t ch1, ssize_t ch2)
@@ -513,6 +507,13 @@ namespace lsp
             bLogScale               = (pLogScale != NULL) && (pLogScale->value() >= 0.5f);
             size_t rank             = pTolerance->value() + meta::spectrum_analyzer::RANK_MIN;
 
+            bool res_state          = false;  // Automatic reset maximum values
+
+            bMaxTracking            = pMaxTrack->value() >= 0.5f;
+
+            if (pMaxReset->value() >= 0.5f)
+                res_state = true;
+
             lsp_trace("rank         = %d",     int(rank));
             lsp_trace("channel      = %d",     int(nChannel));
             lsp_trace("selector     = %.3f",   fSelector);
@@ -563,12 +564,19 @@ namespace lsp
             }
 
             // Update mode
-            enMode      = mode;
+            if (enMode != mode)
+            {
+                res_state    = true;
+                enMode       = mode;
+            }
 
             // Update analysis parameters
             bool sync_freqs         = rank != sAnalyzer.get_rank();
             if (sync_freqs)
+            {
+                res_state    = true;
                 sAnalyzer.set_rank(rank);
+            }
 
             sAnalyzer.set_reactivity(pReactivity->value());
             sAnalyzer.set_window(pWindow->value());
@@ -592,6 +600,25 @@ namespace lsp
                     fMinFreq, fMaxFreq,
                     meta::spectrum_analyzer::MESH_POINTS
                 );
+            }
+
+            // Check if the state of the switches has not changed
+            if (pWindow->value() != fWndState)
+            {
+                res_state    = true;
+                fWndState    = pWindow->value();
+            }
+            if (pEnvelope->value() != fEnvState)
+            {
+                res_state    = true;
+                fEnvState    = pEnvelope->value();
+            }
+
+            // if the state has changed
+            if (res_state)
+            {
+                // Resset Track Mesh
+                dsp::fill_zero(vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
             }
         }
 
@@ -627,7 +654,11 @@ namespace lsp
                         continue;
 
                     if (flags & F_SMOOTH_LOG)
-                        dsp::smooth_cubic_log(&v[off], vMFrequences[pi], vMFrequences[ni], ni-pi);
+                    {
+                        const float v_pi = lsp_max(vMFrequences[pi], GAIN_AMP_M_160_DB);
+                        const float v_ni = lsp_max(vMFrequences[ni], GAIN_AMP_M_160_DB);
+                        dsp::smooth_cubic_log(&v[off], v_pi, v_ni, ni-pi);
+                    }
                     else
                         dsp::smooth_cubic_linear(&v[off], vMFrequences[pi], vMFrequences[ni], ni-pi);
 
@@ -638,7 +669,11 @@ namespace lsp
                 if (pi < meta::spectrum_analyzer::MESH_POINTS)
                 {
                     if (flags & F_SMOOTH_LOG)
-                        dsp::smooth_cubic_log(&v[off], vMFrequences[pi], vMFrequences[ni-1], ni-pi);
+                    {
+                        const float v_pi = lsp_max(vMFrequences[pi], GAIN_AMP_M_160_DB);
+                        const float v_ni = lsp_max(vMFrequences[ni-1], GAIN_AMP_M_160_DB);
+                        dsp::smooth_cubic_log(&v[off], v_pi, v_ni, ni-pi);
+                    }
                     else
                         dsp::smooth_cubic_linear(&v[off], vMFrequences[pi], vMFrequences[ni-1], ni-pi);
                 }
@@ -722,6 +757,8 @@ namespace lsp
 
         void spectrum_analyzer::process(size_t samples)
         {
+            float *v;
+
             // Always query for drawing
             pWrapper->query_display_draw();
 
@@ -743,7 +780,15 @@ namespace lsp
                 mesh_request        = false;
 
             if (mesh_request)
-                dsp::copy(mesh->pvData[0], vFrequences, meta::spectrum_analyzer::MESH_POINTS);
+            {
+                v   = mesh->pvData[0];
+                dsp::copy(&v[2], vFrequences, meta::spectrum_analyzer::MESH_POINTS);
+
+                v[0]    = SPEC_FREQ_MIN * 0.5f;
+                v[1]    = SPEC_FREQ_MIN * 0.5f;
+                v[meta::spectrum_analyzer::MESH_POINTS + 2] = SPEC_FREQ_MAX * 2.0f;
+                v[meta::spectrum_analyzer::MESH_POINTS + 3] = SPEC_FREQ_MAX * 2.0f;
+            }
 
             for (size_t n=samples; n > 0;)
             {
@@ -788,9 +833,12 @@ namespace lsp
                     // Mesh is requested?
                     if (mesh_request)
                     {
+
                         for (size_t i=0; i<nChannels; ++i)
                         {
-                            c     = &vChannels[i];
+                            c           = &vChannels[i];
+                            v           = mesh->pvData[i+2];
+
                             if (c->bSend)
                             {
                                 // Copy frequency points
@@ -798,11 +846,32 @@ namespace lsp
                                 if ((enMode == SA_MASTERING) || (enMode == SA_MASTERING_STEREO))
                                     flags |= F_SMOOTH_LOG | F_MASTERING;
 
-                                get_spectrum(mesh->pvData[i+1], i, flags);
+
+                                get_spectrum(&v[2], i, flags);
+                                v[0]    = 0.0f;
+                                v[1]    = v[2];
+                                v[meta::spectrum_analyzer::MESH_POINTS + 2] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                                v[meta::spectrum_analyzer::MESH_POINTS + 3] = 0.0f;
+
+                                if (bMaxTracking)
+                                    dsp::pmax2(vMaxValues, &v[2], meta::spectrum_analyzer::MESH_POINTS);
                             }
                             else
-                                dsp::fill_zero(mesh->pvData[i+1], meta::spectrum_analyzer::MESH_POINTS);
+                                dsp::fill_zero(v, meta::spectrum_analyzer::MESH_POINTS + 4);
                         }
+
+                        // Report maixmums
+                        v = mesh->pvData[1];
+                        if (bMaxTracking)
+                        {
+                            dsp::copy(&v[2], vMaxValues, meta::spectrum_analyzer::MESH_POINTS);
+                            v[0]    = 0.0f;
+                            v[1]    = v[2];
+                            v[meta::spectrum_analyzer::MESH_POINTS + 2] = v[meta::spectrum_analyzer::MESH_POINTS + 1];
+                            v[meta::spectrum_analyzer::MESH_POINTS + 3] = 0.0f;
+                        }
+                        else
+                            dsp::fill_zero(v, meta::spectrum_analyzer::MESH_POINTS + 4);
                     }
                 }
 
@@ -860,7 +929,7 @@ namespace lsp
 
             // Commit mesh data
             if (mesh_request)
-                mesh->data(nChannels + 1, meta::spectrum_analyzer::MESH_POINTS);
+                mesh->data(nChannels + 2, meta::spectrum_analyzer::MESH_POINTS + 4);
         }
 
         bool spectrum_analyzer::inline_display(plug::ICanvas *cv, size_t width, size_t height)
@@ -975,6 +1044,7 @@ namespace lsp
                         v->write("fHue", c->fHue);
                         v->write("vIn", c->vIn);
                         v->write("vOut", c->vOut);
+                        v->write("vBuffer", c->vBuffer);
 
                         v->write("pIn", c->pIn);
                         v->write("pOut", c->pOut);
@@ -1007,6 +1077,11 @@ namespace lsp
             v->write("fZoom", fZoom);
             v->write("enMode", enMode);
             v->write("bLogScale", bLogScale);
+            v->write("bMSSwitch", bMSSwitch);
+            v->write("bMaxTracking", bMaxTracking);
+
+            v->write("fWndState", fWndState);
+            v->write("fEnvState", fEnvState);
 
             v->write("pBypass", pBypass);
             v->write("pMode", pMode);
@@ -1025,6 +1100,8 @@ namespace lsp
             v->write("pMSSwitch", pMSSwitch);
 
             v->write("pFreeze", pFreeze);
+            v->write("pMaxTrack", pMaxTrack);
+            v->write("pMaxReset", pMaxReset);
             v->write("pSpp", pSpp);
 
             v->begin_array("vSpc", vSpc, 2);

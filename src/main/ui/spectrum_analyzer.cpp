@@ -24,6 +24,7 @@
 #include <lsp-plug.in/dsp-units/units.h>
 #include <lsp-plug.in/plug-fw/ui.h>
 #include <lsp-plug.in/runtime/LSPString.h>
+#include <lsp-plug.in/stdlib/locale.h>
 #include <private/meta/spectrum_analyzer.h>
 #include <private/ui/spectrum_analyzer.h>
 
@@ -181,6 +182,8 @@ namespace lsp
 
             float mlvalue = pMlValue->value();
             LSPString text;
+
+            SET_LOCALE_SCOPED(LC_NUMERIC, "C");
             text.fmt_ascii("%.1f", dspu::gain_to_db(mlvalue));
 
             wMlValue->text()->params()->set_string("value", &text);
@@ -212,6 +215,7 @@ namespace lsp
             tk::prop::String snote;
             LSPString text;
             snote.bind(ch->wFrequency->style(), pDisplay->dictionary());
+            SET_LOCALE_SCOPED(LC_NUMERIC, "C");
 
             // Frequency
             text.fmt_ascii("%.2f", freq);

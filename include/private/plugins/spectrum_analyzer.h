@@ -94,6 +94,7 @@ namespace lsp
                 sa_channel_t       *vChannels;
                 float             **vAnalyze;           // Analysis buffers
                 float              *vFrequences;
+                float              *vMaxValues;         // Maximum value tracking
                 float              *vMFrequences;
                 uint32_t           *vIndexes;
                 uint8_t            *pData;
@@ -110,6 +111,10 @@ namespace lsp
                 mode_t              enMode;
                 bool                bLogScale;
                 bool                bMSSwitch;          // Mid/Side switch for stereo mode
+                bool                bMaxTracking;       // Enable tracking of maximum values
+
+                float               fWndState;          // Variable to save the state of WINDOW
+                float               fEnvState;          // Variable to save the state of ENVELOPE
 
                 plug::IPort        *pBypass;
                 plug::IPort        *pMode;
@@ -128,6 +133,8 @@ namespace lsp
                 plug::IPort        *pMSSwitch;
 
                 plug::IPort        *pFreeze;
+                plug::IPort        *pMaxTrack;          // Enable maximum value tracking
+                plug::IPort        *pMaxReset;          // Reset maximum values
                 plug::IPort        *pSpp;
                 sa_spectralizer_t   vSpc[2];
 
