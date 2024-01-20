@@ -75,10 +75,15 @@ namespace lsp
                 nChannels   = 1;
 
             wMainGraph      = NULL;
+            wSpcGraphSingle = NULL;
+            wSpcGraphDual   = NULL;
             wMlValue        = NULL;
             wFrequency      = NULL;
             nXAxisIndex     = -1;
-            nMainGraphBtn   = 0;
+            nXAxisIndexSpcS = -1;
+            nXAxisIndexSpcD1= -1;
+            nXAxisIndexSpcD2= -1;
+            nGraphBtn   = 0;
 
             pMode           = NULL;
             pSelector       = NULL;
@@ -153,10 +158,29 @@ namespace lsp
             wMainGraph          = pWrapper->controller()->widgets()->get<tk::Graph>("main_graph");
             if (wMainGraph != NULL)
             {
-                wMainGraph->slots()->bind(tk::SLOT_MOUSE_DOWN, slot_main_graph_mouse_down, this);
-                wMainGraph->slots()->bind(tk::SLOT_MOUSE_MOVE, slot_main_graph_mouse_move, this);
-                wMainGraph->slots()->bind(tk::SLOT_MOUSE_UP, slot_main_graph_mouse_up, this);
+                wMainGraph->slots()->bind(tk::SLOT_MOUSE_DOWN, slot_graph_mouse_down, this);
+                wMainGraph->slots()->bind(tk::SLOT_MOUSE_MOVE, slot_graph_mouse_move, this);
+                wMainGraph->slots()->bind(tk::SLOT_MOUSE_UP, slot_graph_mouse_up, this);
                 nXAxisIndex         = find_axis(wMainGraph, "main_graph_ox");
+            }
+
+            wSpcGraphSingle          = pWrapper->controller()->widgets()->get<tk::Graph>("spc_single_graph");
+            if (wSpcGraphSingle != NULL)
+            {
+                wSpcGraphSingle->slots()->bind(tk::SLOT_MOUSE_DOWN, slot_graph_mouse_down, this);
+                wSpcGraphSingle->slots()->bind(tk::SLOT_MOUSE_MOVE, slot_graph_mouse_move, this);
+                wSpcGraphSingle->slots()->bind(tk::SLOT_MOUSE_UP, slot_graph_mouse_up, this);
+                nXAxisIndexSpcS         = find_axis(wSpcGraphSingle, "spc_single_graph_ox");
+            }
+
+            wSpcGraphDual          = pWrapper->controller()->widgets()->get<tk::Graph>("spc_dual_graph");
+            if (wSpcGraphDual != NULL)
+            {
+                wSpcGraphDual->slots()->bind(tk::SLOT_MOUSE_DOWN, slot_graph_mouse_down, this);
+                wSpcGraphDual->slots()->bind(tk::SLOT_MOUSE_MOVE, slot_graph_mouse_move, this);
+                wSpcGraphDual->slots()->bind(tk::SLOT_MOUSE_UP, slot_graph_mouse_up, this);
+                nXAxisIndexSpcD1         = find_axis(wSpcGraphDual, "spc_dual_graph_ox_1");
+                nXAxisIndexSpcD2         = find_axis(wSpcGraphDual, "spc_dual_graph_ox_2");
             }
 
             // Bind horizontal line
@@ -313,81 +337,130 @@ namespace lsp
             return -1;
         }
 
-        status_t spectrum_analyzer_ui::slot_main_graph_mouse_down(tk::Widget *sender, void *ptr, void *data)
+        status_t spectrum_analyzer_ui::slot_graph_mouse_down(tk::Widget *sender, void *ptr, void *data)
         {
             spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
             if (_this == NULL)
                 return STATUS_BAD_STATE;
 
             ws::event_t *ev = static_cast<ws::event_t *>(data);
-            _this->on_main_graph_mouse_down(sender, ev);
+            _this->on_graph_mouse_down(sender, ev);
 
             return STATUS_OK;
         }
 
-        status_t spectrum_analyzer_ui::slot_main_graph_mouse_move(tk::Widget *sender, void *ptr, void *data)
+        status_t spectrum_analyzer_ui::slot_graph_mouse_move(tk::Widget *sender, void *ptr, void *data)
         {
             spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
             if (_this == NULL)
                 return STATUS_BAD_STATE;
 
             ws::event_t *ev = static_cast<ws::event_t *>(data);
-            _this->on_main_graph_mouse_move(sender, ev);
+            _this->on_graph_mouse_move(sender, ev);
 
             return STATUS_OK;
         }
 
-        status_t spectrum_analyzer_ui::slot_main_graph_mouse_up(tk::Widget *sender, void *ptr, void *data)
+        status_t spectrum_analyzer_ui::slot_graph_mouse_up(tk::Widget *sender, void *ptr, void *data)
         {
             spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
             if (_this == NULL)
                 return STATUS_BAD_STATE;
 
             ws::event_t *ev = static_cast<ws::event_t *>(data);
-            _this->on_main_graph_mouse_up(sender, ev);
+            _this->on_graph_mouse_up(sender, ev);
 
             return STATUS_OK;
         }
 
-        void spectrum_analyzer_ui::on_main_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev)
+        void spectrum_analyzer_ui::on_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev)
         {
-            nMainGraphBtn |= (size_t(1) << ev->nCode);
-            on_main_graph_mouse_move(sender, ev);
+            nGraphBtn |= (size_t(1) << ev->nCode);
+            on_graph_mouse_move(sender, ev);
         }
 
-        void spectrum_analyzer_ui::on_main_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev)
+        void spectrum_analyzer_ui::on_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev)
         {
-            nMainGraphBtn &= ~(size_t(1) << ev->nCode);
+            nGraphBtn &= ~(size_t(1) << ev->nCode);
         }
 
-        void spectrum_analyzer_ui::on_main_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev)
+        void spectrum_analyzer_ui::on_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev)
         {
             if ((wMainGraph == NULL) || (nXAxisIndex < 0))
                 return;
-            if (nMainGraphBtn != (size_t(1) << ws::MCB_LEFT))
+            if (nGraphBtn != (size_t(1) << ws::MCB_LEFT))
                 return;
 
-            // Check that channel is enabled
-            LSPString port_id;
-            ssize_t channel = (pSelChannel != NULL) ? pSelChannel->value() : 0;
-            port_id.fmt_ascii("on_%d", int(channel));
-            ui::IPort *channel_on = pWrapper->port(&port_id);
-            bool channel_enabled = (channel_on != NULL) ? channel_on->value() >= 0.5f : true;
-            if (!channel_enabled)
-                return;
-
-            // Translate coordinates
-            float freq = 0.0f;
-            if (wMainGraph->xy_to_axis(nXAxisIndex, &freq, ev->nLeft, ev->nTop) != STATUS_OK)
-                return;
-
-            lsp_trace("Graph apply: x=%d, y=%d, freq=%.2f", ev->nLeft, ev->nTop, freq);
-
-            // Obtain which port set (left/right/mid/side) should be updated
-            if (pSelector != NULL)
+            if (sender == wMainGraph)
             {
-                pSelector->set_value(freq);
-                pSelector->notify_all(ui::PORT_USER_EDIT);
+                if (nXAxisIndex < 0)
+                    return;
+                // Check that channel is enabled
+                LSPString port_id;
+                ssize_t channel = (pSelChannel != NULL) ? pSelChannel->value() : 0;
+                port_id.fmt_ascii("on_%d", int(channel));
+                ui::IPort *channel_on = pWrapper->port(&port_id);
+                bool channel_enabled = (channel_on != NULL) ? channel_on->value() >= 0.5f : true;
+                if (!channel_enabled)
+                    return;
+
+                // Translate coordinates
+                float freq = 0.0f;
+                if (wMainGraph->xy_to_axis(nXAxisIndex, &freq, ev->nLeft, ev->nTop) != STATUS_OK)
+                    return;
+
+                lsp_trace("Main Graph apply: x=%d, y=%d, freq=%.2f", ev->nLeft, ev->nTop, freq);
+
+                if (pSelector != NULL)
+                {
+                    pSelector->set_value(freq);
+                    pSelector->notify_all(ui::PORT_USER_EDIT);
+                }
+            }
+            else if (sender == wSpcGraphSingle)
+            {
+                if (nXAxisIndexSpcS < 0)
+                    return;
+
+                // Translate coordinates
+                float freq = 0.0f;
+                if (wSpcGraphSingle->xy_to_axis(nXAxisIndexSpcS, &freq, ev->nLeft, ev->nTop) != STATUS_OK)
+                    return;
+
+                lsp_trace("Spc Single Graph apply: x=%d, y=%d, freq=%.2f", ev->nLeft, ev->nTop, freq);
+
+                if (pSelector != NULL)
+                {
+                    pSelector->set_value(freq);
+                    pSelector->notify_all(ui::PORT_USER_EDIT);
+                }
+
+            }
+            else if (sender == wSpcGraphDual)
+            {
+                if ((nXAxisIndexSpcD1 < 0) || (nXAxisIndexSpcD2 < 0))
+                    return;
+
+                ws::rectangle_t r;
+                wSpcGraphDual->get_padded_rectangle(&r);
+
+                ssize_t xcenter = r.nLeft + r.nWidth/2;
+                ssize_t xaxis = xcenter > ev->nLeft ? nXAxisIndexSpcD1 : nXAxisIndexSpcD2;
+
+
+                // Translate coordinates
+                float freq = 0.0f;
+                if (wSpcGraphDual->xy_to_axis(xaxis, &freq, ev->nLeft, ev->nTop) != STATUS_OK)
+                    return;
+
+                lsp_trace("Spc Dual Graph apply: x=%d, y=%d, freq=%.2f", ev->nLeft, ev->nTop, freq);
+
+                if (pSelector != NULL)
+                {
+                    pSelector->set_value(freq);
+                    pSelector->notify_all(ui::PORT_USER_EDIT);
+                }
+
             }
         }
 

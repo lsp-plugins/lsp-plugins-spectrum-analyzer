@@ -128,7 +128,8 @@
 							</ui:with>
 						</ui:for>
 
-						<text ox="0"
+						<text
+							ox="0"
 							oy="2"
 							y="1"
 							valign="-1"
@@ -146,7 +147,7 @@
 
 				<!-- Spectralizer (1 channel) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 4">
-					<graph width.min="615" height.min="340" expand="true" fill="true">
+					<graph ui:id="spc_single_graph" width.min="615" height.min="340" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visibility="false"/>
 
 						<!-- Frame buffer -->
@@ -182,8 +183,10 @@
 						<marker v="24000" color="graph_prim" visibility="false"/>
 
 						<!-- Axis -->
-						<axis angle="0.0" min="10" max="24000" log="true" visibility="false"/>
+						<axis angle="0.0" ui:id="spc_single_graph_ox" min="10" max="24000" log="true" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
+
+						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
 
 						<!-- Text -->
 						<ui:with y="8" halign="1" valign="1" color="graph_prim">
@@ -202,7 +205,7 @@
 
 				<!-- Spectralizer (2 channels) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 5">
-					<graph width.min="615" height.min="340" expand="true" fill="true">
+					<graph ui:id="spc_dual_graph" width.min="615" height.min="340" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visibility="false"/>
 						<origin hpos="0" vpos="1" visibility="false"/>
 
@@ -244,9 +247,13 @@
 						</ui:with>
 
 						<!-- Axis -->
-						<axis angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+						<axis ui:id="spc_dual_graph_ox_1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
-						<axis o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+						<axis ui:id="spc_dual_graph_ox_2" o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+
+						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
+
+						<marker id="sel" ox="2" oy="1" x.zero="10"  width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
 
 						<!-- Text -->
 						<ui:for id="c" first="0" last="1">

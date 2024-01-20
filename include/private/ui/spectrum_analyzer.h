@@ -44,10 +44,16 @@ namespace lsp
             protected:
                 size_t                      nChannels;
                 tk::Graph                  *wMainGraph;
+                tk::Graph                  *wSpcGraphSingle;
+                tk::Graph                  *wSpcGraphDual;
+
                 tk::GraphText              *wMlValue;           // The Horizontal line value widget
                 tk::GraphText              *wFrequency;         // The frequency widget
                 ssize_t                     nXAxisIndex;
-                size_t                      nMainGraphBtn;
+                ssize_t                     nXAxisIndexSpcS;
+                ssize_t                     nXAxisIndexSpcD1;
+                ssize_t                     nXAxisIndexSpcD2;
+                size_t                      nGraphBtn;
 
                 ui::IPort                  *pMode;              // Operating mode
                 ui::IPort                  *pSelector;          // Selector frequency
@@ -63,17 +69,17 @@ namespace lsp
                 ui::IPort      *find_port(const char *prefix, size_t id);
 
             protected:
-                static status_t slot_main_graph_mouse_down(tk::Widget *sender, void *ptr, void *data);
-                static status_t slot_main_graph_mouse_move(tk::Widget *sender, void *ptr, void *data);
-                static status_t slot_main_graph_mouse_up(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_graph_mouse_down(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_graph_mouse_move(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_graph_mouse_up(tk::Widget *sender, void *ptr, void *data);
 
             protected:
                 void            update_selector_text();
                 void            update_mlvalue_text();
                 ssize_t         find_axis(tk::Graph *graph, const char *id);
-                void            on_main_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev);
-                void            on_main_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev);
-                void            on_main_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev);
+                void            on_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev);
+                void            on_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev);
+                void            on_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev);
                 bool            global_selector_visible();
 
             public:
