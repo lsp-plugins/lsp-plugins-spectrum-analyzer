@@ -76,9 +76,11 @@ namespace lsp
 
             wMainGraph      = NULL;
             wMlValue        = NULL;
+            wFrequency      = NULL;
             nXAxisIndex     = -1;
             nMainGraphBtn   = 0;
 
+            pMode           = NULL;
             pSelector       = NULL;
             pMlValue        = NULL;
             pSelChannel     = NULL;
@@ -112,6 +114,10 @@ namespace lsp
                 return res;
 
             // Bind ports
+            pMode   = pWrapper->port("mode");
+            if (pMode != NULL)
+                pMode->bind(this);
+
             pSelector   = pWrapper->port("sel");
             if (pSelector != NULL)
                 pSelector->bind(this);
@@ -156,6 +162,9 @@ namespace lsp
             // Bind horizontal line
             wMlValue            = pWrapper->controller()->widgets()->get<tk::GraphText>("mline_level");
 
+            // Bind global frequency value
+            wFrequency          = pWrapper->controller()->widgets()->get<tk::GraphText>("global_selector");
+
             // Update selector and horizontal line text after init
             update_selector_text();
             update_mlvalue_text();
@@ -165,7 +174,8 @@ namespace lsp
 
         void spectrum_analyzer_ui::notify(ui::IPort *port, size_t flags)
         {
-            if ((pSelector == port) ||
+            if ((pMode == port) ||
+                (pSelector == port) ||
                 (pSelChannel == port) ||
                 (pFftFreq == port) ||
                 (pLevel == port))
@@ -190,6 +200,16 @@ namespace lsp
             wMlValue->text()->set_key("labels.values.x_db");
         }
 
+        bool spectrum_analyzer_ui::global_selector_visible()
+        {
+            size_t mode = pMode->value();
+
+            if (nChannels <= 2)
+                return false;
+
+            return (mode == 1) || (mode == 3);
+        }
+
         void spectrum_analyzer_ui::update_selector_text()
         {
             if ((pSelector == NULL) ||
@@ -198,13 +218,20 @@ namespace lsp
                 return;
 
             // Get the channel to process
-            ssize_t ch_idx = (pSelChannel != NULL) ? pSelChannel->value() : 0;
-            channel_t *ch = vChannels.get(ch_idx);
-            if (ch == NULL)
-                return;
-            if (ch->wFrequency == NULL)
-                return;
+            tk::GraphText *fWidget = wFrequency;
+            bool gs_visible = global_selector_visible();
 
+            if (!gs_visible)
+            {
+                ssize_t ch_idx = (pSelChannel != NULL) ? pSelChannel->value() : 0;
+                channel_t *ch = vChannels.get(ch_idx);
+                if (ch == NULL)
+                    return;
+                fWidget = ch->wFrequency;
+            }
+
+            if (fWidget == NULL)
+                return;
             float freq = pSelector->value();
             float fft_freq = pFftFreq->value();
             float level = pLevel->value();
@@ -214,7 +241,7 @@ namespace lsp
             expr::Parameters params;
             tk::prop::String snote;
             LSPString text;
-            snote.bind(ch->wFrequency->style(), pDisplay->dictionary());
+            snote.bind(fWidget->style(), pDisplay->dictionary());
             SET_LOCALE_SCOPED(LC_NUMERIC, "C");
 
             // Frequency
@@ -255,10 +282,13 @@ namespace lsp
                     text.fmt_ascii(" + %02d", note_cents);
                 params.set_string("cents", &text);
 
-                ch->wFrequency->text()->set("lists.spectrum.display.full", &params);
+                if (gs_visible)
+                    fWidget->text()->set("lists.spectrum.display.no_gain", &params);
+                else
+                    fWidget->text()->set("lists.spectrum.display.full", &params);
             }
             else
-                ch->wFrequency->text()->set("lists.spectrum.display.unknown", &params);
+                fWidget->text()->set("lists.spectrum.display.unknown", &params);
         }
 
         ssize_t spectrum_analyzer_ui::find_axis(tk::Graph *graph, const char *id)

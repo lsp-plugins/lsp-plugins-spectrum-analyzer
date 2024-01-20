@@ -44,10 +44,12 @@ namespace lsp
             protected:
                 size_t                      nChannels;
                 tk::Graph                  *wMainGraph;
-                tk::GraphText              *wMlValue;           // The  Horizontal line value widget
+                tk::GraphText              *wMlValue;           // The Horizontal line value widget
+                tk::GraphText              *wFrequency;         // The frequency widget
                 ssize_t                     nXAxisIndex;
                 size_t                      nMainGraphBtn;
 
+                ui::IPort                  *pMode;              // Operating mode
                 ui::IPort                  *pSelector;          // Selector frequency
                 ui::IPort                  *pMlValue;           // Horizontal line value
                 ui::IPort                  *pSelChannel;        // Selected channel
@@ -72,6 +74,7 @@ namespace lsp
                 void            on_main_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev);
                 void            on_main_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev);
                 void            on_main_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev);
+                bool            global_selector_visible();
 
             public:
                 explicit spectrum_analyzer_ui(const meta::plugin_t *meta);
