@@ -249,11 +249,10 @@
 						<!-- Axis -->
 						<axis ui:id="spc_dual_graph_ox_1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
-						<axis ui:id="spc_dual_graph_ox_2" o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+						<axis ui:id="spc_dual_graph_ox_2" o="1" zero="10" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
 
 						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
-
-						<marker id="sel" ox="2" oy="1" x.zero="10"  width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
+						<marker id="sel" ox="2" oy="1" o="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
 
 						<!-- Text -->
 						<ui:for id="c" first="0" last="1">
