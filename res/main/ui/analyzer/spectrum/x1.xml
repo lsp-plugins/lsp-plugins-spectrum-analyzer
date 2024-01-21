@@ -110,7 +110,7 @@
 
 				<!-- Spectralizer (1 channel) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 2">
-					<graph width.min="738" height.min="415" expand="true" fill="true">
+					<graph ui:id="spc_single_graph" width.min="738" height.min="415" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visibility="false"/>
 
 						<!-- Frame buffer -->
@@ -142,8 +142,11 @@
 						</ui:with>
 
 						<!-- Axis -->
-						<axis angle="0.0" min="10" max="24000" log="true" visibility="false"/>
+						<axis angle="0.0" ui:id="spc_single_graph_ox" min="10" max="24000" log="true" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
+
+						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
+						<text ox="0" oy="1" y="0" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector_spc" text="xxx" x=":sel" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
 
 						<!-- Text -->
 						<ui:with y="8" halign="1" valign="1">

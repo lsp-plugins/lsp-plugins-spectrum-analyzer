@@ -49,6 +49,9 @@ namespace lsp
 
                 tk::GraphText              *wMlValue;           // The Horizontal line value widget
                 tk::GraphText              *wFrequency;         // The frequency widget
+                tk::GraphText              *wFrequencySpc;      // The frequency widget for spectralizer mode
+                tk::GraphText              *wFrequencySpcD1;    // The frequency widget for spectralizer dual mode
+                tk::GraphText              *wFrequencySpcD2;    // The frequency widget for spectralizer dual mode
                 ssize_t                     nXAxisIndex;
                 ssize_t                     nXAxisIndexSpcS;
                 ssize_t                     nXAxisIndexSpcD1;
@@ -80,8 +83,8 @@ namespace lsp
                 void            on_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev);
                 void            on_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev);
                 void            on_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev);
-                bool            global_selector_visible();
-
+                void            set_selector_text(tk::GraphText *fWidget, bool no_gain);
+                bool            channels_selector_visible();
             public:
                 explicit spectrum_analyzer_ui(const meta::plugin_t *meta);
                 virtual ~spectrum_analyzer_ui() override;

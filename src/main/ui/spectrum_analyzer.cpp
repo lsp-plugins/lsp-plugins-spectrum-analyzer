@@ -79,6 +79,9 @@ namespace lsp
             wSpcGraphDual   = NULL;
             wMlValue        = NULL;
             wFrequency      = NULL;
+            wFrequencySpc   = NULL;
+            wFrequencySpcD1 = NULL;
+            wFrequencySpcD2 = NULL;
             nXAxisIndex     = -1;
             nXAxisIndexSpcS = -1;
             nXAxisIndexSpcD1= -1;
@@ -189,6 +192,15 @@ namespace lsp
             // Bind global frequency value
             wFrequency          = pWrapper->controller()->widgets()->get<tk::GraphText>("global_selector");
 
+            // Bind global frequency value for spectralizer mode
+            wFrequencySpc       = pWrapper->controller()->widgets()->get<tk::GraphText>("global_selector_spc");
+
+            // Bind global frequency value for spectralizer mode
+            wFrequencySpcD1       = pWrapper->controller()->widgets()->get<tk::GraphText>("global_selector_spc_d1");
+
+            // Bind global frequency value for spectralizer mode
+            wFrequencySpcD2       = pWrapper->controller()->widgets()->get<tk::GraphText>("global_selector_spc_d2");
+
             // Update selector and horizontal line text after init
             update_selector_text();
             update_mlvalue_text();
@@ -224,36 +236,21 @@ namespace lsp
             wMlValue->text()->set_key("labels.values.x_db");
         }
 
-        bool spectrum_analyzer_ui::global_selector_visible()
+        bool spectrum_analyzer_ui::channels_selector_visible()
         {
             size_t mode = pMode->value();
 
-            if (nChannels <= 2)
-                return false;
+            if (nChannels == 1)
+                return (mode != 2);
 
-            return (mode == 1) || (mode == 3);
+            if (nChannels == 2)
+                return (mode != 2) && (mode != 3);
+
+            return (mode == 0) || (mode == 2);
         }
 
-        void spectrum_analyzer_ui::update_selector_text()
+        void spectrum_analyzer_ui::set_selector_text(tk::GraphText *fWidget, bool no_gain)
         {
-            if ((pSelector == NULL) ||
-                (pFftFreq == NULL) ||
-                (pLevel == NULL))
-                return;
-
-            // Get the channel to process
-            tk::GraphText *fWidget = wFrequency;
-            bool gs_visible = global_selector_visible();
-
-            if (!gs_visible)
-            {
-                ssize_t ch_idx = (pSelChannel != NULL) ? pSelChannel->value() : 0;
-                channel_t *ch = vChannels.get(ch_idx);
-                if (ch == NULL)
-                    return;
-                fWidget = ch->wFrequency;
-            }
-
             if (fWidget == NULL)
                 return;
             float freq = pSelector->value();
@@ -306,13 +303,39 @@ namespace lsp
                     text.fmt_ascii(" + %02d", note_cents);
                 params.set_string("cents", &text);
 
-                if (gs_visible)
+                if (no_gain)
                     fWidget->text()->set("lists.spectrum.display.no_gain", &params);
                 else
                     fWidget->text()->set("lists.spectrum.display.full", &params);
             }
             else
                 fWidget->text()->set("lists.spectrum.display.unknown", &params);
+        }
+
+        void spectrum_analyzer_ui::update_selector_text()
+        {
+            if ((pSelector == NULL) ||
+                (pFftFreq == NULL) ||
+                (pLevel == NULL))
+                return;
+
+            // Get the channel to process
+
+            if (channels_selector_visible())
+            {
+                ssize_t ch_idx = (pSelChannel != NULL) ? pSelChannel->value() : 0;
+                channel_t *ch = vChannels.get(ch_idx);
+                if (ch == NULL)
+                    return;
+                set_selector_text(ch->wFrequency, false);
+                return;
+            }
+
+            set_selector_text(wFrequency, true);
+            set_selector_text(wFrequencySpc, true);
+            set_selector_text(wFrequencySpcD1, true);
+            set_selector_text(wFrequencySpcD2, true);
+
         }
 
         ssize_t spectrum_analyzer_ui::find_axis(tk::Graph *graph, const char *id)
