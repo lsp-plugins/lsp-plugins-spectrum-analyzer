@@ -60,7 +60,7 @@ namespace lsp
             static constexpr float          REACT_TIME_STEP     = 0.001;
 
             static constexpr float          SELECTOR_MIN        = SPEC_FREQ_MIN;
-            static constexpr float          SELECTOR_DFL        = SPEC_FREQ_MIN;
+            static constexpr float          SELECTOR_DFL        = SPEC_FREQ_MAX;
             static constexpr float          SELECTOR_MAX        = SPEC_FREQ_MAX;
             static constexpr float          SELECTOR_STEP       = 0.005f;
 

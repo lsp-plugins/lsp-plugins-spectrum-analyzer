@@ -117,8 +117,11 @@
 					<graph ui:id="spc_single_graph" width.min="738" height.min="470" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visibility="false"/>
 
+						<!-- Frame buffer -->
+						<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="left" color.hue=":hue[spc]"/>
+
 						<!-- Secondary grid -->
-						<ui:with color="graph_sec">
+						<ui:with color="graph_prim" color.a="0.5">
 							<ui:for id="f" first="20" last="90" step="10">
 								<marker v="${:f}"/>
 								<marker v="${:f * 10}"/>
@@ -142,9 +145,6 @@
 							<marker v="24000" ox="0" oy="1" visibility="false"/>
 						</ui:with>
 
-						<!-- Frame buffer -->
-						<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="left" color.hue=":hue[spc]"/>
-
 						<!-- Axis -->
 						<axis angle="0.0" min="10" ui:id="spc_single_graph_ox" max="24000" log="true" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
@@ -155,9 +155,19 @@
 						<!-- Text -->
 						<ui:with y="8" halign="1" valign="1" color="graph_prim">
 							<text x="10" text="graph.units.hz"/>
-							<text x="100" text="100" halign="1"/>
-							<text x="1000" text="graph.values.1k"/>
-							<text x="10000" text="graph.values.10k"/>
+							<text x="20" text="20"/>
+							<text x="30" text="30"/>
+							<text x="50" text="50"/>
+							<text x="100" text="100"/>
+							<text x="200" text="200"/>
+							<text x="300" text="300"/>
+							<text x="500" text="500"/>
+							<text x="1000" text="graph.values.x_k" text:value="1"/>
+							<text x="2000" text="graph.values.x_k" text:value="2"/>
+							<text x="3000" text="graph.values.x_k" text:value="3"/>
+							<text x="5000" text="graph.values.x_k" text:value="5"/>
+							<text x="10000" text="graph.values.x_k" text:value="10"/>
+							<text x="20000" text="graph.values.x_k" text:value="20"/>
 						</ui:with>
 
 						<text x="10" y="0" text="graph.axis.time" halign="1" valign="-1" color="graph_prim"/>
@@ -178,7 +188,7 @@
 						<fbuffer id="fb1" x="0" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="right"/>
 
 						<!-- Secondary grid -->
-						<ui:with color="graph_prim" color.a="0.4">
+						<ui:with color="graph_prim" color.a="0.6">
 							<ui:for id="f" first="20" last="90" step="10">
 								<marker v="${:f}"/>
 								<marker v="${:f * 10}"/>
