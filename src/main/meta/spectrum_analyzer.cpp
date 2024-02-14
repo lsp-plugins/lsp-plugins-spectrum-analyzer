@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -429,6 +429,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x1"),
             LSP_LV2UI_URI("spectrum_analyzer_x1"),
             "qtez",
+            LSP_VST3_UID("sa1     qtez"),
+            LSP_VST3UI_UID("sa1     qtez"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 0,
             LSP_LADSPA_URI("spectrum_analyzer_x1"),
             LSP_CLAP_URI("spectrum_analyzer_x1"),
@@ -454,6 +456,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x2"),
             LSP_LV2UI_URI("spectrum_analyzer_x2"),
             "aw7r",
+            LSP_VST3_UID("sa2     aw7r"),
+            LSP_VST3UI_UID("sa2     aw7r"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 1,
             LSP_LADSPA_URI("spectrum_analyzer_x2"),
             LSP_CLAP_URI("spectrum_analyzer_x2"),
@@ -479,6 +483,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x4"),
             LSP_LV2UI_URI("spectrum_analyzer_x4"),
             "xzgo",
+            LSP_VST3_UID("sa4     xzgo"),
+            LSP_VST3UI_UID("sa4     xzgo"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 2,
             LSP_LADSPA_URI("spectrum_analyzer_x4"),
             LSP_CLAP_URI("spectrum_analyzer_x4"),
@@ -504,6 +510,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x8"),
             LSP_LV2UI_URI("spectrum_analyzer_x8"),
             "e5hb",
+            LSP_VST3_UID("sa8     e5hb"),
+            LSP_VST3UI_UID("sa8     e5hb"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 3,
             LSP_LADSPA_URI("spectrum_analyzer_x8"),
             LSP_CLAP_URI("spectrum_analyzer_x8"),
@@ -529,6 +537,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x12"),
             LSP_LV2UI_URI("spectrum_analyzer_x12"),
             "tj3l",
+            LSP_VST3_UID("sa12    tj3l"),
+            LSP_VST3UI_UID("sa12    tj3l"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 4,
             LSP_LADSPA_URI("spectrum_analyzer_x12"),
             LSP_CLAP_URI("spectrum_analyzer_x12"),
@@ -554,6 +564,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x16"),
             LSP_LV2UI_URI("spectrum_analyzer_x16"),
             "nuzi",
+            LSP_VST3_UID("sa16    nuzi"),
+            LSP_VST3UI_UID("sa16    nuzi"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 5,
             LSP_LADSPA_URI("spectrum_analyzer_x16"),
             LSP_CLAP_URI("spectrum_analyzer_x16"),
