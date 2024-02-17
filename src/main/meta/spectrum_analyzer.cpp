@@ -149,10 +149,10 @@ namespace lsp
         #define SA_INPUT(x, total, active) \
             AUDIO_INPUT_N(x), \
             AUDIO_OUTPUT_N(x), \
-            { "on_" #x, "Analyse " #x, U_BOOL, R_CONTROL, F_IN, 0, 0, active, 0, NULL    }, \
-            { "solo_" #x, "Solo " #x, U_BOOL, R_CONTROL, F_IN, 0, 0, 0, 0, NULL    }, \
-            { "frz_" #x, "Freeze " #x, U_BOOL, R_CONTROL, F_IN, 0, 0, 0, 0, NULL    }, \
-            { "hue_" #x, "Hue " #x, U_NONE, R_CONTROL, F_IN | F_UPPER | F_LOWER | F_STEP | F_CYCLIC, 0.0f, 1.0f, (float(x) / float(total)), 0.25f/360.0f, NULL     }, \
+            SWITCH("on_" #x, "Analyse " #x, active), \
+            SWITCH("solo_" #x, "Solo " #x, 0.0f), \
+            SWITCH("frz_" #x, "Freeze " #x, 0.0f), \
+            { "hue_" #x, "Hue " #x, U_NONE, R_CONTROL, F_UPPER | F_LOWER | F_STEP | F_CYCLIC, 0.0f, 1.0f, (float(x) / float(total)), 0.25f/360.0f, NULL     }, \
             AMP_GAIN("sh_" #x, "Shift gain " #x, 1.0f, 1000.0f)
 
         #define SA_COMMON(c, channel) \
@@ -165,25 +165,25 @@ namespace lsp
             SWITCH("mline", "Horizontal measuring line", 0), \
             SWITCH("mtrack", "Track maximum values", 1), \
             TRIGGER("mreset", "Reset maximum values"), \
-            { "tol", "FFT Tolerance", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, 0, fft_tolerance }, \
-            { "wnd", "FFT Window", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::WND_DFL, 0, fft_windows }, \
-            { "env", "FFT Envelope", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::ENV_DFL, 0, fft_envelopes }, \
+            { "tol", "FFT Tolerance", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, 0, fft_tolerance }, \
+            { "wnd", "FFT Window", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::WND_DFL, 0, fft_windows }, \
+            { "env", "FFT Envelope", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::ENV_DFL, 0, fft_envelopes }, \
             AMP_GAIN("pamp", "Preamp gain", spectrum_analyzer::PREAMP_DFL, 1000.0f), \
             LOG_CONTROL("zoom", "Graph zoom", U_GAIN_AMP, spectrum_analyzer::ZOOM), \
-            { "react",          "Reactivity",       U_SEC,          R_CONTROL, F_IN | F_UPPER | F_LOWER | F_STEP | F_LOG, \
+            { "react",          "Reactivity",       U_SEC,          R_CONTROL, F_UPPER | F_LOWER | F_STEP | F_LOG, \
                  spectrum_analyzer::REACT_TIME_MIN, spectrum_analyzer::REACT_TIME_MAX, spectrum_analyzer::REACT_TIME_DFL, spectrum_analyzer::REACT_TIME_STEP, NULL }, \
             channel(c) \
             LOG_CONTROL("sel", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
             LOG_CONTROL("mlval", "Horizontal measuring line level value", U_DB, spectrum_analyzer::HLINE), \
-            { "freq", "Frequency", U_HZ, R_METER, F_OUT | F_UPPER | F_LOWER, \
+            { "freq", "Frequency", U_HZ, R_METER, F_UPPER | F_LOWER, \
                 spectrum_analyzer::FREQ_MIN, spectrum_analyzer::FREQ_MAX, spectrum_analyzer::FREQ_DFL, 0, NULL }, \
-            { "lvl", "Level", U_GAIN_AMP, R_METER, F_OUT | F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
+            { "lvl", "Level", U_GAIN_AMP, R_METER, F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
             MESH("spd", "Spectrum Data", c + 2, spectrum_analyzer::MESH_POINTS + 4)
 
         #define SA_SGROUP(id) \
             SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0)
 
-        #define SA_CHANNEL(c)   { "chn", "Channel", U_ENUM, R_CONTROL, F_IN, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels },
+        #define SA_CHANNEL(c)   { "chn", "Channel", U_ENUM, R_CONTROL, 0, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels },
         #define SA_SKIP(c)
 
         static const port_t spectrum_analyzer_x1_ports[] =
