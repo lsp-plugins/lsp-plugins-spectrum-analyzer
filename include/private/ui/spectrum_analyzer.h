@@ -44,10 +44,21 @@ namespace lsp
             protected:
                 size_t                      nChannels;
                 tk::Graph                  *wMainGraph;
-                tk::GraphText              *wMlValue;           // The  Horizontal line value widget
-                ssize_t                     nXAxisIndex;
-                size_t                      nMainGraphBtn;
+                tk::Graph                  *wSpcGraphSingle;
+                tk::Graph                  *wSpcGraphDual;
 
+                tk::GraphText              *wMlValue;           // The Horizontal line value widget
+                tk::GraphText              *wFrequency;         // The frequency widget
+                tk::GraphText              *wFrequencySpc;      // The frequency widget for spectralizer mode
+                tk::GraphText              *wFrequencySpcD1;    // The frequency widget for spectralizer dual mode
+                tk::GraphText              *wFrequencySpcD2;    // The frequency widget for spectralizer dual mode
+                ssize_t                     nXAxisIndex;
+                ssize_t                     nXAxisIndexSpcS;
+                ssize_t                     nXAxisIndexSpcD1;
+                ssize_t                     nXAxisIndexSpcD2;
+                size_t                      nGraphBtn;
+
+                ui::IPort                  *pMode;              // Operating mode
                 ui::IPort                  *pSelector;          // Selector frequency
                 ui::IPort                  *pMlValue;           // Horizontal line value
                 ui::IPort                  *pSelChannel;        // Selected channel
@@ -61,18 +72,19 @@ namespace lsp
                 ui::IPort      *find_port(const char *prefix, size_t id);
 
             protected:
-                static status_t slot_main_graph_mouse_down(tk::Widget *sender, void *ptr, void *data);
-                static status_t slot_main_graph_mouse_move(tk::Widget *sender, void *ptr, void *data);
-                static status_t slot_main_graph_mouse_up(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_graph_mouse_down(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_graph_mouse_move(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_graph_mouse_up(tk::Widget *sender, void *ptr, void *data);
 
             protected:
                 void            update_selector_text();
                 void            update_mlvalue_text();
                 ssize_t         find_axis(tk::Graph *graph, const char *id);
-                void            on_main_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev);
-                void            on_main_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev);
-                void            on_main_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev);
-
+                void            on_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev);
+                void            on_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev);
+                void            on_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev);
+                void            set_selector_text(tk::GraphText *fWidget, bool no_gain);
+                bool            channels_selector_visible();
             public:
                 explicit spectrum_analyzer_ui(const meta::plugin_t *meta);
                 virtual ~spectrum_analyzer_ui() override;

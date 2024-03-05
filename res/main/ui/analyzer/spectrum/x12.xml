@@ -52,7 +52,7 @@
 						</ui:with>
 
 						<!-- Meshes -->
-						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack" />
+						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
 						<ui:for id="i" first="0" count="12">
 							<mesh xi="0" yi="${:i + 2}" id="spd" width=":lthick+1" color="graph_mesh_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
 						</ui:for>
@@ -63,17 +63,7 @@
 						<axis angle="0.5" min="-1" max="1" visibility="false"/>
 
 						<!-- Marker horizontal line -->
-						<marker
-							id="mlval"
-							ox="1"
-							oy="0"
-							width="2"
-							hwidth="2"
-							color="graph_marker_line"
-							hcolor="graph_marker_line_hover"
-							pointer="vsize"
-							visibility=":mline"
-							editable="true"/>
+						<marker id="mlval" ox="1" oy="0" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line_hover" pointer="vsize" visibility=":mline" editable="true"/>
 
 						<!-- Marker -->
 						<ui:for id="i" first="0" last="11">
@@ -91,6 +81,8 @@
 								visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))"
 								editable="true"/>
 						</ui:for>
+
+						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" visibility="((:mode ieq 1) or (:mode ieq 3))" editable="true"/>
 
 						<!-- Text -->
 						<ui:with ox="0" oy="2" y="0" halign="1" valign="1">
@@ -127,10 +119,7 @@
 						</ui:with>
 
 						<!-- Measure text -->
-						<text ui:id="mline_level" visibility=":mline"
-							valign="(:mlval lt 0 db) ? 1 : -1"
-							text.valign="(:mlval lt 0 db) ? -1 : 1" ox="0" oy="1" x="24000"
-							y=":mlval" halign="-1" color="graph_marker_line" font.bold="true" />
+						<text ui:id="mline_level" visibility=":mline" valign="(:mlval lt 0 db) ? 1 : -1" text.valign="(:mlval lt 0 db) ? -1 : 1" ox="0" oy="1" x="24000" y=":mlval" halign="-1" color="graph_marker_line" font.bold="true"/>
 
 						<!-- Selector text -->
 						<ui:for id="i" first="0" count="12">
@@ -138,16 +127,21 @@
 								<text ui:id="selector_freq_${i}" x=":sel" visibility="(((:mode ieq 0) or (:mode ieq 2)) and ((:on_${i}) and (:chn ieq ${i})))" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1" color.hue=":hue_${i}"/>
 							</ui:with>
 						</ui:for>
+
+						<text ox="0" oy="2" y="1" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector" x=":sel" visibility="((:mode ieq 1) or (:mode ieq 3))" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
 					</graph>
 				</group>
 
 				<!-- Spectralizer (1 channel) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 4">
-					<graph width.min="720" height.min="360" expand="true" fill="true">
+					<graph ui:id="spc_single_graph" width.min="720" height.min="360" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visibility="false"/>
 
+						<!-- Frame buffer -->
+						<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="red" color.hue=":hue[spc0]"/>
+
 						<!-- Secondary grid -->
-						<ui:with color="graph_sec">
+						<ui:with color="graph_prim" color.a="0.5">
 							<ui:for id="f" first="20" last="90" step="10">
 								<marker v="${:f}"/>
 								<marker v="${:f * 10}"/>
@@ -171,20 +165,31 @@
 							<marker v="24000" ox="0" oy="1" visibility="false"/>
 						</ui:with>
 
-						<!-- Frame buffer -->
-						<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="red" color.hue=":hue[spc0]"/>
-
 						<!-- Axis -->
-						<axis angle="0.0" min="10" max="24000" log="true" visibility="false"/>
+						<axis angle="0.0" ui:id="spc_single_graph_ox" min="10" max="24000" log="true" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
+
+						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
 
 						<!-- Text -->
 						<ui:with y="8" halign="1" valign="1" color="graph_prim">
 							<text x="10" text="graph.units.hz"/>
-							<text x="100" text="100" halign="1"/>
-							<text x="1000" text="graph.values.1k"/>
-							<text x="10000" text="graph.values.10k"/>
+							<text x="20" text="20"/>
+							<text x="30" text="30"/>
+							<text x="50" text="50"/>
+							<text x="100" text="100"/>
+							<text x="200" text="200"/>
+							<text x="300" text="300"/>
+							<text x="500" text="500"/>
+							<text x="1000" text="graph.values.x_k" text:value="1"/>
+							<text x="2000" text="graph.values.x_k" text:value="2"/>
+							<text x="3000" text="graph.values.x_k" text:value="3"/>
+							<text x="5000" text="graph.values.x_k" text:value="5"/>
+							<text x="10000" text="graph.values.x_k" text:value="10"/>
+							<text x="20000" text="graph.values.x_k" text:value="20"/>
 						</ui:with>
+
+						<text ox="0" oy="1" y="0" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector_spc" text="xxx" x=":sel" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
 
 						<text x="10" y="0" text="graph.axis.time" halign="1" valign="-1" color="graph_prim"/>
 						<ui:for id="t" first="1" last="7">
@@ -195,12 +200,16 @@
 
 				<!-- Spectralizer (2 channels) -->
 				<group ui:inject="GraphGroup" ipadding="0" text="labels.graphs.frequency" expand="true" visibility=":mode ieq 5">
-					<graph width.min="720" height.min="360" expand="true" fill="true">
+					<graph ui:id="spc_dual_graph" width.min="720" height.min="360" expand="true" fill="true">
 						<origin hpos="-1" vpos="1" visibility="false"/>
 						<origin hpos="0" vpos="1" visibility="false"/>
 
+						<!-- Frame buffer -->
+						<fbuffer id="fb0" x="-1" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="red" color.hue=":hue[spc0]"/>
+						<fbuffer id="fb1" x="0" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="red" color.hue=":hue[spc1]"/>
+
 						<!-- Secondary grid -->
-						<ui:with color="graph_sec">
+						<ui:with color="graph_prim" color.a="0.5">
 							<ui:for id="f" first="20" last="90" step="10">
 								<marker v="${:f}"/>
 								<marker v="${:f * 10}"/>
@@ -232,14 +241,17 @@
 							<marker v="24000" o="1" ox="2" oy="1" visibility="false"/>
 						</ui:with>
 
-						<!-- Frame buffer -->
-						<fbuffer id="fb0" x="-1" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="red" color.hue=":hue[spc0]"/>
-						<fbuffer id="fb1" x="0" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="red" color.hue=":hue[spc1]"/>
-
 						<!-- Axis -->
-						<axis angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+						<axis ui:id="spc_dual_graph_ox_1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
-						<axis o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+						<axis ui:id="spc_dual_graph_ox_2" zero="10" o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+
+						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
+						<marker id="sel" ox="2" oy="1" o="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
+
+						<text ox="0" oy="1" y="0" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector_spc_d1" text="xxx" x=":sel" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
+
+						<text ox="2" oy="1" y="0" o="1" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector_spc_d2" text="xxx" x=":sel" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
 
 						<!-- Text -->
 						<ui:for id="c" first="0" last="1">
@@ -260,29 +272,26 @@
 				<!-- Bottom menu -->
 				<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" bg.color="bg_schema">
 					<hbox spacing="8">
-						<label text="labels.fft.window" />
-						<combo id="wnd" pad.r="15" />
-						<label text="labels.fft.tolerance" />
-						<combo id="tol" pad.r="15" />
-						<label text="labels.fft.envelope" />
-						<combo id="env" pad.r="15" />
+						<label text="labels.fft.window"/>
+						<combo id="wnd" pad.r="15"/>
+						<label text="labels.fft.tolerance"/>
+						<combo id="tol" pad.r="15"/>
+						<label text="labels.fft.envelope"/>
+						<combo id="env" pad.r="15"/>
 					</hbox>
 
-					<void hexpand="true" />
+					<void hexpand="true"/>
 					<hbox spacing="8">
 						<label text="labels.line_size" visibility=":mode ilt 4"/>
-						<combo id="lthick" visibility=":mode ilt 4" />
+						<combo id="lthick" visibility=":mode ilt 4"/>
 						<hbox fill="false" spacing="4" pad.h="4">
 							<button ui:inject="Button_cyan" text="labels.history" id="mtrack" size="16" visibility=":mode ilt 4"/>
 							<button ui:inject="Button_cyan" text="labels.clear" id="mreset" size="16" visibility=":mode ilt 4"/>
 						</hbox>
-						<button ui:inject="Button_cyan"
-							text="labels.metering.measure_line" id="mline" size="16"
-							visibility=":mode ilt 4" pad.l="15" />
-						<label text="labels.spectrogram" visibility=":mode ige 4" />
-						<combo id="spm" visibility=":mode ige 4" />
-						<button ui:inject="Button_yellow" text="labels.log_scale"
-							id="splog" size="16" visibility=":mode ige 4" pad.l="15" />
+						<button ui:inject="Button_cyan" text="labels.metering.measure_line" id="mline" size="16" visibility=":mode ilt 4" pad.l="15"/>
+						<label text="labels.spectrogram" visibility=":mode ige 4"/>
+						<combo id="spm" visibility=":mode ige 4"/>
+						<button ui:inject="Button_yellow" text="labels.log_scale" id="splog" size="16" visibility=":mode ige 4" pad.l="15"/>
 					</hbox>
 
 				</hbox>
@@ -290,7 +299,7 @@
 
 			<!-- Zoom Fader -->
 			<vbox visibility=":mode ilt 4" vexpand="true" bg.color="bg_schema">
-				<label font.name="lsp-icons" font.size="12" font.antialias="true" text="E" color="text_icon" pad.b="4" pad.t="4"/>
+				<label font.name="lsp-icons" font.size="12" font.antialias="true" text="icons.main.zoom" color="text_icon" pad.b="4" pad.t="4"/>
 				<fader id="zoom" angle="1" vexpand="true" bg.inherit="true" flat="true"/>
 				<value id="zoom" width="40"/>
 			</vbox>

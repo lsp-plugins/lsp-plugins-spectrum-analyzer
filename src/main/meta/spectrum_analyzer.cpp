@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MAJOR         1
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MINOR         0
-#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         22
+#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         23
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -149,10 +149,10 @@ namespace lsp
         #define SA_INPUT(x, total, active) \
             AUDIO_INPUT_N(x), \
             AUDIO_OUTPUT_N(x), \
-            { "on_" #x, "Analyse " #x, U_BOOL, R_CONTROL, F_IN, 0, 0, active, 0, NULL    }, \
-            { "solo_" #x, "Solo " #x, U_BOOL, R_CONTROL, F_IN, 0, 0, 0, 0, NULL    }, \
-            { "frz_" #x, "Freeze " #x, U_BOOL, R_CONTROL, F_IN, 0, 0, 0, 0, NULL    }, \
-            { "hue_" #x, "Hue " #x, U_NONE, R_CONTROL, F_IN | F_UPPER | F_LOWER | F_STEP | F_CYCLIC, 0.0f, 1.0f, (float(x) / float(total)), 0.25f/360.0f, NULL     }, \
+            SWITCH("on_" #x, "Analyse " #x, active), \
+            SWITCH("solo_" #x, "Solo " #x, 0.0f), \
+            SWITCH("frz_" #x, "Freeze " #x, 0.0f), \
+            { "hue_" #x, "Hue " #x, U_NONE, R_CONTROL, F_UPPER | F_LOWER | F_STEP | F_CYCLIC, 0.0f, 1.0f, (float(x) / float(total)), 0.25f/360.0f, NULL     }, \
             AMP_GAIN("sh_" #x, "Shift gain " #x, 1.0f, 1000.0f)
 
         #define SA_COMMON(c, channel) \
@@ -165,25 +165,25 @@ namespace lsp
             SWITCH("mline", "Horizontal measuring line", 0), \
             SWITCH("mtrack", "Track maximum values", 1), \
             TRIGGER("mreset", "Reset maximum values"), \
-            { "tol", "FFT Tolerance", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, 0, fft_tolerance }, \
-            { "wnd", "FFT Window", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::WND_DFL, 0, fft_windows }, \
-            { "env", "FFT Envelope", U_ENUM, R_CONTROL, F_IN, 0, 0, spectrum_analyzer::ENV_DFL, 0, fft_envelopes }, \
+            { "tol", "FFT Tolerance", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, 0, fft_tolerance }, \
+            { "wnd", "FFT Window", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::WND_DFL, 0, fft_windows }, \
+            { "env", "FFT Envelope", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::ENV_DFL, 0, fft_envelopes }, \
             AMP_GAIN("pamp", "Preamp gain", spectrum_analyzer::PREAMP_DFL, 1000.0f), \
             LOG_CONTROL("zoom", "Graph zoom", U_GAIN_AMP, spectrum_analyzer::ZOOM), \
-            { "react",          "Reactivity",       U_SEC,          R_CONTROL, F_IN | F_UPPER | F_LOWER | F_STEP | F_LOG, \
+            { "react",          "Reactivity",       U_SEC,          R_CONTROL, F_UPPER | F_LOWER | F_STEP | F_LOG, \
                  spectrum_analyzer::REACT_TIME_MIN, spectrum_analyzer::REACT_TIME_MAX, spectrum_analyzer::REACT_TIME_DFL, spectrum_analyzer::REACT_TIME_STEP, NULL }, \
             channel(c) \
             LOG_CONTROL("sel", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
             LOG_CONTROL("mlval", "Horizontal measuring line level value", U_DB, spectrum_analyzer::HLINE), \
-            { "freq", "Frequency", U_HZ, R_METER, F_OUT | F_UPPER | F_LOWER, \
+            { "freq", "Frequency", U_HZ, R_METER, F_UPPER | F_LOWER, \
                 spectrum_analyzer::FREQ_MIN, spectrum_analyzer::FREQ_MAX, spectrum_analyzer::FREQ_DFL, 0, NULL }, \
-            { "lvl", "Level", U_GAIN_AMP, R_METER, F_OUT | F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
+            { "lvl", "Level", U_GAIN_AMP, R_METER, F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
             MESH("spd", "Spectrum Data", c + 2, spectrum_analyzer::MESH_POINTS + 4)
 
         #define SA_SGROUP(id) \
             SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0)
 
-        #define SA_CHANNEL(c)   { "chn", "Channel", U_ENUM, R_CONTROL, F_IN, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels },
+        #define SA_CHANNEL(c)   { "chn", "Channel", U_ENUM, R_CONTROL, 0, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels },
         #define SA_SKIP(c)
 
         static const port_t spectrum_analyzer_x1_ports[] =
@@ -429,6 +429,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x1"),
             LSP_LV2UI_URI("spectrum_analyzer_x1"),
             "qtez",
+            LSP_VST3_UID("sa1     qtez"),
+            LSP_VST3UI_UID("sa1     qtez"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 0,
             LSP_LADSPA_URI("spectrum_analyzer_x1"),
             LSP_CLAP_URI("spectrum_analyzer_x1"),
@@ -454,6 +456,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x2"),
             LSP_LV2UI_URI("spectrum_analyzer_x2"),
             "aw7r",
+            LSP_VST3_UID("sa2     aw7r"),
+            LSP_VST3UI_UID("sa2     aw7r"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 1,
             LSP_LADSPA_URI("spectrum_analyzer_x2"),
             LSP_CLAP_URI("spectrum_analyzer_x2"),
@@ -479,6 +483,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x4"),
             LSP_LV2UI_URI("spectrum_analyzer_x4"),
             "xzgo",
+            LSP_VST3_UID("sa4     xzgo"),
+            LSP_VST3UI_UID("sa4     xzgo"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 2,
             LSP_LADSPA_URI("spectrum_analyzer_x4"),
             LSP_CLAP_URI("spectrum_analyzer_x4"),
@@ -504,6 +510,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x8"),
             LSP_LV2UI_URI("spectrum_analyzer_x8"),
             "e5hb",
+            LSP_VST3_UID("sa8     e5hb"),
+            LSP_VST3UI_UID("sa8     e5hb"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 3,
             LSP_LADSPA_URI("spectrum_analyzer_x8"),
             LSP_CLAP_URI("spectrum_analyzer_x8"),
@@ -529,6 +537,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x12"),
             LSP_LV2UI_URI("spectrum_analyzer_x12"),
             "tj3l",
+            LSP_VST3_UID("sa12    tj3l"),
+            LSP_VST3UI_UID("sa12    tj3l"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 4,
             LSP_LADSPA_URI("spectrum_analyzer_x12"),
             LSP_CLAP_URI("spectrum_analyzer_x12"),
@@ -554,6 +564,8 @@ namespace lsp
             LSP_LV2_URI("spectrum_analyzer_x16"),
             LSP_LV2UI_URI("spectrum_analyzer_x16"),
             "nuzi",
+            LSP_VST3_UID("sa16    nuzi"),
+            LSP_VST3UI_UID("sa16    nuzi"),
             LSP_LADSPA_SPECTRUM_ANALYZER_BASE + 5,
             LSP_LADSPA_URI("spectrum_analyzer_x16"),
             LSP_CLAP_URI("spectrum_analyzer_x16"),
