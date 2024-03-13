@@ -1118,6 +1118,7 @@ namespace lsp
             v->write_object("sCounter", &sCounter);
 
             v->write("nChannels", nChannels);
+            v->write("nCorrelometers", nCorrelometers);
             v->begin_array("vChannels", vChannels, nChannels);
             {
                 for (size_t i=0; i<nChannels; ++i)
@@ -1145,6 +1146,23 @@ namespace lsp
                         v->write("pFreeze", c->pFreeze);
                         v->write("pHue", c->pHue);
                         v->write("pShift", c->pShift);
+                    }
+                    v->end_object();
+                }
+            }
+            v->end_array();
+
+            v->begin_array("vCorrelometers", vCorrelometers, nCorrelometers);
+            {
+                for (size_t i=0; i<nCorrelometers; ++i)
+                {
+                    const sa_correlometer_t *cm = &vCorrelometers[i];
+
+                    v->begin_object(cm, sizeof(sa_correlometer_t));
+                    {
+                        v->write_object("sCorr", &cm->sCorr);
+                        v->write("fCorrelation", cm->fCorrelation);
+                        v->write("pCorrelometer", cm->pCorrelometer);
                     }
                     v->end_object();
                 }
