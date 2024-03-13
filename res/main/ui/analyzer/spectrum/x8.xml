@@ -308,11 +308,11 @@
 		<!-- Channel for metering configuration -->
 		<hbox spacing="4" visibility="(:mode ieq 0) or (:mode ieq 2)">
 			<group text="groups.channels" spacing="4" bg.color="bg" ipadding="0">
-				<grid rows="8" cols="17" transpose="true" hspacing="2">
+				<grid rows="9" cols="17" transpose="true" hspacing="2">
 					<ui:with padding="6" bg.color="bg_schema">
-						<cell rows="2">
-							<void/>
-						</cell>
+						<void/>
+						<label text="labels.chan.correlation"/>
+						<void padding="0" />
 						<label text="labels.specials.num"/>
 						<label text="labels.chan.on"/>
 						<label text="labels.chan.solo_hold" pad.b="10"/>
@@ -328,13 +328,22 @@
 					</cell>
 
 					<ui:for id="i" first="0" count="8">
-						<cell rows="${7 - (:i % 2) * 2}" cols="1" expand="false" padding="0" bg.color="bg">
+						<cell rows="${8 - (:i % 2) * 3}" cols="1" expand="false" padding="0" bg.color="bg">
 							<vsep/>
 						</cell>
 
 						<ui:if test=":i % 2 ieq 0">
 							<cell cols="3" pad.h="6" pad.v="4" bg.color="bg_schema">
 								<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_${:i idiv 2}" height="19" hfill="true"/>
+							</cell>
+							<cell cols="3" pad.h="6" pad.v="4" bg.color="bg_schema">
+								<ledmeter>
+									<ledchannel id="cm_${:i / 2}"
+										min="-100" max="100"
+										balance="0" balance.visibility="true"
+										log="false" type="peak"
+										value.color="blue" />
+								</ledmeter>
 							</cell>
 							<cell cols="3">
 								<hsep hfill="true" vreduce="true" pad.v="2"/>
@@ -500,6 +509,13 @@
 								<label text="labels.channel" visibility=":mode ieq 4" pad.b="4"/>
 								<label text="labels.channels" visibility=":mode band 1" pad.b="4"/>
 								<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms" height="19" hfill="true" pad.b="8" visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)"/>
+								<ledmeter visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)">
+									<ledchannel id="cccm"
+										min="-100" max="100"
+										balance="0" balance.visibility="true"
+										log="false" type="peak"
+										value.color="blue" />
+								</ledmeter>
 								<hbox spacing="4">
 									<combo id="spc0" fill="true" visibility="(:mode ine 0) and (:mode ine 2)"/>
 									<combo id="spc1" fill="true" visibility="(:mode ieq 1) or (:mode ieq 3) or (:mode ieq 5)"/>

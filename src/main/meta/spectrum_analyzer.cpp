@@ -146,6 +146,9 @@ namespace lsp
 
         static const port_item_t *spectrum_analyzer_x16_modes = spectrum_analyzer_x4_modes;
 
+        #define SA_CORRMETER(id, label) \
+            METER(id, label, U_PERCENT, spectrum_analyzer::CORRELATION)
+
         #define SA_INPUT(x, total, active) \
             AUDIO_INPUT_N(x), \
             AUDIO_OUTPUT_N(x), \
@@ -181,7 +184,8 @@ namespace lsp
             MESH("spd", "Spectrum Data", c + 2, spectrum_analyzer::MESH_POINTS + 4)
 
         #define SA_SGROUP(id) \
-            SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0)
+            SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0), \
+            SA_CORRMETER("cm_" #id, "Correlometer for stereo channel pair " #id)
 
         #define SA_CHANNEL(c)   { "chn", "Channel", U_ENUM, R_CONTROL, 0, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels },
         #define SA_SKIP(c)
@@ -216,6 +220,7 @@ namespace lsp
             SA_SGROUP(0),
             SA_SGROUP(1),
             SA_COMMON(4, SA_CHANNEL),
+            SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x4_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
@@ -239,6 +244,7 @@ namespace lsp
             SA_SGROUP(2),
             SA_SGROUP(3),
             SA_COMMON(8, SA_CHANNEL),
+            SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x8_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
@@ -268,6 +274,7 @@ namespace lsp
             SA_SGROUP(4),
             SA_SGROUP(5),
             SA_COMMON(12, SA_CHANNEL),
+            SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x12_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
@@ -303,6 +310,7 @@ namespace lsp
             SA_SGROUP(6),
             SA_SGROUP(7),
             SA_COMMON(16, SA_CHANNEL),
+            SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x16_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),

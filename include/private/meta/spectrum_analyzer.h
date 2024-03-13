@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2021 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2021 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -38,6 +38,7 @@ namespace lsp
             static constexpr float          FREQ_MIN            = SPEC_FREQ_MIN;
             static constexpr float          FREQ_DFL            = 1000.0f;
             static constexpr float          FREQ_MAX            = SPEC_FREQ_MAX;
+            static constexpr float          CORR_PERIOD         = 100.0f;
 
             static constexpr size_t         PORTS_PER_INPUT     = 6;
             static constexpr size_t         RANK_MIN            = 10;
@@ -63,6 +64,11 @@ namespace lsp
             static constexpr float          SELECTOR_DFL        = SPEC_FREQ_MAX;
             static constexpr float          SELECTOR_MAX        = SPEC_FREQ_MAX;
             static constexpr float          SELECTOR_STEP       = 0.005f;
+
+            static constexpr float          CORRELATION_MIN     = -100.0f;
+            static constexpr float          CORRELATION_MAX     = 100.0f;
+            static constexpr float          CORRELATION_DFL     = 0.0f;
+            static constexpr float          CORRELATION_STEP    = 0.1f;
 
             static constexpr float          HLINE_MIN           = GAIN_AMP_M_72_DB;
             static constexpr float          HLINE_DFL           = GAIN_AMP_0_DB;

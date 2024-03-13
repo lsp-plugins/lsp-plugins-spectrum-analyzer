@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -23,6 +23,7 @@
 #define PRIVATE_PLUGINS_SPECTRUM_ANALYZER_H_
 
 #include <lsp-plug.in/dsp-units/ctl/Counter.h>
+#include <lsp-plug.in/dsp-units/meters/Correlometer.h>
 #include <lsp-plug.in/dsp-units/util/Analyzer.h>
 #include <lsp-plug.in/plug-fw/plug.h>
 #include <lsp-plug.in/plug-fw/core/IDBuffer.h>
@@ -62,12 +63,19 @@ namespace lsp
 
                 typedef struct sa_spectralizer_t
                 {
-                    ssize_t         nPortId;            // Last port identifier
-                    ssize_t         nChannelId;         // Channel identifier
+                    int32_t         nPortId;            // Last port identifier
+                    int32_t         nChannelId;         // Channel identifier
 
                     plug::IPort    *pPortId;            // Port identifier
                     plug::IPort    *pFBuffer;           // Frame buffer port
                 } sa_spectralizer_t;
+
+                typedef struct sa_correlometer_t
+                {
+                    dspu::Correlometer  sCorr;          // Correlometer
+                    float           fCorrelation;       // Measured correlation value
+                    plug::IPort    *pCorrelometer;      // Correlometer output value
+                } sa_correlometer_t;
 
                 enum mode_t
                 {
@@ -90,8 +98,10 @@ namespace lsp
             protected:
                 dspu::Analyzer      sAnalyzer;
                 dspu::Counter       sCounter;
-                size_t              nChannels;
+                uint32_t            nChannels;
+                uint32_t            nCorrelometers;
                 sa_channel_t       *vChannels;
+                sa_correlometer_t  *vCorrelometers;     // Available correlometers
                 float             **vAnalyze;           // Analysis buffers
                 float              *vFrequences;
                 float              *vMaxValues;         // Maximum value tracking
