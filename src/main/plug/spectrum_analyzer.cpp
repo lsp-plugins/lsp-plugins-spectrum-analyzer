@@ -372,6 +372,16 @@ namespace lsp
 
         void spectrum_analyzer::do_destroy()
         {
+            if (vCorrelometers != NULL)
+            {
+                for (size_t i=0; i<nCorrelometers; ++i)
+                {
+                    sa_correlometer_t *cm = &vCorrelometers[i];
+                    cm->sCorr.destroy();
+                }
+                vCorrelometers  = NULL;
+            }
+
             sAnalyzer.destroy();
 
             if (pData != NULL)
