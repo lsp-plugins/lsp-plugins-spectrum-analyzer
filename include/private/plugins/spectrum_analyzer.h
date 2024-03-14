@@ -162,6 +162,7 @@ namespace lsp
                 void                process_multiple();
                 void                process_spectralizer();
                 void                get_spectrum(float *dst, size_t channel, size_t flags);
+                void                measure_correlation(size_t count);
                 void                prepare_buffers(size_t count);
 
             public:

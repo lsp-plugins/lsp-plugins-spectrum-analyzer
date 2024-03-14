@@ -751,7 +751,7 @@ namespace lsp
             }
         }
 
-        void spectrum_analyzer::prepare_buffers(size_t count)
+        void spectrum_analyzer::measure_correlation(size_t count)
         {
             // Do the correlation measurements
             if (nCorrelometers > 0)
@@ -790,7 +790,10 @@ namespace lsp
                         cm->fCorrelation        = max;
                 }
             }
+        }
 
+        void spectrum_analyzer::prepare_buffers(size_t count)
+        {
             if (nChannels > 1)
             {
                 if (!bMSSwitch)
@@ -893,6 +896,9 @@ namespace lsp
                 // Always bypass signal
                 for (size_t i=0; i<nChannels; ++i)
                     dsp::copy(vChannels[i].vOut, vChannels[i].vIn, count);
+
+                // Measure correlation
+                measure_correlation(count);
 
                 if (bBypass)
                 {
