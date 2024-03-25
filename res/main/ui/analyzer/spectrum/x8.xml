@@ -337,13 +337,12 @@
 								<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_${:i idiv 2}" height="19" hfill="true"/>
 							</cell>
 							<cell cols="3" pad.h="6" pad.v="4" bg.color="bg_schema">
-								<ledmeter>
-									<ledchannel id="cm_${:i / 2}"
-										min="-100" max="100"
-										balance="0" balance.visibility="true"
-										log="false" type="peak"
-										value.color="blue" />
-								</ledmeter>
+								<ledchannel id="cm_${:i / 2}"
+									width.min="8" width.max="8"
+									min="-100" max="100"
+									balance="0" balance.visibility="true"
+									log="false" type="peak"
+									value.color="blue" />
 							</cell>
 							<cell cols="3">
 								<hsep hfill="true" vreduce="true" pad.v="2"/>
