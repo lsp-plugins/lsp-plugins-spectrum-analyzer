@@ -43,7 +43,7 @@ namespace lsp
             static constexpr size_t         PORTS_PER_INPUT     = 6;
             static constexpr size_t         RANK_MIN            = 10;
             static constexpr size_t         RANK_DFL            = 12;
-            static constexpr size_t         RANK_MAX            = 14;
+            static constexpr size_t         RANK_MAX            = 15;
             static constexpr size_t         MESH_POINTS         = 640;
 
             static constexpr float          THRESH_HI_DB        = 0.0f;
