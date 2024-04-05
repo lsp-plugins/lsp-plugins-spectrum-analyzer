@@ -357,6 +357,30 @@
 
 				<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_0" height="19" hfill="true" pad.v="4" pad.h="6"/>
 
+				<vbox vfill="false" bg.color="bg_schema" pad.v="4" pad.h="6">
+					<label text="labels.chan.correlation" pad.v="0"/>
+					<hbox>
+						<label text="-1" font.size="8" hfill="true" text.halign="-1" pad.t="2" pad.r="1"/>
+						<ledchannel
+							id="cm_0"
+							width.min="13"
+							width.max="13"
+							min="-100"
+							max="100"
+							balance="0"
+							balance.visibility="true"
+							log="false"
+							type="peak"
+							text.visibility="false"
+							hexpand="true"
+							bg.color="bg_schema"
+							balance.color="bright_cyan"
+							value.color="cyan"
+							activity=":on_0 and :on_1"/>
+						<label text="+1" font.size="8" hfill="true" text.halign="1" pad.t="2"/>
+					</hbox>
+				</vbox>
+
 				<group text="groups.channels" vexpand="true" bg.color="bg" ipadding="0">
 					<grid rows="3" cols="3" hfill="false" spacing="2">
 						<ui:with bg.color="bg_schema">
@@ -440,6 +464,29 @@
 					</grid>
 				</group>
 				<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms" height="19" hfill="true" pad.v="4" pad.h="6" visibility=":mode ieq 3"/>
+				<vbox vfill="false" bg.color="bg_schema" pad.v="4" pad.h="6" visibility=":mode ieq 3">
+					<label text="labels.chan.correlation" pad.v="0"/>
+					<hbox>
+						<label text="-1" font.size="8" hfill="true" text.halign="-1" pad.t="2" pad.r="1"/>
+						<ledchannel
+							id="cm_0"
+							width.min="13"
+							width.max="13"
+							min="-100"
+							max="100"
+							balance="0"
+							balance.visibility="true"
+							log="false"
+							type="peak"
+							text.visibility="false"
+							hexpand="true"
+							bg.color="bg_schema"
+							balance.color="bright_cyan"
+							value.color="cyan"
+							activity=":on_0 and :on_1"/>
+						<label text="+1" font.size="8" hfill="true" text.halign="1" pad.t="2"/>
+					</hbox>
+				</vbox>
 				<group text="groups.channels" vexpand="true" bg.color="bg" ipadding="0">
 					<grid rows="3" cols="3" hfill="false" spacing="2">
 						<ui:with bg.color="bg_schema">
