@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -61,7 +61,9 @@ namespace lsp
         spectrum_analyzer::spectrum_analyzer(const meta::plugin_t *metadata): plug::Module(metadata)
         {
             nChannels       = 0;
+            nCorrelometers  = 0;
             vChannels       = NULL;
+            vCorrelometers  = NULL;
             vAnalyze        = NULL;
             pData           = NULL;
             vFrequences     = NULL;
@@ -128,19 +130,29 @@ namespace lsp
             lsp_trace("this=%p, channels = %d", this, int(channels));
 
             // Calculate header size
+            size_t n_correlometers  = (channels >= 4) ? (channels / 2) + 1 : (channels >= 2) ? 1 : 0;
             size_t hdr_size         = align_size(sizeof(sa_channel_t) * channels, 64);
             size_t freq_buf_size    = align_size(sizeof(float) * meta::spectrum_analyzer::MESH_POINTS, 64);
             size_t mfreq_buf_size   = align_size(sizeof(float) * meta::spectrum_analyzer::MESH_POINTS, 64);
             size_t ind_buf_size     = align_size(sizeof(uint32_t) * meta::spectrum_analyzer::MESH_POINTS, 64);
             size_t analyze_size     = align_size(sizeof(float *) * channels, 16);
             size_t buffers          = BUFFER_SIZE * sizeof(float) * channels;
-            size_t alloc            = hdr_size + freq_buf_size + freq_buf_size + mfreq_buf_size + ind_buf_size + analyze_size + buffers;
+            size_t szof_corrs       = align_size(sizeof(sa_correlometer_t) * n_correlometers, 64);
+            size_t alloc            = hdr_size +
+                                      freq_buf_size +
+                                      freq_buf_size +
+                                      mfreq_buf_size +
+                                      ind_buf_size +
+                                      analyze_size +
+                                      buffers +
+                                      szof_corrs;
 
             lsp_trace("header_size      = %d", int(hdr_size));
             lsp_trace("freq_buf_size    = %d", int(freq_buf_size));
             lsp_trace("mfreq_buf_size   = %d", int(mfreq_buf_size));
             lsp_trace("ind_buf_size     = %d", int(ind_buf_size));
             lsp_trace("buffers          = %d", int(buffers));
+            lsp_trace("corrs            = %d", int(szof_corrs));
             lsp_trace("alloc            = %d", int(alloc));
 
             // Allocate data
@@ -151,6 +163,7 @@ namespace lsp
 
             // Initialize core
             nChannels       = channels;
+            nCorrelometers  = n_correlometers;
             nChannel        = 0;
             fSelector       = meta::spectrum_analyzer::SELECTOR_DFL;
             fMinFreq        = meta::spectrum_analyzer::FREQ_MIN;
@@ -161,6 +174,7 @@ namespace lsp
 
             // Initialize pointers and cleanup buffers
             vChannels       = advance_ptr_bytes<sa_channel_t>(ptr, hdr_size);
+            vCorrelometers  = (n_correlometers > 0) ? advance_ptr_bytes<sa_correlometer_t>(ptr, szof_corrs) : NULL;
             vFrequences     = advance_ptr_bytes<float>(ptr, freq_buf_size);
             vMaxValues      = advance_ptr_bytes<float>(ptr, freq_buf_size);
             vMFrequences    = advance_ptr_bytes<float>(ptr, mfreq_buf_size);
@@ -200,6 +214,15 @@ namespace lsp
 
                 // Clear the buffer
                 dsp::fill_zero(c->vBuffer, BUFFER_SIZE);
+            }
+
+            // Initialize correlometers
+            for (size_t i=0; i<n_correlometers; ++i)
+            {
+                sa_correlometer_t *cm   = &vCorrelometers[i];
+                cm->sCorr.construct();
+                cm->fCorrelation        = 0.0f;
+                cm->pCorrelometer       = NULL;
             }
 
             lsp_assert(ptr <= &guard[alloc]);
@@ -252,13 +275,13 @@ namespace lsp
                     break;
 
                 sa_channel_t *c     = &vChannels[i];
-                c->pIn              = trace_port(ports[port_id++]);
-                c->pOut             = trace_port(ports[port_id++]);
-                c->pOn              = trace_port(ports[port_id++]);
-                c->pSolo            = trace_port(ports[port_id++]);
-                c->pFreeze          = trace_port(ports[port_id++]);
-                c->pHue             = trace_port(ports[port_id++]);
-                c->pShift           = trace_port(ports[port_id++]);
+                BIND_PORT(c->pIn);
+                BIND_PORT(c->pOut);
+                BIND_PORT(c->pOn);
+                BIND_PORT(c->pSolo);
+                BIND_PORT(c->pFreeze);
+                BIND_PORT(c->pHue);
+                BIND_PORT(c->pShift);
 
                 // Sync metadata
                 const meta::port_t *meta  = c->pSolo->metadata();
@@ -276,52 +299,61 @@ namespace lsp
             {
                 for (size_t i=0; i<nChannels; i += 2)
                 {
-                    sa_channel_t *l     = &vChannels[i];
-                    sa_channel_t *r     = &vChannels[i+1];
+                    sa_channel_t *l         = &vChannels[i];
+                    sa_channel_t *r         = &vChannels[i+1];
+                    sa_correlometer_t *cm   = &vCorrelometers[i >> 1];
 
-                    l->pMSSwitch        = trace_port(ports[port_id++]);
+                    BIND_PORT(l->pMSSwitch);
                     r->pMSSwitch        = l->pMSSwitch;
+
+                    BIND_PORT(cm->pCorrelometer);
                 }
             }
 
             // Initialize basic ports
-            pBypass         = trace_port(ports[port_id++]);
-            pMode           = trace_port(ports[port_id++]);
-            trace_port(ports[port_id++]); // Skip mesh thickness
-            trace_port(ports[port_id++]); // Skip spectralizer mode
-            pLogScale       = trace_port(ports[port_id++]);
-            pFreeze         = trace_port(ports[port_id++]);
-            trace_port(ports[port_id++]); // Skip horizontal line switch button
-            pMaxTrack       = trace_port(ports[port_id++]);
-            pMaxReset       = trace_port(ports[port_id++]);
-            pTolerance      = trace_port(ports[port_id++]);
-            pWindow         = trace_port(ports[port_id++]);
-            pEnvelope       = trace_port(ports[port_id++]);
-            pPreamp         = trace_port(ports[port_id++]);
-            pZoom           = trace_port(ports[port_id++]);
-            pReactivity     = trace_port(ports[port_id++]);
+            BIND_PORT(pBypass);
+            BIND_PORT(pMode);
+            SKIP_PORT("Mesh thickness");
+            SKIP_PORT("Spectralizer mode");
+            BIND_PORT(pLogScale);
+            BIND_PORT(pFreeze);
+            SKIP_PORT("Horizontal line switch button");
+            BIND_PORT(pMaxTrack);
+            BIND_PORT(pMaxReset);
+            BIND_PORT(pTolerance);
+            BIND_PORT(pWindow);
+            BIND_PORT(pEnvelope);
+            BIND_PORT(pPreamp);
+            BIND_PORT(pZoom);
+            BIND_PORT(pReactivity);
             if (nChannels > 1)
-                pChannel        = trace_port(ports[port_id++]);
-            pSelector       = trace_port(ports[port_id++]);
-            trace_port(ports[port_id++]); // Skip horizontal line value
-            pFrequency      = trace_port(ports[port_id++]);
-            pLevel          = trace_port(ports[port_id++]);
-            pFftData        = trace_port(ports[port_id++]);
+                BIND_PORT(pChannel);
+            BIND_PORT(pSelector);
+            SKIP_PORT("Horizontal line value");
+            BIND_PORT(pFrequency);
+            BIND_PORT(pLevel);
+            BIND_PORT(pFftData);
+
+            // Bind global correlometer ports
+            if (nChannels >= 4)
+            {
+                BIND_PORT(vCorrelometers[nCorrelometers-1].pCorrelometer);
+            }
 
             // Bind spectralizer ports
             if (nChannels >= 2)
             {
-                pMSSwitch           = trace_port(ports[port_id++]);
-                vSpc[0].pPortId     = trace_port(ports[port_id++]);
+                BIND_PORT(pMSSwitch);
+                BIND_PORT(vSpc[0].pPortId);
             }
-            vSpc[0].pFBuffer    = trace_port(ports[port_id++]);
+            BIND_PORT(vSpc[0].pFBuffer);
             vSpc[0].nChannelId  = -1;
 
             if (nChannels >= 2)
             {
                 if (nChannels > 2)
-                    vSpc[1].pPortId     = trace_port(ports[port_id++]);
-                vSpc[1].pFBuffer    = trace_port(ports[port_id++]);
+                    BIND_PORT(vSpc[1].pPortId);
+                BIND_PORT(vSpc[1].pFBuffer);
                 vSpc[1].nChannelId  = -1;
             }
 
@@ -340,6 +372,16 @@ namespace lsp
 
         void spectrum_analyzer::do_destroy()
         {
+            if (vCorrelometers != NULL)
+            {
+                for (size_t i=0; i<nCorrelometers; ++i)
+                {
+                    sa_correlometer_t *cm = &vCorrelometers[i];
+                    cm->sCorr.destroy();
+                }
+                vCorrelometers  = NULL;
+            }
+
             sAnalyzer.destroy();
 
             if (pData != NULL)
@@ -625,6 +667,16 @@ namespace lsp
         void spectrum_analyzer::update_sample_rate(long sr)
         {
             lsp_trace("this=%p, sample_rate = %d", this, int(sr));
+            const size_t corr_period = dspu::millis_to_samples(sr, meta::spectrum_analyzer::CORR_PERIOD);
+
+            for (size_t i=0; i<nCorrelometers; ++i)
+            {
+                sa_correlometer_t *cm   = &vCorrelometers[i];
+                cm->sCorr.init(corr_period);
+                cm->sCorr.set_period(corr_period);
+                cm->sCorr.clear();
+            }
+
             sAnalyzer.set_sample_rate(sr);
             if (sAnalyzer.needs_reconfiguration())
                 sAnalyzer.reconfigure();
@@ -696,6 +748,47 @@ namespace lsp
 
                 for (size_t i=0; i<meta::spectrum_analyzer::MESH_POINTS; ++i)
                     dst[i] = k * (dst[i] - s);
+            }
+        }
+
+        void spectrum_analyzer::measure_correlation(size_t count)
+        {
+            // Do the correlation measurements
+            if (nCorrelometers > 0)
+            {
+                for (size_t i=0; i<nChannels; i += 2)
+                {
+                    sa_channel_t *l         = &vChannels[i];
+                    sa_channel_t *r         = &vChannels[i + 1];
+                    sa_correlometer_t *cm   = &vCorrelometers[i >> 1];
+
+                    float min               = 0.0f;
+                    float max               = 0.0f;
+                    cm->sCorr.process(l->vBuffer, l->vIn, r->vIn, count);
+                    dsp::minmax(l->vBuffer, count, &min, &max);
+                    max                     = (fabs(min) > fabs(max)) ? min : max;
+
+                    if (fabs(cm->fCorrelation) < fabs(max))
+                        cm->fCorrelation        = max;
+                }
+
+                if (nChannels >= 4)
+                {
+                    sa_correlometer_t *cm   = &vCorrelometers[nCorrelometers-1];
+                    sa_channel_t *a         = (vSpc[0].nPortId >= 0) ? &vChannels[vSpc[0].nPortId] : NULL;
+                    sa_channel_t *b         = (vSpc[1].nPortId >= 0) ? &vChannels[vSpc[1].nPortId] : NULL;
+
+                    float min               = 0.0f;
+                    float max               = 0.0f;
+                    if ((a != NULL) && (b != NULL))
+                    {
+                        cm->sCorr.process(a->vBuffer, a->vIn, b->vIn, count);
+                        dsp::minmax(a->vBuffer, count, &min, &max);
+                    }
+
+                    if (fabs(cm->fCorrelation) < fabs(max))
+                        cm->fCorrelation        = max;
+                }
             }
         }
 
@@ -773,6 +866,10 @@ namespace lsp
                 c->vOut             = c->pOut->buffer<float>();
             }
 
+            // Cleanup correlometers
+            for (size_t i=0; i<nCorrelometers; ++i)
+                vCorrelometers[i].fCorrelation      = 0.0f;
+
             // Check that mesh request is pending
             plug::mesh_t *mesh      = pFftData->buffer<plug::mesh_t>();
             bool mesh_request   = (mesh != NULL) && (mesh->isEmpty());
@@ -799,6 +896,9 @@ namespace lsp
                 // Always bypass signal
                 for (size_t i=0; i<nChannels; ++i)
                     dsp::copy(vChannels[i].vOut, vChannels[i].vIn, count);
+
+                // Measure correlation
+                measure_correlation(count);
 
                 if (bBypass)
                 {
@@ -930,6 +1030,13 @@ namespace lsp
             // Commit mesh data
             if (mesh_request)
                 mesh->data(nChannels + 2, meta::spectrum_analyzer::MESH_POINTS + 4);
+
+            // Report correlometers
+            for (size_t i=0; i<nCorrelometers; ++i)
+            {
+                sa_correlometer_t *cm = &vCorrelometers[i];
+                cm->pCorrelometer->set_value(cm->fCorrelation * 100.0f);
+            }
         }
 
         bool spectrum_analyzer::inline_display(plug::ICanvas *cv, size_t width, size_t height)
@@ -1027,6 +1134,7 @@ namespace lsp
             v->write_object("sCounter", &sCounter);
 
             v->write("nChannels", nChannels);
+            v->write("nCorrelometers", nCorrelometers);
             v->begin_array("vChannels", vChannels, nChannels);
             {
                 for (size_t i=0; i<nChannels; ++i)
@@ -1054,6 +1162,23 @@ namespace lsp
                         v->write("pFreeze", c->pFreeze);
                         v->write("pHue", c->pHue);
                         v->write("pShift", c->pShift);
+                    }
+                    v->end_object();
+                }
+            }
+            v->end_array();
+
+            v->begin_array("vCorrelometers", vCorrelometers, nCorrelometers);
+            {
+                for (size_t i=0; i<nCorrelometers; ++i)
+                {
+                    const sa_correlometer_t *cm = &vCorrelometers[i];
+
+                    v->begin_object(cm, sizeof(sa_correlometer_t));
+                    {
+                        v->write_object("sCorr", &cm->sCorr);
+                        v->write("fCorrelation", cm->fCorrelation);
+                        v->write("pCorrelometer", cm->pCorrelometer);
                     }
                     v->end_object();
                 }
