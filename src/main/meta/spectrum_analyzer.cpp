@@ -76,8 +76,8 @@ namespace lsp
 
         static const port_item_t spectrum_analyzer_x2_channels[]=
         {
-            R("0"),
             R("1"),
+            R("2"),
             { NULL, NULL }
         };
 
@@ -92,7 +92,7 @@ namespace lsp
 
         static const port_item_t spectrum_analyzer_x4_channels[]=
         {
-            R("0"), R("1"), R("2"), R("3"),
+            R("1"), R("2"), R("3"), R("4"),
             { NULL, NULL }
         };
 
@@ -109,8 +109,8 @@ namespace lsp
 
         static const port_item_t spectrum_analyzer_x8_channels[]=
         {
-            R("0"), R("1"), R("2"), R("3"),
-            R("4"), R("5"), R("6"), R("7"),
+            R("1"), R("2"), R("3"), R("4"),
+            R("5"), R("6"), R("7"), R("8"),
             { NULL, NULL }
         };
 
@@ -118,9 +118,9 @@ namespace lsp
 
         static const port_item_t spectrum_analyzer_x12_channels[]=
         {
-            R("0"), R("1"), R("2"), R("3"),
-            R("4"), R("5"), R("6"), R("7"),
-            R("8"), R("9"), R("10"), R("11"),
+            R("1"), R("2"), R("3"), R("4"),
+            R("5"), R("6"), R("7"), R("8"),
+            R("9"), R("10"), R("11"), R("12"),
             { NULL, NULL }
         };
 
@@ -128,10 +128,10 @@ namespace lsp
 
         static const port_item_t spectrum_analyzer_x16_channels[]=
         {
-            R("0"), R("1"), R("2"), R("3"),
-            R("4"), R("5"), R("6"), R("7"),
-            R("8"), R("9"), R("10"), R("11"),
-            R("12"), R("13"), R("14"), R("15"),
+            R("1"), R("2"), R("3"), R("4"),
+            R("5"), R("6"), R("7"), R("8"),
+            R("9"), R("10"), R("11"), R("12"),
+            R("13"), R("14"), R("15"), R("16"),
             { NULL, NULL }
         };
 

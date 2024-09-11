@@ -54,7 +54,7 @@
 						<!-- Meshes -->
 						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
 						<ui:for id="i" first="0" count="8">
-							<mesh xi="0" yi="${:i + 2}" id="spd" width=":lthick+1" color="graph_mesh_cycle" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
+							<mesh xi="0" yi="${:i + 2}" id="spd" width=":lthick+1" color="graph_mesh_cycle" color.a="0.2" color.hue=":hue_${i}" visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
 						</ui:for>
 
 						<!-- Axis -->
@@ -364,7 +364,7 @@
 						</ui:if>
 
 						<ui:with bg.color="bg_schema" bright="(:on_${i}) ? 1.0 : 0.75" bg.bright="(:on_${i}) ? 1.0 : :const_bg_darken">
-							<label text="labels.specials.idx" text:id="${i}"/>
+							<label text="labels.specials.idx" text:id="${:i+1}"/>
 							<button
 								ui:inject="Button_Cycle"
 								text="labels.chan.on"
@@ -503,7 +503,7 @@
 								<vsep/>
 							</cell>
 							<ui:with bg.color="bg_schema">
-								<label text="labels.specials.idx" text:id="${i}"/>
+								<label text="labels.specials.idx" text:id="${:i+1}"/>
 								<button
 									ui:inject="Button_Cycle"
 									text="labels.chan.hold"
