@@ -3,7 +3,8 @@
 *******************************************************************************
 
 === 1.0.27 ===
-
+* Added +12 dB compensation on measurement of the spectrum to match the amplitude
+  of the pure sine wave on the graph.
 
 === 1.0.26 ===
 * Updated build scripts and dependencies.

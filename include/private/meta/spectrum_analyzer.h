@@ -48,7 +48,8 @@ namespace lsp
 
             static constexpr float          THRESH_HI_DB        = 0.0f;
             static constexpr float          THRESH_LO_DB        = -48.0f;
-            static constexpr float          SPECTRALIZER_BOOST  = 16.0f;
+            static constexpr float          SPECTRALIZER_BOOST  = GAIN_AMP_P_24_DB;
+            static constexpr float          ANALYZER_BOOST      = GAIN_AMP_P_12_DB;
             static constexpr size_t         MMESH_STEP          = 16;
             static constexpr size_t         WND_DFL             = dspu::windows::HANN;
             static constexpr size_t         ENV_DFL             = dspu::envelope::PINK_NOISE;

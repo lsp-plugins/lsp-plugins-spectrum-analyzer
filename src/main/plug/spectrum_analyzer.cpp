@@ -736,7 +736,7 @@ namespace lsp
             // Apply gain
             float gain = (flags & F_BOOST) ?
                     vChannels[channel].fGain * meta::spectrum_analyzer::SPECTRALIZER_BOOST:
-                    vChannels[channel].fGain ;
+                    vChannels[channel].fGain * meta::spectrum_analyzer::ANALYZER_BOOST;
             dsp::mul_k2(dst, gain * fPreamp, meta::spectrum_analyzer::MESH_POINTS);
 
             // Apply log scale if necessary
@@ -926,8 +926,8 @@ namespace lsp
                     {
                         size_t idx  = fSelector * ((fft_size - 1) >> 1);
                         pFrequency->set_value(float(idx * fSampleRate) / float(fft_size));
-                        float lvl = sAnalyzer.get_level(nChannel, idx);
-                        pLevel->set_value(lvl * c->fGain * fPreamp );
+                        float lvl = sAnalyzer.get_level(nChannel, idx) * meta::spectrum_analyzer::ANALYZER_BOOST;
+                        pLevel->set_value(lvl * c->fGain * fPreamp);
                     }
 
                     // Mesh is requested?
