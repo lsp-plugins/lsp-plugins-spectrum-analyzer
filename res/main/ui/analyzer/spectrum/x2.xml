@@ -52,8 +52,8 @@
 
 						<!-- Meshes -->
 						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
-						<mesh xi="0" yi="2" id="spd" width=":lthick+1" color="left" visibility_id="on_0"/>
-						<mesh xi="0" yi="3" id="spd" width=":lthick+1" color="right" visibility_id="on_1"/>
+						<mesh xi="0" yi="2" id="spd" width=":lthick+1" color="left" color.a="0.2" visibility_id="on_0"/>
+						<mesh xi="0" yi="3" id="spd" width=":lthick+1" color="right" color.a="0.2" visibility_id="on_1"/>
 
 						<!-- Axis -->
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="true" visibility="false"/>
@@ -385,7 +385,7 @@
 					<grid rows="3" cols="3" hfill="false" spacing="2">
 						<ui:with bg.color="bg_schema">
 							<ui:with bright="(:on_0 ine 0) ? 1.0 : 0.75" bg.bright="(:on_0 ine 0) ? 1.0 : :const_bg_darken">
-								<label text="labels.specials.idx" text:id="0" padding="6"/>
+								<label text="labels.specials.idx" text:id="1" padding="6"/>
 								<vsep expand="false" padding="0"/>
 								<hbox>
 									<vbox height="44" padding="6">
@@ -409,7 +409,7 @@
 								<hsep/>
 							</cell>
 							<ui:with bright="(:on_1 ine 0) ? 1.0 : 0.75" bg.bright="(:on_1 ine 0) ? 1.0 : :const_bg_darken">
-								<label text="labels.specials.idx" text:id="1" padding="6"/>
+								<label text="labels.specials.idx" text:id="2" padding="6"/>
 								<vsep expand="false" padding="0"/>
 
 								<hbox>
@@ -458,7 +458,7 @@
 						<cell visibility=":mode ieq 2">
 							<vbox bg.color="bg_schema" padding="6">
 								<label text="labels.metering.channel" width="58" pad.b="6"/>
-								<combo id="chn" width="48"/>
+								<combo id="spc" width="48"/>
 							</vbox>
 						</cell>
 					</grid>
@@ -490,26 +490,7 @@
 				<group text="groups.channels" vexpand="true" bg.color="bg" ipadding="0">
 					<grid rows="3" cols="3" hfill="false" spacing="2">
 						<ui:with bg.color="bg_schema">
-							<ui:with bright="(:chn ieq 0) or (:mode ine 2) ? 1.0 : 0.75" bg.bright="(:chn ieq 0) or (:mode ine 2) ? 1.0 : :const_bg_darken">
-								<cell padding="6">
-									<label text="labels.specials.idx" text:id="0"/>
-								</cell>
-								<cell expand="false" padding="0">
-									<vsep/>
-								</cell>
-								<cell>
-									<vbox>
-										<button ui:inject="Button_cyan_8" id="frz_0" text="labels.chan.hold" height="10" width="48" pad.v="4"/>
-										<label text="labels.chan.shift"/>
-										<knob id="sh_0" scolor="(:chn ieq 0) or (:mode ine 2) ? 'left' : 'left_inactive'" size="20" pad.v="4"/>
-										<value id="sh_0" detailed="true" sline="true" width="60" pad.b="4"/>
-									</vbox>
-								</cell>
-							</ui:with>
-							<cell rows="1" cols="3" expand="false" padding="0">
-								<hsep/>
-							</cell>
-							<ui:with bright="(:chn ieq 1) or (:mode ine 2) ? 1.0 : 0.75" bg.bright="(:chn ieq 1) or (:mode ine 2) ? 1.0 : :const_bg_darken">
+							<ui:with bright="(:spc ieq 0) or (:mode ine 2) ? 1.0 : 0.75" bg.bright="(:spc ieq 0) or (:mode ine 2) ? 1.0 : :const_bg_darken">
 								<cell padding="6">
 									<label text="labels.specials.idx" text:id="1"/>
 								</cell>
@@ -518,9 +499,28 @@
 								</cell>
 								<cell>
 									<vbox>
+										<button ui:inject="Button_cyan_8" id="frz_0" text="labels.chan.hold" height="10" width="48" pad.v="4"/>
+										<label text="labels.chan.shift"/>
+										<knob id="sh_0" scolor="(:spc ieq 0) or (:mode ine 2) ? 'left' : 'left_inactive'" size="20" pad.v="4"/>
+										<value id="sh_0" detailed="true" sline="true" width="60" pad.b="4"/>
+									</vbox>
+								</cell>
+							</ui:with>
+							<cell rows="1" cols="3" expand="false" padding="0">
+								<hsep/>
+							</cell>
+							<ui:with bright="(:spc ieq 1) or (:mode ine 2) ? 1.0 : 0.75" bg.bright="(:spc ieq 1) or (:mode ine 2) ? 1.0 : :const_bg_darken">
+								<cell padding="6">
+									<label text="labels.specials.idx" text:id="2"/>
+								</cell>
+								<cell expand="false" padding="0">
+									<vsep/>
+								</cell>
+								<cell>
+									<vbox>
 										<button ui:inject="Button_cyan_8" id="frz_1" text="labels.chan.hold" height="10" width="48" pad.v="4"/>
 										<label text="labels.chan.shift"/>
-										<knob id="sh_1" scolor="(:chn ieq 1) or (:mode ine 2) ? 'right' : 'right_inactive'" size="20" pad.v="4"/>
+										<knob id="sh_1" scolor="(:spc ieq 1) or (:mode ine 2) ? 'right' : 'right_inactive'" size="20" pad.v="4"/>
 										<value id="sh_1" detailed="true" sline="true" width="60" pad.b="4"/>
 									</vbox>
 								</cell>
