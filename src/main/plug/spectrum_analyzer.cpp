@@ -21,13 +21,15 @@
 
 #include <private/meta/spectrum_analyzer.h>
 #include <private/plugins/spectrum_analyzer.h>
-#include <lsp-plug.in/dsp-units/units.h>
-#include <lsp-plug.in/plug-fw/meta/ports.h>
-#include <lsp-plug.in/plug-fw/meta/func.h>
+
 #include <lsp-plug.in/common/alloc.h>
 #include <lsp-plug.in/common/debug.h>
-#include <lsp-plug.in/stdlib/math.h>
 #include <lsp-plug.in/dsp/dsp.h>
+#include <lsp-plug.in/dsp-units/units.h>
+#include <lsp-plug.in/plug-fw/core/AudioBuffer.h>
+#include <lsp-plug.in/plug-fw/meta/ports.h>
+#include <lsp-plug.in/plug-fw/meta/func.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 #include <lsp-plug.in/shared/debug.h>
 #include <lsp-plug.in/shared/id_colors.h>
@@ -200,11 +202,13 @@ namespace lsp
                 c->fGain            = 1.0f;
                 c->vIn              = NULL;
                 c->vOut             = NULL;
+                c->vRet             = NULL;
                 c->vBuffer          = advance_ptr_bytes<float>(ptr, BUFFER_SIZE * sizeof(float));
 
                 // Port references
                 c->pIn              = NULL;
                 c->pOut             = NULL;
+                c->pRet             = NULL;
                 c->pMSSwitch        = NULL;
                 c->pOn              = NULL;
                 c->pFreeze          = NULL;
@@ -300,11 +304,19 @@ namespace lsp
                     sa_channel_t *r         = &vChannels[i+1];
                     sa_correlometer_t *cm   = &vCorrelometers[i >> 1];
 
+                    SKIP_PORT("Return name");
+                    BIND_PORT(l->pRet);
+                    BIND_PORT(r->pRet);
                     BIND_PORT(l->pMSSwitch);
                     r->pMSSwitch        = l->pMSSwitch;
 
                     BIND_PORT(cm->pCorrelometer);
                 }
+            }
+            else
+            {
+                SKIP_PORT("Return name");
+                BIND_PORT(vChannels[0].pRet);
             }
 
             // Initialize basic ports
@@ -788,6 +800,19 @@ namespace lsp
 
         void spectrum_analyzer::prepare_buffers(size_t count)
         {
+            // Mix with return if it is routed
+            for (size_t i=0; i<nChannels; ++i)
+            {
+                sa_channel_t *c     = &vChannels[i];
+
+                vAnalyze[i]         = c->vIn;
+                if (c->vRet != NULL)
+                {
+                    dsp::add3(c->vBuffer, c->vIn, c->vRet, count);
+                    vAnalyze[i]         = c->vBuffer;
+                }
+            }
+
             if (nChannels > 1)
             {
                 if (!bMSSwitch)
@@ -799,23 +824,14 @@ namespace lsp
 
                         if ((l->bMSSwitch) || (r->bMSSwitch))
                         {
-                            dsp::lr_to_ms(l->vBuffer, r->vBuffer, l->vIn, r->vIn, count);
+                            dsp::lr_to_ms(l->vBuffer, r->vBuffer, vAnalyze[i], vAnalyze[i+1], count);
                             vAnalyze[i]         = l->vBuffer;
                             vAnalyze[i+1]       = r->vBuffer;
-                        }
-                        else
-                        {
-                            vAnalyze[i]     = l->vIn;
-                            vAnalyze[i+1]   = r->vIn;
                         }
                     }
                 }
                 else
                 {
-                    // Copy pointers to all buffers as is
-                    for (size_t i=0; i<nChannels; ++i)
-                        vAnalyze[i]         = vChannels[i].vIn;
-
                     // Special case: do MS convert for two (or one) channels
                     ssize_t l_id        = vSpc[0].nPortId;
                     ssize_t r_id        = vSpc[1].nPortId;
@@ -827,19 +843,17 @@ namespace lsp
 
                     if (l_id != r_id)
                     {
-                        dsp::lr_to_ms(l->vBuffer, r->vBuffer, l->vIn, r->vIn, count);
+                        dsp::lr_to_ms(l->vBuffer, r->vBuffer, vAnalyze[l_id], vAnalyze[r_id], count);
                         vAnalyze[l_id]      = l->vBuffer;
                         vAnalyze[r_id]      = r->vBuffer;
                     }
                     else
                     {
-                        dsp::lr_to_mid(l->vBuffer, l->vIn, r->vIn, count);
+                        dsp::lr_to_mid(l->vBuffer, vAnalyze[l_id], vAnalyze[r_id], count);
                         vAnalyze[l_id]      = l->vBuffer;
                     }
                 }
             }
-            else
-                vAnalyze[0]     = vChannels[0].vIn;
         }
 
         void spectrum_analyzer::process(size_t samples)
@@ -858,6 +872,9 @@ namespace lsp
                 sa_channel_t *c     = &vChannels[i];
                 c->vIn              = c->pIn->buffer<float>();
                 c->vOut             = c->pOut->buffer<float>();
+
+                core::AudioBuffer *ret  = c->pRet->buffer<core::AudioBuffer>();
+                c->vRet             = ((ret!= NULL) && (ret->active())) ? ret->buffer() : NULL;
             }
 
             // Cleanup correlometers
@@ -976,6 +993,8 @@ namespace lsp
                     sa_channel_t *c     = &vChannels[i];
                     c->vIn             += count;
                     c->vOut            += count;
+                    if (c->vRet != NULL)
+                        c->vRet            += count;
                 }
 
                 // Synchronize buffer state

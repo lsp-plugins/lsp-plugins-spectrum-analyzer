@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.29 ===
+* Added shared memory links for signal analysis.
 * Removed the unused 'Hue' parameter for channels.
 
 === 1.0.28 ===

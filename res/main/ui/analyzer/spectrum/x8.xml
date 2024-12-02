@@ -334,13 +334,16 @@
 
 						<ui:if test=":i % 2 ieq 0">
 							<cell cols="3" pad.h="6" pad.v="4" bg.color="bg_schema">
-								<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_${:i idiv 2}" height="19" hfill="true"/>
+								<vbox>
+									<shmlink id="ret_${:i idiv 2}" value.maxlen="6" text.clip="true" hfill="true" />
+									<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_${:i idiv 2}" height="19" hfill="true"/>
+								</vbox>
 							</cell>
 							<cell cols="3" pad.h="6" pad.v="4" bg.color="bg_schema">
 								<hbox>
 									<label text="-1" font.size="8" hfill="true" text.halign="-1" pad.t="2" pad.r="1"/>
 									<ledchannel
-										id="cm_${:i / 2}"
+										id="cm_${:i idiv 2}"
 										width.min="13"
 										width.max="13"
 										min="-100"

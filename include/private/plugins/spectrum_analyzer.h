@@ -47,11 +47,13 @@ namespace lsp
                     float           fGain;              // Makeup gain
                     float          *vIn;                // Input buffer pointer
                     float          *vOut;               // Output buffer pointer
+                    float          *vRet;               // Return buffer
                     float          *vBuffer;            // Temporary buffer
 
                     // Port references
                     plug::IPort    *pIn;                // Input samples
                     plug::IPort    *pOut;               // Output samples
+                    plug::IPort    *pRet;               // Return
                     plug::IPort    *pMSSwitch;          // Mid/Side switch
                     plug::IPort    *pOn;                // FFT on
                     plug::IPort    *pSolo;              // Soloing flag

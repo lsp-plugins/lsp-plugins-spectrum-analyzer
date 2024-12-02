@@ -355,7 +355,10 @@
 					</grid>
 				</group>
 
-				<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_0" height="19" hfill="true" pad.v="4" pad.h="6"/>
+				<vbox>
+					<shmlink id="ret_0" value.maxlen="6" text.clip="true" hfill="true" />
+					<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_0" height="19" hfill="true" pad.v="4" pad.h="6"/>
+				</vbox>
 
 				<vbox vfill="false" bg.color="bg_schema" pad.v="4" pad.h="6">
 					<label text="labels.chan.correlation" pad.v="0"/>

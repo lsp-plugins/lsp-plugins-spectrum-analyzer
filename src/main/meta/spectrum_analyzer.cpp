@@ -150,7 +150,7 @@ namespace lsp
         #define SA_CORRMETER(id, label) \
             METER(id, label, U_PERCENT, spectrum_analyzer::CORRELATION)
 
-        #define SA_INPUT(x, total, active) \
+        #define SA_INPUT(x, active) \
             AUDIO_INPUT_N(x), \
             AUDIO_OUTPUT_N(x), \
             SWITCH("on_" #x, "Analyse " #x, active), \
@@ -183,7 +183,11 @@ namespace lsp
             { "lvl", "Level", U_GAIN_AMP, R_METER, F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
             MESH("spd", "Spectrum Data", c + 2, spectrum_analyzer::MESH_POINTS + 4)
 
+        #define SA_MGROUP(id) \
+            OPT_RETURN_MONO("ret_" #id, "rin_" #id, "Audio return group " #id)
+
         #define SA_SGROUP(id) \
+            OPT_RETURN_STEREO("ret_" #id, "rin_" #id, "Audio return group " #id), \
             SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0), \
             SA_CORRMETER("cm_" #id, "Correlometer for stereo channel pair " #id)
 
@@ -192,7 +196,8 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x1_ports[] =
         {
-            SA_INPUT(0, 1, 1),
+            SA_INPUT(0, 1),
+            SA_MGROUP(0),
             SA_COMMON(1, SA_SKIP),
             FBUFFER("fb", "Spectralizer buffer", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             PORTS_END
@@ -200,8 +205,8 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x2_ports[] =
         {
-            SA_INPUT(0, 2, 1),
-            SA_INPUT(1, 2, 1),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
             SA_SGROUP(0),
             SA_COMMON(2, SA_CHANNEL),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
@@ -213,10 +218,10 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x4_ports[] =
         {
-            SA_INPUT(0, 4, 1),
-            SA_INPUT(1, 4, 1),
-            SA_INPUT(2, 4, 0),
-            SA_INPUT(3, 4, 0),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
+            SA_INPUT(2, 0),
+            SA_INPUT(3, 0),
             SA_SGROUP(0),
             SA_SGROUP(1),
             SA_COMMON(4, SA_CHANNEL),
@@ -231,14 +236,14 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x8_ports[] =
         {
-            SA_INPUT(0, 8, 1),
-            SA_INPUT(1, 8, 1),
-            SA_INPUT(2, 8, 0),
-            SA_INPUT(3, 8, 0),
-            SA_INPUT(4, 8, 0),
-            SA_INPUT(5, 8, 0),
-            SA_INPUT(6, 8, 0),
-            SA_INPUT(7, 8, 0),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
+            SA_INPUT(2, 0),
+            SA_INPUT(3, 0),
+            SA_INPUT(4, 0),
+            SA_INPUT(5, 0),
+            SA_INPUT(6, 0),
+            SA_INPUT(7, 0),
             SA_SGROUP(0),
             SA_SGROUP(1),
             SA_SGROUP(2),
@@ -255,18 +260,18 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x12_ports[] =
         {
-            SA_INPUT(0, 12, 1),
-            SA_INPUT(1, 12, 1),
-            SA_INPUT(2, 12, 0),
-            SA_INPUT(3, 12, 0),
-            SA_INPUT(4, 12, 0),
-            SA_INPUT(5, 12, 0),
-            SA_INPUT(6, 12, 0),
-            SA_INPUT(7, 12, 0),
-            SA_INPUT(8, 12, 0),
-            SA_INPUT(9, 12, 0),
-            SA_INPUT(10, 12, 0),
-            SA_INPUT(11, 12, 0),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
+            SA_INPUT(2, 0),
+            SA_INPUT(3, 0),
+            SA_INPUT(4, 0),
+            SA_INPUT(5, 0),
+            SA_INPUT(6, 0),
+            SA_INPUT(7, 0),
+            SA_INPUT(8, 0),
+            SA_INPUT(9, 0),
+            SA_INPUT(10, 0),
+            SA_INPUT(11, 0),
             SA_SGROUP(0),
             SA_SGROUP(1),
             SA_SGROUP(2),
@@ -285,22 +290,22 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x16_ports[] =
         {
-            SA_INPUT(0, 16, 1),
-            SA_INPUT(1, 16, 1),
-            SA_INPUT(2, 16, 0),
-            SA_INPUT(3, 16, 0),
-            SA_INPUT(4, 16, 0),
-            SA_INPUT(5, 16, 0),
-            SA_INPUT(6, 16, 0),
-            SA_INPUT(7, 16, 0),
-            SA_INPUT(8, 16, 0),
-            SA_INPUT(9, 16, 0),
-            SA_INPUT(10, 16, 0),
-            SA_INPUT(11, 16, 0),
-            SA_INPUT(12, 16, 0),
-            SA_INPUT(13, 16, 0),
-            SA_INPUT(14, 16, 0),
-            SA_INPUT(15, 16, 0),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
+            SA_INPUT(2, 0),
+            SA_INPUT(3, 0),
+            SA_INPUT(4, 0),
+            SA_INPUT(5, 0),
+            SA_INPUT(6, 0),
+            SA_INPUT(7, 0),
+            SA_INPUT(8, 0),
+            SA_INPUT(9, 0),
+            SA_INPUT(10, 0),
+            SA_INPUT(11, 0),
+            SA_INPUT(12, 0),
+            SA_INPUT(13, 0),
+            SA_INPUT(14, 0),
+            SA_INPUT(15, 0),
             SA_SGROUP(0),
             SA_SGROUP(1),
             SA_SGROUP(2),

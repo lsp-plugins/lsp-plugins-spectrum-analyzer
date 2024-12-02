@@ -256,6 +256,7 @@
 						</cell>
 
 						<vbox padding="6">
+							<shmlink id="ret_0" value.maxlen="6" text.clip="true" hfill="true" />
 							<button ui:inject="Button_cyan" id="frz_0" text="labels.chan.hold" size="16" width="60"/>
 						</vbox>
 
