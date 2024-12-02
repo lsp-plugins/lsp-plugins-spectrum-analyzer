@@ -118,7 +118,7 @@
 						<origin hpos="-1" vpos="1" visibility="false"/>
 
 						<!-- Frame buffer -->
-						<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="left" color.hue=":hue[spc]"/>
+						<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="left" color.hue=":spc / 2.0"/>
 
 						<!-- Secondary grid -->
 						<ui:with color="graph_prim" color.a="0.5">

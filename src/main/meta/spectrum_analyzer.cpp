@@ -156,7 +156,6 @@ namespace lsp
             SWITCH("on_" #x, "Analyse " #x, active), \
             SWITCH("solo_" #x, "Solo " #x, 0.0f), \
             SWITCH("frz_" #x, "Freeze " #x, 0.0f), \
-            { "hue_" #x, "Hue " #x, U_NONE, R_CONTROL, F_UPPER | F_LOWER | F_STEP | F_CYCLIC, 0.0f, 1.0f, (float(x) / float(total)), 0.25f/360.0f, NULL     }, \
             AMP_GAIN("sh_" #x, "Shift gain " #x, 1.0f, 1000.0f)
 
         #define SA_COMMON(c, channel) \

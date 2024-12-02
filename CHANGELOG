@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.29 ===
-
+* Removed the unused 'Hue' parameter for channels.
 
 === 1.0.28 ===
 * Updated build scripts and dependencies.

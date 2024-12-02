@@ -198,7 +198,6 @@ namespace lsp
                 c->bSend            = false;
                 c->bMSSwitch        = false;
                 c->fGain            = 1.0f;
-                c->fHue             = 0.0f;
                 c->vIn              = NULL;
                 c->vOut             = NULL;
                 c->vBuffer          = advance_ptr_bytes<float>(ptr, BUFFER_SIZE * sizeof(float));
@@ -209,7 +208,6 @@ namespace lsp
                 c->pMSSwitch        = NULL;
                 c->pOn              = NULL;
                 c->pFreeze          = NULL;
-                c->pHue             = NULL;
                 c->pShift           = NULL;
 
                 // Clear the buffer
@@ -280,7 +278,6 @@ namespace lsp
                 BIND_PORT(c->pOn);
                 BIND_PORT(c->pSolo);
                 BIND_PORT(c->pFreeze);
-                BIND_PORT(c->pHue);
                 BIND_PORT(c->pShift);
 
                 // Sync metadata
@@ -469,7 +466,6 @@ namespace lsp
                 c->bSend            = (c->bOn) && ((!has_solo) || (c->bSolo));
                 c->bMSSwitch        = (c->pMSSwitch != NULL) ? c->pMSSwitch->value() >= 0.5f : false;
                 c->fGain            = c->pShift->value();
-                c->fHue             = c->pHue->value();
             }
 
             bMSSwitch               = false;
@@ -498,7 +494,6 @@ namespace lsp
                 c->bSend            = c->bOn;
                 c->bMSSwitch        = false;
                 c->fGain            = c->pShift->value();
-                c->fHue             = c->pHue->value();
             }
 
             bMSSwitch               = (pMSSwitch != NULL) ? pMSSwitch->value() >= 0.5f : false;
@@ -528,7 +523,6 @@ namespace lsp
                 c->bSend            = false; // We do not need to send mesh data because utilizing framebuffer ports
                 c->bMSSwitch        = false;
                 c->fGain            = c->pShift->value();
-                c->fHue             = c->pHue->value();
             }
 
             bMSSwitch               = (pMSSwitch != NULL) ? pMSSwitch->value() >= 0.5f : false;
@@ -1119,7 +1113,7 @@ namespace lsp
                 dsp::axis_apply_log1(b->v[3], b->v[1], zy, dy, width);
 
                 // Draw mesh
-                col.hue(c->fHue);
+                col.hue(float(i) / float(nChannels));
                 cv->set_color(col);
                 cv->draw_lines(b->v[2], b->v[3], width);
             }
@@ -1149,7 +1143,6 @@ namespace lsp
                         v->write("bSend", c->bSend);
                         v->write("bMSSwitch", c->bMSSwitch);
                         v->write("fGain", c->fGain);
-                        v->write("fHue", c->fHue);
                         v->write("vIn", c->vIn);
                         v->write("vOut", c->vOut);
                         v->write("vBuffer", c->vBuffer);
@@ -1160,7 +1153,6 @@ namespace lsp
                         v->write("pOn", c->pOn);
                         v->write("pSolo", c->pSolo);
                         v->write("pFreeze", c->pFreeze);
-                        v->write("pHue", c->pHue);
                         v->write("pShift", c->pShift);
                     }
                     v->end_object();

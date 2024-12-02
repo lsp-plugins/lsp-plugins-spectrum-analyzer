@@ -45,7 +45,6 @@ namespace lsp
                     bool            bSend;              // Send to UI flag
                     bool            bMSSwitch;          // Mid/side switch
                     float           fGain;              // Makeup gain
-                    float           fHue;               // Hue
                     float          *vIn;                // Input buffer pointer
                     float          *vOut;               // Output buffer pointer
                     float          *vBuffer;            // Temporary buffer
@@ -57,7 +56,6 @@ namespace lsp
                     plug::IPort    *pOn;                // FFT on
                     plug::IPort    *pSolo;              // Soloing flag
                     plug::IPort    *pFreeze;            // Freeze flag
-                    plug::IPort    *pHue;               // Hue of the graph color
                     plug::IPort    *pShift;             // Shift gain
                 } sa_channel_t;
 
