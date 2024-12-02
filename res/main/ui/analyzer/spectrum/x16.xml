@@ -52,9 +52,23 @@
 						</ui:with>
 
 						<!-- Meshes -->
-						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
+						<mesh xi="0" yi="33"
+							id="spd" width="1"
+							color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5"
+							fill="true" visibility=":mtrack" />
 						<ui:for id="i" first="0" count="16">
-							<mesh xi="0" yi="${:i + 2}" id="spd" width=":lthick+1" color="graph_mesh_cycle" color.a="0.2" color.hue="${i} / 16.0" visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
+							<mesh xi="0" yi="${:i + 17}"
+								id="spd" width="1"
+								color="graph_mesh_cycle" color.hue="${i} / 16.0" color.a="0.5"
+								fill.color="graph_mesh_cycle" fill.color.hue="${i} / 16.0" fill.color.a="0.9"
+								fill="true"
+								visibility=":ctrack and (((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))" />
+						</ui:for>
+						<ui:for id="i" first="0" count="16">
+							<mesh xi="0" yi="${:i + 1}"
+								id="spd" width=":lthick+1"
+								color="graph_mesh_cycle" color.hue="${i} / 16.0" color.a="0.2"
+								visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))" />
 						</ui:for>
 
 						<!-- Axis -->
@@ -286,6 +300,7 @@
 						<combo id="lthick" visibility=":mode ilt 4"/>
 						<hbox fill="false" spacing="4" pad.h="4">
 							<button ui:inject="Button_cyan" text="labels.history" id="mtrack" size="16" visibility=":mode ilt 4"/>
+							<button ui:inject="Button_cyan" text="labels.signal.max" id="ctrack" size="16" visibility=":mode ilt 4"/>
 							<button ui:inject="Button_cyan" text="labels.clear" id="mreset" size="16" visibility=":mode ilt 4"/>
 						</hbox>
 						<button ui:inject="Button_cyan" text="labels.metering.measure_line" id="mline" size="16" visibility=":mode ilt 4" pad.l="15"/>

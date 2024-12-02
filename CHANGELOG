@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.29 ===
+* Added possibility to display maximums for each individual channel on the spectrum graph.
 * Added shared memory links for signal analysis.
 * Removed the unused 'Hue' parameter for channels.
 
