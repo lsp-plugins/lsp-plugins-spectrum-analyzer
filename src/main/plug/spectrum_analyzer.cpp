@@ -1049,11 +1049,6 @@ namespace lsp
 
                 if (c->bSend)
                 {
-                    // Copy frequency points
-                    size_t flags = 0;
-                    if ((enMode == SA_MASTERING) || (enMode == SA_MASTERING_STEREO))
-                        flags |= F_SMOOTH_LOG | F_MASTERING;
-
                     // Current value
                     if (bBypass)
                         dsp::fill_zero(&v[2], meta::spectrum_analyzer::MESH_POINTS);
@@ -1078,11 +1073,6 @@ namespace lsp
 
                 if (c->bSend)
                 {
-                    // Copy frequency points
-                    size_t flags = 0;
-                    if ((enMode == SA_MASTERING) || (enMode == SA_MASTERING_STEREO))
-                        flags |= F_SMOOTH_LOG | F_MASTERING;
-
                     // Current value
                     if (bBypass)
                         dsp::fill_zero(&v[2], meta::spectrum_analyzer::MESH_POINTS);
