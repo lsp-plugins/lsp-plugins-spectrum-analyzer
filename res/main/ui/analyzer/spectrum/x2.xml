@@ -1,13 +1,16 @@
 <plugin resizable="true">
 	<vbox spacing="4">
 		<!-- Head settings -->
-		<align halign="-1" fill="true">
-			<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" spacing="8" fill="false" bg.color="bg_schema">
-				<label text="labels.mode"/>
-				<combo id="mode"/>
-				<button pad.l="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
-			</hbox>
-		</align>
+		<!-- <align halign="-1" fill="true"> -->
+		<hbox fill="true" bg.color="bg_schema">
+			<label text="labels.mode" pad.l="6" pad.v="4"/>
+			<combo id="mode" pad.h="6" pad.v="4"/>
+			<button ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze" pad.r="6" pad.v="4"/>
+			<vsep bg.color="bg" pad.h="2" hreduce="true" hexpand="false"/>
+			<shmlink id="ret_0" value.maxlen="6" text.clip="true" pad.h="6" font.size="10" pad.v="4"/>
+			<void hexpand="true" hfill="true"/>
+		</hbox>
+		<!-- </align> -->
 
 		<hbox expand="true" spacing="4">
 			<vbox spacing="4" expand="true">
@@ -51,30 +54,11 @@
 						</ui:with>
 
 						<!-- Meshes -->
-						<mesh xi="0" yi="5"
-							id="spd" width="1"
-							color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5"
-							fill="true" visibility=":mtrack" />
-						<mesh xi="0" yi="3"
-							id="spd" width="1"
-							color="left" color.a="0.5"
-							fill.color="left" fill.color.a="0.9"
-							fill="true"
-							visibility=":ctrack and :on_0" />
-						<mesh xi="0" yi="4"
-							id="spd" width="1"
-							color="right" color.a="0.5"
-							fill.color="right" fill.color.a="0.9"
-							fill="true"
-							visibility=":ctrack and :on_1" />
-						<mesh xi="0" yi="1"
-							id="spd" width=":lthick+1"
-							color="left" color.a="0.2"
-							visibility="on_0" />
-						<mesh xi="0" yi="2"
-							id="spd" width=":lthick+1"
-							color="right" color.a="0.2"
-							visibility="on_1" />
+						<mesh xi="0" yi="5" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
+						<mesh xi="0" yi="3" id="spd" width="1" color="left" color.a="0.5" fill.color="left" fill.color.a="0.9" fill="true" visibility=":ctrack and :on_0"/>
+						<mesh xi="0" yi="4" id="spd" width="1" color="right" color.a="0.5" fill.color="right" fill.color.a="0.9" fill="true" visibility=":ctrack and :on_1"/>
+						<mesh xi="0" yi="1" id="spd" width=":lthick+1" color="left" color.a="0.2" visibility="on_0"/>
+						<mesh xi="0" yi="2" id="spd" width=":lthick+1" color="right" color.a="0.2" visibility="on_1"/>
 
 						<!-- Axis -->
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="true" visibility="false"/>
@@ -285,7 +269,7 @@
 						<combo id="lthick" visibility=":mode ilt 2"/>
 						<hbox fill="false" spacing="4" pad.h="4" visibility=":mode ilt 2">
 							<button ui:inject="Button_cyan" text="labels.history" id="mtrack" size="16"/>
-							<button ui:inject="Button_cyan" text="labels.signal.max" id="ctrack" size="16" />
+							<button ui:inject="Button_cyan" text="labels.signal.max" id="ctrack" size="16"/>
 							<button ui:inject="Button_cyan" text="labels.clear" id="mreset" size="16"/>
 						</hbox>
 
@@ -377,10 +361,9 @@
 					</grid>
 				</group>
 
-				<vbox>
-					<shmlink id="ret_0" value.maxlen="6" text.clip="true" hfill="true" />
-					<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_0" height="19" hfill="true" pad.v="4" pad.h="6"/>
-				</vbox>
+				<!-- <vbox> -->
+				<button bg.color="bg_schema" text="labels.chan.mid_side" id="ms_0" height="19" hfill="true" pad.v="4" pad.h="6"/>
+				<!-- </vbox> -->
 
 				<vbox vfill="false" bg.color="bg_schema" pad.v="4" pad.h="6">
 					<label text="labels.chan.correlation" pad.v="0"/>

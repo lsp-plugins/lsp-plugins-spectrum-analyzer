@@ -205,7 +205,7 @@
 
 			<!-- Metering -->
 			<group text="groups.metering" vexpand="true" bg.color="bg" ipadding="0">
-				<grid rows="19" cols="1" expand="true" vspacing="2">
+				<grid rows="21" cols="1" expand="true">
 					<ui:with bg.color="bg_schema">
 						<vbox width.min="107" padding="6">
 							<label text="labels.metering.preamp" pad.b="6"/>
@@ -215,9 +215,7 @@
 							</hbox>
 						</vbox>
 
-						<cell expand="false" bg.color="bg">
-							<hsep/>
-						</cell>
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false"/>
 
 						<vbox padding="6">
 							<label text="labels.metering.reactivity" width="58" pad.b="6"/>
@@ -227,9 +225,7 @@
 							</hbox>
 						</vbox>
 
-						<cell expand="false" bg.color="bg" visibility=":mode ile 1">
-							<hsep/>
-						</cell>
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false" visibility=":mode ile 1"/>
 
 						<vbox visibility=":mode ile 1" padding="6">
 							<label text="labels.metering.selector" width="58" pad.b="6"/>
@@ -239,9 +235,7 @@
 							</hbox>
 						</vbox>
 
-						<cell expand="false" bg.color="bg">
-							<hsep/>
-						</cell>
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false"/>
 
 						<vbox padding="6">
 							<label text="labels.chan.shift" width="58" pad.b="6"/>
@@ -251,55 +245,48 @@
 							</hbox>
 						</vbox>
 
-						<cell expand="false" bg.color="bg">
-							<hsep/>
-						</cell>
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false"/>
 
 						<vbox padding="6">
-							<shmlink id="ret_0" value.maxlen="6" text.clip="true" hfill="true" />
-							<button ui:inject="Button_cyan" id="frz_0" text="labels.chan.hold" size="16" width="60"/>
+							<shmlink id="ret_0" value.maxlen="6" text.clip="true" hfill="true"/>
 						</vbox>
 
-						<cell expand="false" bg.color="bg" visibility=":mode ige 2">
-							<hsep/>
-						</cell>
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false"/>
+
+						<vbox padding="6">
+							<button ui:inject="Button_cyan" id="frz_0" text="labels.chan.hold" height="16" font.size="12" hfill="true"/>
+						</vbox>
+
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false" visibility=":mode ige 2"/>
 
 						<vbox visibility=":mode ige 2" padding="6">
-							<button ui:inject="Button_yellow" text="labels.log_scale" id="splog" size="16"/>
+							<button ui:inject="Button_yellow" text="labels.log_scale" id="splog" height="16" font.size="12" hfill="true"/>
 						</vbox>
 
-						<cell expand="false" bg.color="bg" visibility=":mode ige 2">
-							<hsep/>
-						</cell>
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false" visibility=":mode ige 2"/>
 
 						<vbox visibility=":mode ige 2" padding="6">
 							<label text="labels.spectrogram" pad.b="6"/>
 							<combo id="spm"/>
 						</vbox>
 
-						<cell expand="false" bg.color="bg" visibility=":mode ige 2">
-							<hsep/>
-						</cell>
-
-						<void height.min="84" visibility=":mode ige 2" padding="6"/>
-
-						<cell expand="false" bg.color="bg" visibility=":mode ile 1">
-							<hsep/>
-						</cell>
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false" visibility=":mode ile 1"/>
 
 						<vbox visibility=":mode ile 1" padding="6" vfill="false">
 							<label text="labels.metering.fft_frequency:hz" pad.b="6"/>
 							<indicator id="freq" format="f6.1!" tcolor="mono"/>
 						</vbox>
 
-						<cell expand="false" bg.color="bg" visibility=":mode ile 1">
-							<hsep/>
-						</cell>
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false" visibility=":mode ile 1"/>
 
 						<vbox visibility=":mode ile 1" padding="6" vfill="false">
 							<label text="labels.metering.level:db" pad.b="6"/>
 							<indicator id="lvl" format="+-f5.1!" tcolor="mono"/>
 						</vbox>
+
+						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false"/>
+
+						<void vexpand="true" height.min="8"/>
 					</ui:with>
 				</grid>
 			</group>
