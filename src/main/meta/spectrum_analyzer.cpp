@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MAJOR         1
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MINOR         0
-#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         28
+#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         29
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -150,14 +150,16 @@ namespace lsp
         #define SA_CORRMETER(id, label) \
             METER(id, label, U_PERCENT, spectrum_analyzer::CORRELATION)
 
-        #define SA_INPUT(x, total, active) \
+        #define SA_INPUT(x, active) \
             AUDIO_INPUT_N(x), \
             AUDIO_OUTPUT_N(x), \
             SWITCH("on_" #x, "Analyse " #x, active), \
             SWITCH("solo_" #x, "Solo " #x, 0.0f), \
             SWITCH("frz_" #x, "Freeze " #x, 0.0f), \
-            { "hue_" #x, "Hue " #x, U_NONE, R_CONTROL, F_UPPER | F_LOWER | F_STEP | F_CYCLIC, 0.0f, 1.0f, (float(x) / float(total)), 0.25f/360.0f, NULL     }, \
             AMP_GAIN("sh_" #x, "Shift gain " #x, 1.0f, 1000.0f)
+
+        #define SA_MULTI_CHANNEL(...)         __VA_ARGS__
+        #define SA_SINGLE_CHANNEL(...)
 
         #define SA_COMMON(c, channel) \
             BYPASS, \
@@ -167,7 +169,8 @@ namespace lsp
             SWITCH("splog", "Spectralizer logarithmic scale", 1), \
             SWITCH("freeze", "Analyzer freeze", 0), \
             SWITCH("mline", "Horizontal measuring line", 0), \
-            SWITCH("mtrack", "Track maximum values", 1), \
+            SWITCH("mtrack", "Show maximum values for all channels", 1), \
+            channel(SWITCH("ctrack", "Track maximum values for individual channels", 0), ) \
             TRIGGER("mreset", "Reset maximum values"), \
             { "tol", "FFT Tolerance", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, 0, fft_tolerance }, \
             { "wnd", "FFT Window", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::WND_DFL, 0, fft_windows }, \
@@ -176,35 +179,37 @@ namespace lsp
             LOG_CONTROL("zoom", "Graph zoom", U_GAIN_AMP, spectrum_analyzer::ZOOM), \
             { "react",          "Reactivity",       U_SEC,          R_CONTROL, F_UPPER | F_LOWER | F_STEP | F_LOG, \
                  spectrum_analyzer::REACT_TIME_MIN, spectrum_analyzer::REACT_TIME_MAX, spectrum_analyzer::REACT_TIME_DFL, spectrum_analyzer::REACT_TIME_STEP, NULL }, \
-            channel(c) \
+            channel({ "chn", "Channel", U_ENUM, R_CONTROL, 0, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels }, ) \
             LOG_CONTROL("sel", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
             LOG_CONTROL("mlval", "Horizontal measuring line level value", U_DB, spectrum_analyzer::HLINE), \
             { "freq", "Frequency", U_HZ, R_METER, F_UPPER | F_LOWER, \
                 spectrum_analyzer::FREQ_MIN, spectrum_analyzer::FREQ_MAX, spectrum_analyzer::FREQ_DFL, 0, NULL }, \
             { "lvl", "Level", U_GAIN_AMP, R_METER, F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
-            MESH("spd", "Spectrum Data", c + 2, spectrum_analyzer::MESH_POINTS + 4)
+            MESH("spd", "Spectrum Data", c*2 + 2, spectrum_analyzer::MESH_POINTS + 4)
+
+        #define SA_MGROUP(id) \
+            OPT_RETURN_MONO("ret_" #id, "rin_" #id, "Audio return group " #id)
 
         #define SA_SGROUP(id) \
+            OPT_RETURN_STEREO("ret_" #id, "rin_" #id, "Audio return group " #id), \
             SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0), \
             SA_CORRMETER("cm_" #id, "Correlometer for stereo channel pair " #id)
 
-        #define SA_CHANNEL(c)   { "chn", "Channel", U_ENUM, R_CONTROL, 0, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels },
-        #define SA_SKIP(c)
-
         static const port_t spectrum_analyzer_x1_ports[] =
         {
-            SA_INPUT(0, 1, 1),
-            SA_COMMON(1, SA_SKIP),
+            SA_INPUT(0, 1),
+            SA_MGROUP(0),
+            SA_COMMON(1, SA_SINGLE_CHANNEL),
             FBUFFER("fb", "Spectralizer buffer", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             PORTS_END
         };
 
         static const port_t spectrum_analyzer_x2_ports[] =
         {
-            SA_INPUT(0, 2, 1),
-            SA_INPUT(1, 2, 1),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
             SA_SGROUP(0),
-            SA_COMMON(2, SA_CHANNEL),
+            SA_COMMON(2, SA_MULTI_CHANNEL),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc", "Spectralizer channel", 0, spectrum_analyzer_x2_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
@@ -214,13 +219,13 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x4_ports[] =
         {
-            SA_INPUT(0, 4, 1),
-            SA_INPUT(1, 4, 1),
-            SA_INPUT(2, 4, 0),
-            SA_INPUT(3, 4, 0),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
+            SA_INPUT(2, 0),
+            SA_INPUT(3, 0),
             SA_SGROUP(0),
             SA_SGROUP(1),
-            SA_COMMON(4, SA_CHANNEL),
+            SA_COMMON(4, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x4_channels),
@@ -232,19 +237,19 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x8_ports[] =
         {
-            SA_INPUT(0, 8, 1),
-            SA_INPUT(1, 8, 1),
-            SA_INPUT(2, 8, 0),
-            SA_INPUT(3, 8, 0),
-            SA_INPUT(4, 8, 0),
-            SA_INPUT(5, 8, 0),
-            SA_INPUT(6, 8, 0),
-            SA_INPUT(7, 8, 0),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
+            SA_INPUT(2, 0),
+            SA_INPUT(3, 0),
+            SA_INPUT(4, 0),
+            SA_INPUT(5, 0),
+            SA_INPUT(6, 0),
+            SA_INPUT(7, 0),
             SA_SGROUP(0),
             SA_SGROUP(1),
             SA_SGROUP(2),
             SA_SGROUP(3),
-            SA_COMMON(8, SA_CHANNEL),
+            SA_COMMON(8, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x8_channels),
@@ -256,25 +261,25 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x12_ports[] =
         {
-            SA_INPUT(0, 12, 1),
-            SA_INPUT(1, 12, 1),
-            SA_INPUT(2, 12, 0),
-            SA_INPUT(3, 12, 0),
-            SA_INPUT(4, 12, 0),
-            SA_INPUT(5, 12, 0),
-            SA_INPUT(6, 12, 0),
-            SA_INPUT(7, 12, 0),
-            SA_INPUT(8, 12, 0),
-            SA_INPUT(9, 12, 0),
-            SA_INPUT(10, 12, 0),
-            SA_INPUT(11, 12, 0),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
+            SA_INPUT(2, 0),
+            SA_INPUT(3, 0),
+            SA_INPUT(4, 0),
+            SA_INPUT(5, 0),
+            SA_INPUT(6, 0),
+            SA_INPUT(7, 0),
+            SA_INPUT(8, 0),
+            SA_INPUT(9, 0),
+            SA_INPUT(10, 0),
+            SA_INPUT(11, 0),
             SA_SGROUP(0),
             SA_SGROUP(1),
             SA_SGROUP(2),
             SA_SGROUP(3),
             SA_SGROUP(4),
             SA_SGROUP(5),
-            SA_COMMON(12, SA_CHANNEL),
+            SA_COMMON(12, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x12_channels),
@@ -286,22 +291,22 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x16_ports[] =
         {
-            SA_INPUT(0, 16, 1),
-            SA_INPUT(1, 16, 1),
-            SA_INPUT(2, 16, 0),
-            SA_INPUT(3, 16, 0),
-            SA_INPUT(4, 16, 0),
-            SA_INPUT(5, 16, 0),
-            SA_INPUT(6, 16, 0),
-            SA_INPUT(7, 16, 0),
-            SA_INPUT(8, 16, 0),
-            SA_INPUT(9, 16, 0),
-            SA_INPUT(10, 16, 0),
-            SA_INPUT(11, 16, 0),
-            SA_INPUT(12, 16, 0),
-            SA_INPUT(13, 16, 0),
-            SA_INPUT(14, 16, 0),
-            SA_INPUT(15, 16, 0),
+            SA_INPUT(0, 1),
+            SA_INPUT(1, 1),
+            SA_INPUT(2, 0),
+            SA_INPUT(3, 0),
+            SA_INPUT(4, 0),
+            SA_INPUT(5, 0),
+            SA_INPUT(6, 0),
+            SA_INPUT(7, 0),
+            SA_INPUT(8, 0),
+            SA_INPUT(9, 0),
+            SA_INPUT(10, 0),
+            SA_INPUT(11, 0),
+            SA_INPUT(12, 0),
+            SA_INPUT(13, 0),
+            SA_INPUT(14, 0),
+            SA_INPUT(15, 0),
             SA_SGROUP(0),
             SA_SGROUP(1),
             SA_SGROUP(2),
@@ -310,7 +315,7 @@ namespace lsp
             SA_SGROUP(5),
             SA_SGROUP(6),
             SA_SGROUP(7),
-            SA_COMMON(16, SA_CHANNEL),
+            SA_COMMON(16, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
             COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x16_channels),

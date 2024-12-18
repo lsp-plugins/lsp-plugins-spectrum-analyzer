@@ -45,19 +45,21 @@ namespace lsp
                     bool            bSend;              // Send to UI flag
                     bool            bMSSwitch;          // Mid/side switch
                     float           fGain;              // Makeup gain
-                    float           fHue;               // Hue
                     float          *vIn;                // Input buffer pointer
                     float          *vOut;               // Output buffer pointer
+                    float          *vRet;               // Return buffer
                     float          *vBuffer;            // Temporary buffer
+                    float          *vSpc[2];            // Spectrum data
+                    float          *vMax[2];            // Maximum data
 
                     // Port references
                     plug::IPort    *pIn;                // Input samples
                     plug::IPort    *pOut;               // Output samples
+                    plug::IPort    *pRet;               // Return
                     plug::IPort    *pMSSwitch;          // Mid/Side switch
                     plug::IPort    *pOn;                // FFT on
                     plug::IPort    *pSolo;              // Soloing flag
                     plug::IPort    *pFreeze;            // Freeze flag
-                    plug::IPort    *pHue;               // Hue of the graph color
                     plug::IPort    *pShift;             // Shift gain
                 } sa_channel_t;
 
@@ -104,7 +106,7 @@ namespace lsp
                 sa_correlometer_t  *vCorrelometers;     // Available correlometers
                 float             **vAnalyze;           // Analysis buffers
                 float              *vFrequences;
-                float              *vMaxValues;         // Maximum value tracking
+                float              *vMaxValues[2];      // Maximum value tracking
                 float              *vMFrequences;
                 uint32_t           *vIndexes;
                 uint8_t            *pData;
@@ -121,7 +123,6 @@ namespace lsp
                 mode_t              enMode;
                 bool                bLogScale;
                 bool                bMSSwitch;          // Mid/Side switch for stereo mode
-                bool                bMaxTracking;       // Enable tracking of maximum values
 
                 float               fWndState;          // Variable to save the state of WINDOW
                 float               fEnvState;          // Variable to save the state of ENVELOPE
@@ -143,7 +144,6 @@ namespace lsp
                 plug::IPort        *pMSSwitch;
 
                 plug::IPort        *pFreeze;
-                plug::IPort        *pMaxTrack;          // Enable maximum value tracking
                 plug::IPort        *pMaxReset;          // Reset maximum values
                 plug::IPort        *pSpp;
                 sa_spectralizer_t   vSpc[2];
@@ -164,6 +164,8 @@ namespace lsp
                 void                get_spectrum(float *dst, size_t channel, size_t flags);
                 void                measure_correlation(size_t count);
                 void                prepare_buffers(size_t count);
+
+                void                output_spectrum();
 
             public:
                 explicit spectrum_analyzer(const meta::plugin_t *metadata);

@@ -73,6 +73,7 @@
 	<li><b>Hold</b> - forces the frequency graph of the channel to freeze.</li>
 	<li><b>Shift</b> - allows to adjust the gain of the channel.</li>
 	<li><b>Preamp</b> - allows to adjust the overall gain of the analysis.</li>
+	<li><b>Link</b> - stereo link, allows to add signal to the input channel <?php if ($nc > 1) { ?>pair<?php } ?> passed from the shared memory link.</li>
 	<?php if ($nc > 1) { ?>
 	<li><b>Channel</b> - allows to select the channel for level metering.</li>
 	<li><b>Mid/Side</b> - allows to switch the channel pair (which consists of two near subsequent channels) to the Mid/Side analysis mode.</li>
@@ -83,6 +84,11 @@
 	<li><b>Window</b> - the window applied to the audio data before processing.</li>
 	<li><b>Tolerance</b> - the number of points for the FFT (Fast Fourier Transform) analysis.</li>
 	<li><b>Envelope</b> - the envelope compensation of the signal.</li>
+	<li><b>History</b> - Show chart with maximum registered peak values among the full frequency range of all channels.</li>
+	<?php if ($nc > 1) {?>
+		<li><b>Max</b> - Show chart with maximum registered peak values among the full frequency range of selected channels.</li>
+	<?php } ?>
+	<li><b>Clear</b> - Clear charts with maximum retistered peak values among the full frequency range.</li>
 	<li><b>Zoom</b> - zoom fader, allows to adjust zoom on the frequency chart.</li>
 </ul>
 
