@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -172,19 +172,17 @@ namespace lsp
             SWITCH("mtrack", "Show maximum values for all channels", 1), \
             channel(SWITCH("ctrack", "Track maximum values for individual channels", 0), ) \
             TRIGGER("mreset", "Reset maximum values"), \
-            { "tol", "FFT Tolerance", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, 0, fft_tolerance }, \
-            { "wnd", "FFT Window", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::WND_DFL, 0, fft_windows }, \
-            { "env", "FFT Envelope", U_ENUM, R_CONTROL, 0, 0, 0, spectrum_analyzer::ENV_DFL, 0, fft_envelopes }, \
+            COMBO("tol", "FFT Tolerance", spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, fft_tolerance), \
+            COMBO("wnd", "FFT Window", spectrum_analyzer::WND_DFL, fft_windows), \
+            COMBO("env", "FFT Envelope", spectrum_analyzer::ENV_DFL, fft_envelopes), \
             AMP_GAIN("pamp", "Preamp gain", spectrum_analyzer::PREAMP_DFL, 1000.0f), \
             LOG_CONTROL("zoom", "Graph zoom", U_GAIN_AMP, spectrum_analyzer::ZOOM), \
-            { "react",          "Reactivity",       U_SEC,          R_CONTROL, F_UPPER | F_LOWER | F_STEP | F_LOG, \
-                 spectrum_analyzer::REACT_TIME_MIN, spectrum_analyzer::REACT_TIME_MAX, spectrum_analyzer::REACT_TIME_DFL, spectrum_analyzer::REACT_TIME_STEP, NULL }, \
-            channel({ "chn", "Channel", U_ENUM, R_CONTROL, 0, 0, 0, 0, 0, spectrum_analyzer_x ## c ## _channels }, ) \
+            LOG_CONTROL("react", "Reactivity", U_SEC, spectrum_analyzer::REACT_TIME), \
+            channel(COMBO("chn", "Channel", 0, spectrum_analyzer_x ## c ## _channels), ) \
             LOG_CONTROL("sel", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
             LOG_CONTROL("mlval", "Horizontal measuring line level value", U_DB, spectrum_analyzer::HLINE), \
-            { "freq", "Frequency", U_HZ, R_METER, F_UPPER | F_LOWER, \
-                spectrum_analyzer::FREQ_MIN, spectrum_analyzer::FREQ_MAX, spectrum_analyzer::FREQ_DFL, 0, NULL }, \
-            { "lvl", "Level", U_GAIN_AMP, R_METER, F_UPPER | F_LOWER, 0, 10000, 0, 0, NULL }, \
+            METER("freq", "Frequency", U_HZ, spectrum_analyzer::FREQ), \
+            METER_MINMAX("lvl", "Level", U_GAIN_AMP, 0.0f, 10000.0f), \
             MESH("spd", "Spectrum Data", c*2 + 2, spectrum_analyzer::MESH_POINTS + 4)
 
         #define SA_MGROUP(id) \
