@@ -176,11 +176,11 @@ namespace lsp
             COMBO("wnd", "FFT Window", spectrum_analyzer::WND_DFL, fft_windows), \
             COMBO("env", "FFT Envelope", spectrum_analyzer::ENV_DFL, fft_envelopes), \
             AMP_GAIN("pamp", "Preamp gain", spectrum_analyzer::PREAMP_DFL, 1000.0f), \
-            LOG_CONTROL("zoom", "Graph zoom", U_GAIN_AMP, spectrum_analyzer::ZOOM), \
-            LOG_CONTROL("react", "Reactivity", U_SEC, spectrum_analyzer::REACT_TIME), \
+            LOG_CONTROL("zoom", "Graph zoom", "Zoom", U_GAIN_AMP, spectrum_analyzer::ZOOM), \
+            LOG_CONTROL("react", "Reactivity", "Reactivity", U_SEC, spectrum_analyzer::REACT_TIME), \
             channel(COMBO("chn", "Channel", 0, spectrum_analyzer_x ## c ## _channels), ) \
-            LOG_CONTROL("sel", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
-            LOG_CONTROL("mlval", "Horizontal measuring line level value", U_DB, spectrum_analyzer::HLINE), \
+            LOG_CONTROL("sel", "Selector", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
+            LOG_CONTROL("mlval", "Horizontal measuring line level value", "HLine lvl", U_DB, spectrum_analyzer::HLINE), \
             METER("freq", "Frequency", U_HZ, spectrum_analyzer::FREQ), \
             METER_MINMAX("lvl", "Level", U_GAIN_AMP, 0.0f, 10000.0f), \
             MESH("spd", "Spectrum Data", c*2 + 2, spectrum_analyzer::MESH_POINTS + 4)
