@@ -153,9 +153,9 @@ namespace lsp
         #define SA_INPUT(x, active) \
             AUDIO_INPUT_N(x), \
             AUDIO_OUTPUT_N(x), \
-            SWITCH("on_" #x, "Analyse " #x, active), \
-            SWITCH("solo_" #x, "Solo " #x, 0.0f), \
-            SWITCH("frz_" #x, "Freeze " #x, 0.0f), \
+            SWITCH("on_" #x, "Analyse " #x, "On " #x, active), \
+            SWITCH("solo_" #x, "Solo " #x, "Solo " #x, 0.0f), \
+            SWITCH("frz_" #x, "Freeze " #x, "Freeze " #x, 0.0f), \
             AMP_GAIN("sh_" #x, "Shift gain " #x, 1.0f, 1000.0f)
 
         #define SA_MULTI_CHANNEL(...)         __VA_ARGS__
@@ -163,22 +163,22 @@ namespace lsp
 
         #define SA_COMMON(c, channel) \
             BYPASS, \
-            COMBO("mode", "Analyzer mode", 0, spectrum_analyzer_x ## c ## _modes), \
-            COMBO("lthick", "Mesh thickness", 2, line_thick_modes), \
-            COMBO("spm", "Spectralizer mode", 1, spectralizer_modes), \
-            SWITCH("splog", "Spectralizer logarithmic scale", 1), \
-            SWITCH("freeze", "Analyzer freeze", 0), \
-            SWITCH("mline", "Horizontal measuring line", 0), \
-            SWITCH("mtrack", "Show maximum values for all channels", 1), \
-            channel(SWITCH("ctrack", "Track maximum values for individual channels", 0), ) \
-            TRIGGER("mreset", "Reset maximum values"), \
-            COMBO("tol", "FFT Tolerance", spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, fft_tolerance), \
-            COMBO("wnd", "FFT Window", spectrum_analyzer::WND_DFL, fft_windows), \
-            COMBO("env", "FFT Envelope", spectrum_analyzer::ENV_DFL, fft_envelopes), \
+            COMBO("mode", "Analyzer mode", "Mode", 0, spectrum_analyzer_x ## c ## _modes), \
+            COMBO("lthick", "Mesh thickness", "Thickness", 2, line_thick_modes), \
+            COMBO("spm", "Spectralizer mode", "SPC mode", 1, spectralizer_modes), \
+            SWITCH("splog", "Spectralizer logarithmic scale", "SPC log scale", 1), \
+            SWITCH("freeze", "Analyzer freeze", "Freeze", 0), \
+            SWITCH("mline", "Horizontal measuring line", "Show HMarker", 0), \
+            SWITCH("mtrack", "Show maximum values for all channels", "Show max", 1), \
+            channel(SWITCH("ctrack", "Track maximum values for individual channels", "Track max", 0), ) \
+            TRIGGER("mreset", "Reset maximum values", "Reset max"), \
+            COMBO("tol", "FFT Tolerance", "FFT tol", spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, fft_tolerance), \
+            COMBO("wnd", "FFT Window", "FFT wnd", spectrum_analyzer::WND_DFL, fft_windows), \
+            COMBO("env", "FFT Envelope", "FFT env", spectrum_analyzer::ENV_DFL, fft_envelopes), \
             AMP_GAIN("pamp", "Preamp gain", spectrum_analyzer::PREAMP_DFL, 1000.0f), \
             LOG_CONTROL("zoom", "Graph zoom", "Zoom", U_GAIN_AMP, spectrum_analyzer::ZOOM), \
             LOG_CONTROL("react", "Reactivity", "Reactivity", U_SEC, spectrum_analyzer::REACT_TIME), \
-            channel(COMBO("chn", "Channel", 0, spectrum_analyzer_x ## c ## _channels), ) \
+            channel(COMBO("chn", "Channel", "Channel", 0, spectrum_analyzer_x ## c ## _channels), ) \
             LOG_CONTROL("sel", "Selector", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
             LOG_CONTROL("mlval", "Horizontal measuring line level value", "HLine lvl", U_DB, spectrum_analyzer::HLINE), \
             METER("freq", "Frequency", U_HZ, spectrum_analyzer::FREQ), \
@@ -190,7 +190,7 @@ namespace lsp
 
         #define SA_SGROUP(id) \
             OPT_RETURN_STEREO("ret_" #id, "rin_" #id, "Audio return group " #id), \
-            SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, 0), \
+            SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, "M/S switch " #id, 0), \
             SA_CORRMETER("cm_" #id, "Correlometer for stereo channel pair " #id)
 
         static const port_t spectrum_analyzer_x1_ports[] =
@@ -208,8 +208,8 @@ namespace lsp
             SA_INPUT(1, 1),
             SA_SGROUP(0),
             SA_COMMON(2, SA_MULTI_CHANNEL),
-            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
-            COMBO("spc", "Spectralizer channel", 0, spectrum_analyzer_x2_channels),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
+            COMBO("spc", "Spectralizer channel", "SPC channel", 0, spectrum_analyzer_x2_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             FBUFFER("fb1", "Spectralizer buffer 1", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             PORTS_END
@@ -225,10 +225,10 @@ namespace lsp
             SA_SGROUP(1),
             SA_COMMON(4, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
-            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
-            COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x4_channels),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
+            COMBO("spc0", "Spectralizer channel 0", "SPC 0 channel", 0, spectrum_analyzer_x4_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
-            COMBO("spc1", "Spectralizer channel 1", 1, spectrum_analyzer_x4_channels),
+            COMBO("spc1", "Spectralizer channel 1", "SPC 1 channel", 1, spectrum_analyzer_x4_channels),
             FBUFFER("fb1", "Spectralizer buffer 1", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             PORTS_END
         };
@@ -249,10 +249,10 @@ namespace lsp
             SA_SGROUP(3),
             SA_COMMON(8, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
-            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
-            COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x8_channels),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
+            COMBO("spc0", "Spectralizer channel 0", "SPC 0 channel", 0, spectrum_analyzer_x8_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
-            COMBO("spc1", "Spectralizer channel 1", 1, spectrum_analyzer_x8_channels),
+            COMBO("spc1", "Spectralizer channel 1", "SPC 1 channel", 1, spectrum_analyzer_x8_channels),
             FBUFFER("fb1", "Spectralizer buffer 1", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             PORTS_END
         };
@@ -279,10 +279,10 @@ namespace lsp
             SA_SGROUP(5),
             SA_COMMON(12, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
-            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
-            COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x12_channels),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
+            COMBO("spc0", "Spectralizer channel 0", "SPC 0 channel", 0, spectrum_analyzer_x12_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
-            COMBO("spc1", "Spectralizer channel 1", 1, spectrum_analyzer_x12_channels),
+            COMBO("spc1", "Spectralizer channel 1", "SPC 1 channel", 1, spectrum_analyzer_x12_channels),
             FBUFFER("fb1", "Spectralizer buffer 1", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             PORTS_END
         };
@@ -315,10 +315,10 @@ namespace lsp
             SA_SGROUP(7),
             SA_COMMON(16, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
-            SWITCH("ms", "Stereo analysis Mid/Side mode", 0),
-            COMBO("spc0", "Spectralizer channel 0", 0, spectrum_analyzer_x16_channels),
+            SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
+            COMBO("spc0", "Spectralizer channel 0", "SPC 0 channel", 0, spectrum_analyzer_x16_channels),
             FBUFFER("fb0", "Spectralizer buffer 0", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
-            COMBO("spc1", "Spectralizer channel 1", 1, spectrum_analyzer_x16_channels),
+            COMBO("spc1", "Spectralizer channel 1", "SPC 1 channel", 1, spectrum_analyzer_x16_channels),
             FBUFFER("fb1", "Spectralizer buffer 1", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             PORTS_END
         };
