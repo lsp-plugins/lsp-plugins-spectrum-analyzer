@@ -156,7 +156,7 @@ namespace lsp
             SWITCH("on_" #x, "Analyse " #x, "On " #x, active), \
             SWITCH("solo_" #x, "Solo " #x, "Solo " #x, 0.0f), \
             SWITCH("frz_" #x, "Freeze " #x, "Freeze " #x, 0.0f), \
-            AMP_GAIN("sh_" #x, "Shift gain " #x, 1.0f, 1000.0f)
+            AMP_GAIN("sh_" #x, "Shift gain " #x, "Shift " #x, 1.0f, 1000.0f)
 
         #define SA_MULTI_CHANNEL(...)         __VA_ARGS__
         #define SA_SINGLE_CHANNEL(...)
@@ -175,7 +175,7 @@ namespace lsp
             COMBO("tol", "FFT Tolerance", "FFT tol", spectrum_analyzer::RANK_DFL - spectrum_analyzer::RANK_MIN, fft_tolerance), \
             COMBO("wnd", "FFT Window", "FFT wnd", spectrum_analyzer::WND_DFL, fft_windows), \
             COMBO("env", "FFT Envelope", "FFT env", spectrum_analyzer::ENV_DFL, fft_envelopes), \
-            AMP_GAIN("pamp", "Preamp gain", spectrum_analyzer::PREAMP_DFL, 1000.0f), \
+            AMP_GAIN("pamp", "Preamp gain", "Preamp", spectrum_analyzer::PREAMP_DFL, 1000.0f), \
             LOG_CONTROL("zoom", "Graph zoom", "Zoom", U_GAIN_AMP, spectrum_analyzer::ZOOM), \
             LOG_CONTROL("react", "Reactivity", "Reactivity", U_SEC, spectrum_analyzer::REACT_TIME), \
             channel(COMBO("chn", "Channel", "Channel", 0, spectrum_analyzer_x ## c ## _channels), ) \
