@@ -36,8 +36,9 @@ namespace lsp
         struct spectrum_analyzer
         {
             static constexpr float          FREQ_MIN            = SPEC_FREQ_MIN;
-            static constexpr float          FREQ_DFL            = 1000.0f;
             static constexpr float          FREQ_MAX            = SPEC_FREQ_MAX;
+            static constexpr float          FREQ_DFL            = 1000.0f;
+            static constexpr float          FREQ_STEP           = 0.0f;
             static constexpr float          CORR_PERIOD         = 100.0f;
 
             static constexpr size_t         PORTS_PER_INPUT     = 6;
