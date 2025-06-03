@@ -17,7 +17,7 @@
 <p>
 	This plugin performs spectral analysis of <?= $cd ?>.
 	<?php if ($nc > 1) { ?>
-		Stereo channels also are possible to analyze by utilizing special modes and selecting corresponsing channels.
+		Stereo channels also are possible to analyze by utilizing special modes and selecting corresponding channels.
 	<?php } ?>
 	It does not affect any changes to the input signal, so can be placed anywhere where the metering is needed.
 </p>
