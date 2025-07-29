@@ -49,8 +49,8 @@ namespace lsp
                     float          *vOut;               // Output buffer pointer
                     float          *vRet;               // Return buffer
                     float          *vBuffer;            // Temporary buffer
-                    float          *vSpc[2];            // Spectrum data
-                    float          *vMax[2];            // Maximum data
+                    float          *vSpc[4];            // Spectrum data
+                    float          *vMax[4];            // Maximum data
 
                     // Port references
                     plug::IPort    *pIn;                // Input samples
@@ -94,7 +94,8 @@ namespace lsp
                     F_MASTERING     = 1 << 0,
                     F_SMOOTH_LOG    = 1 << 1,
                     F_LOG_SCALE     = 1 << 2,
-                    F_BOOST         = 1 << 3
+                    F_BOOST         = 1 << 3,
+                    F_LIN_FREQ      = 1 << 4,
                 };
 
             protected:
@@ -105,10 +106,10 @@ namespace lsp
                 sa_channel_t       *vChannels;
                 sa_correlometer_t  *vCorrelometers;     // Available correlometers
                 float             **vAnalyze;           // Analysis buffers
-                float              *vFrequences;
-                float              *vMaxValues[2];      // Maximum value tracking
+                float              *vFrequences[2];     // Logarithmic frequencies, linear frequencies
+                float              *vMaxValues[4];      // Maximum value tracking
                 float              *vMFrequences;
-                uint32_t           *vIndexes;
+                uint32_t           *vIndexes[2];        // Logarithimic indexes, linear indexes
                 uint8_t            *pData;
 
                 bool                bBypass;
@@ -122,6 +123,7 @@ namespace lsp
                 float               fZoom;              // Zoom
                 mode_t              enMode;
                 bool                bLogScale;
+                bool                bLinFreq;           // Linear frequency
                 bool                bMSSwitch;          // Mid/Side switch for stereo mode
 
                 float               fWndState;          // Variable to save the state of WINDOW
@@ -140,6 +142,7 @@ namespace lsp
                 plug::IPort        *pFrequency;
                 plug::IPort        *pLevel;
                 plug::IPort        *pLogScale;
+                plug::IPort        *pLinFreq;
                 plug::IPort        *pFftData;
                 plug::IPort        *pMSSwitch;
 

@@ -168,6 +168,7 @@ namespace lsp
             COMBO("spm", "Spectralizer mode", "SPC mode", 1, spectralizer_modes), \
             SWITCH("splog", "Spectralizer logarithmic scale", "SPC log scale", 1), \
             SWITCH("freeze", "Analyzer freeze", "Freeze", 0), \
+            SWITCH("linfreq", "Linear frequency scale", "Linear Frequency", 0), \
             SWITCH("mline", "Horizontal measuring line", "Show HMarker", 0), \
             SWITCH("mtrack", "Show maximum values for all channels", "Show max", 1), \
             channel(SWITCH("ctrack", "Track maximum values for individual channels", "Track max", 0), ) \
