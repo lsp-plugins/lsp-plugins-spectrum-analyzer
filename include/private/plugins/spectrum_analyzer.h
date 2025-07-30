@@ -67,6 +67,7 @@ namespace lsp
                 {
                     int32_t         nPortId;            // Last port identifier
                     int32_t         nChannelId;         // Channel identifier
+                    bool            bLinFreq;           // Linear frequency
 
                     plug::IPort    *pPortId;            // Port identifier
                     plug::IPort    *pFBuffer;           // Frame buffer port

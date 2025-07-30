@@ -119,6 +119,8 @@ namespace lsp
             for (size_t i=0; i<2; ++i)
             {
                 vSpc[i].nPortId     = -1;
+                vSpc[i].nChannelId  = 0;
+                vSpc[i].bLinFreq    = false;
 
                 vSpc[i].pPortId     = NULL;
                 vSpc[i].pFBuffer    = NULL;
@@ -1005,7 +1007,7 @@ namespace lsp
                     // Update frame buffers if counter has fired
                     if ((fired) && (!bBypass))
                     {
-                        size_t flags = 0;
+                        size_t flags = (bLinFreq) ? F_LIN_FREQ : 0;
                         if (bLogScale)
                             flags      |= F_LOG_SCALE;
                         else
@@ -1022,6 +1024,13 @@ namespace lsp
                             plug::frame_buffer_t *fb = p->buffer<plug::frame_buffer_t>();
                             if (fb == NULL)
                                 continue;
+
+                            // Check that frequency presentation has changed
+                            if (vSpc[i].bLinFreq != bLinFreq)
+                            {
+                                fb->clear();
+                                vSpc[i].bLinFreq    = bLinFreq;
+                            }
 
                             // Get row and commit it
                             sa_channel_t *c     = &vChannels[cid];

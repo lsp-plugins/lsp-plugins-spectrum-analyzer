@@ -20,15 +20,18 @@
 
 						<!-- Secondary grid -->
 						<ui:with color="graph_sec">
-							<ui:for id="f" first="20" last="90" step="10">
-								<marker v="${:f}" visibility="!:linfreq"/>
-								<marker v="${:f * 10}" visibility="!:linfreq"/>
-								<marker v="${:f * 100}" visibility="!:linfreq"/>
-							</ui:for>
+							<ui:with visibility="!:linfreq">
+								<ui:for id="f" first="20" last="90" step="10">
+									<marker v="${:f}" />
+									<marker v="${:f * 10}" />
+									<marker v="${:f * 100}" />
+								</ui:for>
+								<marker v="20000"/>
+							</ui:with>
 							<ui:for id="f" first="1000" last="23000" step="1000">
 								<marker v="${:f}" visibility=":linfreq"/>
 							</ui:for>
-							<marker v="20000"/>
+							
 							<ui:for id="g" first="-60" last="12" step="24">
 								<marker v="${g} db" ox="1" oy="0"/>
 							</ui:for>
@@ -94,7 +97,6 @@
 							</ui:for>
 						</ui:with>
 						
-						
 						<ui:for id="t" first="-60" last="12" step="12">
 							<text x="10" y="${t} db" text="${t}" halign="1" valign="1"/>
 						</ui:for>
@@ -130,12 +132,18 @@
 
 						<!-- Secondary grid -->
 						<ui:with color="graph_prim" color.a="0.5">
-							<ui:for id="f" first="20" last="90" step="10">
-								<marker v="${:f}"/>
-								<marker v="${:f * 10}"/>
-								<marker v="${:f * 100}"/>
+							<ui:with visibility="!:linfreq">
+								<ui:for id="f" first="20" last="90" step="10">
+									<marker v="${:f}" />
+									<marker v="${:f * 10}" />
+									<marker v="${:f * 100}" />
+								</ui:for>
+								<marker v="20000"/>
+							</ui:with>
+							<ui:for id="f" first="1000" last="23000" step="1000">
+								<marker v="${:f}" visibility=":linfreq"/>
 							</ui:for>
-							<marker v="20000" color="graph_sec"/>
+							
 							<ui:for id="t" first="1" last="7" step="2">
 								<marker v="${t}" ox="1" oy="0"/>
 							</ui:for>
@@ -143,9 +151,9 @@
 
 						<!-- Primary grid -->
 						<ui:with color="graph_prim">
-							<marker v="100"/>
-							<marker v="1000"/>
-							<marker v="10000"/>
+							<marker v="100" visibility="!:linfreq"/>
+							<marker v="1000" visibility="!:linfreq"/>
+							<marker v="10000" visibility="!:linfreq"/>
 							<ui:for id="t" first="2" last="6" step="2">
 								<marker v="${t}" ox="1" oy="0"/>
 							</ui:for>
@@ -154,14 +162,14 @@
 						</ui:with>
 
 						<!-- Axis -->
-						<axis angle="0.0" ui:id="spc_single_graph_ox" min="10" max="24000" log="true" visibility="false"/>
+						<axis angle="0.0" ui:id="spc_single_graph_ox" min="10" max="24000" log="!:linfreq" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
 
 						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
 						<text ox="0" oy="1" y="0" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector_spc" text="xxx" x=":sel" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
 
 						<!-- Text -->
-						<ui:with y="8" halign="1" valign="1">
+						<ui:with y="8" halign="1" valign="1" color="graph_prim" visibility="!:linfreq">
 							<text x="10" text="graph.units.hz"/>
 							<text x="20" text="20"/>
 							<text x="30" text="30"/>
@@ -176,10 +184,18 @@
 							<text x="5000" text="graph.values.x_k" text:value="5"/>
 							<text x="10000" text="graph.values.x_k" text:value="10"/>
 							<text x="20000" text="graph.values.x_k" text:value="20"/>
-							<ui:for id="t" first="1" last="7">
-								<text x="10" y="${t}" text="${t}"/>
+						</ui:with>
+						<ui:with y="8" halign="1" valign="1" color="graph_prim" visibility=":linfreq">
+							<text x="10" text="graph.units.hz"/>
+							<ui:for id="f" first="1" last="23"> 
+								<text x="${:f * 1000}" text="graph.values.x_k" text:value="${f}"/>
 							</ui:for>
 						</ui:with>
+
+						<text x="10" y="0" text="graph.axis.time" halign="1" valign="-1" color="graph_prim"/>
+						<ui:for id="t" first="1" last="7">
+							<text x="10" y="${t}" text="${t}" halign="1" valign="1" color="graph_prim"/>
+						</ui:for>
 					</graph>
 				</group>
 
@@ -272,7 +288,7 @@
 						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false" visibility=":mode ige 2"/>
 
 						<vbox visibility=":mode ige 2" padding="6">
-							<button ui:inject="Button_yellow" text="labels.log_scale" id="splog" height="16" font.size="12" hfill="true"/>
+							<button ui:inject="Button_yellow" text="labels.log_dots" id="splog" height="16" font.size="12" hfill="true"/>
 						</vbox>
 
 						<hsep bg.color="bg" pad.v="2" vreduce="true" vexpand="false" visibility=":mode ige 2"/>
