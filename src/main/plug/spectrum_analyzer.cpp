@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -68,11 +68,15 @@ namespace lsp
             vCorrelometers  = NULL;
             vAnalyze        = NULL;
             pData           = NULL;
-            vFrequences     = NULL;
+            vFrequences[0]  = NULL;
+            vFrequences[1]  = NULL;
             vMaxValues[0]   = NULL;
             vMaxValues[1]   = NULL;
+            vMaxValues[2]   = NULL;
+            vMaxValues[3]   = NULL;
             vMFrequences    = NULL;
-            vIndexes        = NULL;
+            vIndexes[0]     = NULL;
+            vIndexes[1]     = NULL;
 
             bBypass         = false;
             nChannel        = 0;
@@ -85,6 +89,7 @@ namespace lsp
             fZoom           = 0.0f;
             enMode          = SA_ANALYZER;
             bLogScale       = false;
+            bLinFreq        = false;
             bMSSwitch       = false;
 
             fWndState       = 0.0f;
@@ -103,6 +108,7 @@ namespace lsp
             pFrequency      = NULL;
             pLevel          = NULL;
             pLogScale       = NULL;
+            pLinFreq        = NULL;
             pFftData        = NULL;
             pMSSwitch       = NULL;
 
@@ -113,6 +119,8 @@ namespace lsp
             for (size_t i=0; i<2; ++i)
             {
                 vSpc[i].nPortId     = -1;
+                vSpc[i].nChannelId  = 0;
+                vSpc[i].bLinFreq    = false;
 
                 vSpc[i].pPortId     = NULL;
                 vSpc[i].pFBuffer    = NULL;
@@ -140,13 +148,13 @@ namespace lsp
             size_t buffers          = BUFFER_SIZE * sizeof(float) * channels;
             size_t szof_corrs       = align_size(sizeof(sa_correlometer_t) * n_correlometers, 64);
             size_t alloc            = hdr_size +
-                                      freq_buf_size +                   // vFrequences
-                                      freq_buf_size * 2 +               // vMaxValues
+                                      freq_buf_size * 2 +               // vFrequences[2]
+                                      freq_buf_size * 4 +               // vMaxValues[4]
                                       mfreq_buf_size +
-                                      ind_buf_size +
+                                      ind_buf_size * 2 +                // vIndexes[2]
                                       analyze_size +
                                       buffers +
-                                      freq_buf_size * channels * 4 +    // vSpc[2], vMax[2]
+                                      freq_buf_size * channels * 8 +    // vSpc[4], vMax[4]
                                       szof_corrs;
 
             lsp_trace("header_size      = %d", int(hdr_size));
@@ -177,18 +185,22 @@ namespace lsp
             // Initialize pointers and cleanup buffers
             vChannels       = advance_ptr_bytes<sa_channel_t>(ptr, hdr_size);
             vCorrelometers  = (n_correlometers > 0) ? advance_ptr_bytes<sa_correlometer_t>(ptr, szof_corrs) : NULL;
-            vFrequences     = advance_ptr_bytes<float>(ptr, freq_buf_size);
-            vMaxValues[0]   = advance_ptr_bytes<float>(ptr, freq_buf_size);
-            vMaxValues[1]   = advance_ptr_bytes<float>(ptr, freq_buf_size);
+            vFrequences[0]  = advance_ptr_bytes<float>(ptr, freq_buf_size);
+            vFrequences[1]  = advance_ptr_bytes<float>(ptr, freq_buf_size);
+            for (size_t j=0; j<4; ++j)
+                vMaxValues[j]   = advance_ptr_bytes<float>(ptr, freq_buf_size);
             vMFrequences    = advance_ptr_bytes<float>(ptr, mfreq_buf_size);
-            vIndexes        = advance_ptr_bytes<uint32_t>(ptr, ind_buf_size);
+            vIndexes[0]     = advance_ptr_bytes<uint32_t>(ptr, ind_buf_size);
+            vIndexes[1]     = advance_ptr_bytes<uint32_t>(ptr, ind_buf_size);
             vAnalyze        = advance_ptr_bytes<float *>(ptr, analyze_size);
 
-            dsp::fill_zero(vFrequences, meta::spectrum_analyzer::MESH_POINTS);
+            dsp::fill_zero(vFrequences[0], meta::spectrum_analyzer::MESH_POINTS);
+            dsp::fill_zero(vFrequences[1], meta::spectrum_analyzer::MESH_POINTS);
             dsp::fill_zero(vMFrequences, meta::spectrum_analyzer::MESH_POINTS);
-            dsp::fill_zero(vMaxValues[0], meta::spectrum_analyzer::MESH_POINTS);
-            dsp::fill_zero(vMaxValues[1], meta::spectrum_analyzer::MESH_POINTS);
-            memset(vIndexes, 0, ind_buf_size);
+            for (size_t j=0; j<4; ++j)
+                dsp::fill_zero(vMaxValues[j], meta::spectrum_analyzer::MESH_POINTS);
+            memset(vIndexes[0], 0, ind_buf_size);
+            memset(vIndexes[1], 0, ind_buf_size);
 
             // Initialize channels
             for (size_t i=0; i<channels; ++i)
@@ -206,10 +218,11 @@ namespace lsp
                 c->vOut             = NULL;
                 c->vRet             = NULL;
                 c->vBuffer          = advance_ptr_bytes<float>(ptr, BUFFER_SIZE * sizeof(float));
-                c->vSpc[0]          = advance_ptr_bytes<float>(ptr, freq_buf_size);
-                c->vSpc[1]          = advance_ptr_bytes<float>(ptr, freq_buf_size);
-                c->vMax[0]          = advance_ptr_bytes<float>(ptr, freq_buf_size);
-                c->vMax[1]          = advance_ptr_bytes<float>(ptr, freq_buf_size);
+                for (size_t j=0; j<4; ++j)
+                {
+                    c->vSpc[j]          = advance_ptr_bytes<float>(ptr, freq_buf_size);
+                    c->vMax[j]          = advance_ptr_bytes<float>(ptr, freq_buf_size);
+                }
 
                 // Port references
                 c->pIn              = NULL;
@@ -222,10 +235,11 @@ namespace lsp
 
                 // Clear the buffer
                 dsp::fill_zero(c->vBuffer, BUFFER_SIZE);
-                dsp::fill_zero(c->vSpc[0], meta::spectrum_analyzer::MESH_POINTS);
-                dsp::fill_zero(c->vSpc[1], meta::spectrum_analyzer::MESH_POINTS);
-                dsp::fill_zero(c->vMax[0], meta::spectrum_analyzer::MESH_POINTS);
-                dsp::fill_zero(c->vMax[1], meta::spectrum_analyzer::MESH_POINTS);
+                for (size_t j=0; j<4; ++j)
+                {
+                    dsp::fill_zero(c->vSpc[j], meta::spectrum_analyzer::MESH_POINTS);
+                    dsp::fill_zero(c->vMax[j], meta::spectrum_analyzer::MESH_POINTS);
+                }
             }
 
             // Initialize correlometers
@@ -336,6 +350,7 @@ namespace lsp
             SKIP_PORT("Spectralizer mode");
             BIND_PORT(pLogScale);
             BIND_PORT(pFreeze);
+            BIND_PORT(pLinFreq);
             SKIP_PORT("Horizontal line switch button");
             SKIP_PORT("All maximum tracking");
             if (nChannels > 1)
@@ -410,8 +425,10 @@ namespace lsp
                 free_aligned(pData);
                 pData           = NULL;
             }
-            vFrequences     = NULL;
-            vIndexes        = NULL;
+            vFrequences[0]  = NULL;
+            vFrequences[1]  = NULL;
+            vIndexes[0]     = NULL;
+            vIndexes[1]     = NULL;
 
             if (pIDisplay != NULL)
             {
@@ -631,6 +648,7 @@ namespace lsp
                 res_state    = true;
                 sAnalyzer.set_rank(rank);
             }
+            bLinFreq                = pLinFreq->value() >= 0.5f;
 
             sAnalyzer.set_reactivity(pReactivity->value());
             sAnalyzer.set_window(pWindow->value());
@@ -650,10 +668,15 @@ namespace lsp
             if (sync_freqs)
             {
                 sAnalyzer.get_frequencies(
-                    vFrequences, vIndexes,
+                    vFrequences[0], vIndexes[0],
                     fMinFreq, fMaxFreq,
-                    meta::spectrum_analyzer::MESH_POINTS
-                );
+                    meta::spectrum_analyzer::MESH_POINTS,
+                    false);
+                sAnalyzer.get_frequencies(
+                    vFrequences[1], vIndexes[1],
+                    fMinFreq, fMaxFreq,
+                    meta::spectrum_analyzer::MESH_POINTS,
+                    true);
             }
 
             // Check if the state of the switches has not changed
@@ -672,15 +695,14 @@ namespace lsp
             if (res_state)
             {
                 // Reset Tracking Mesh and channel meshes
-                dsp::fill_zero(vMaxValues[0], meta::spectrum_analyzer::MESH_POINTS);
-                dsp::fill_zero(vMaxValues[1], meta::spectrum_analyzer::MESH_POINTS);
+                for (size_t j=0; j<4; ++j)
+                    dsp::fill_zero(vMaxValues[j], meta::spectrum_analyzer::MESH_POINTS);
 
                 for (size_t i=0; i<nChannels; ++i)
                 {
                     sa_channel_t *c     = &vChannels[i];
-
-                    dsp::fill_zero(c->vMax[0], meta::spectrum_analyzer::MESH_POINTS);
-                    dsp::fill_zero(c->vMax[1], meta::spectrum_analyzer::MESH_POINTS);
+                    for (size_t j=0; j<4; ++j)
+                        dsp::fill_zero(c->vMax[j], meta::spectrum_analyzer::MESH_POINTS);
                 }
             }
         }
@@ -703,10 +725,15 @@ namespace lsp
                 sAnalyzer.reconfigure();
 
             sAnalyzer.get_frequencies(
-                vFrequences, vIndexes,
+                vFrequences[0], vIndexes[0],
                 fMinFreq, fMaxFreq,
-                meta::spectrum_analyzer::MESH_POINTS
-            );
+                meta::spectrum_analyzer::MESH_POINTS,
+                false);
+            sAnalyzer.get_frequencies(
+                vFrequences[1], vIndexes[1],
+                fMinFreq, fMaxFreq,
+                meta::spectrum_analyzer::MESH_POINTS,
+                true);
             sCounter.set_sample_rate(sr, true);
         }
 
@@ -716,14 +743,15 @@ namespace lsp
             size_t off      = 0;
 
             // Fetch original data
-            if (flags & F_SMOOTH_LOG)
+            const uint32_t *indexes = (flags & F_LIN_FREQ) ? vIndexes[1] : vIndexes[0];
+            if (flags & F_MASTERING)
             {
-                sAnalyzer.get_spectrum(channel, vMFrequences, vIndexes, meta::spectrum_analyzer::MESH_POINTS);
+                sAnalyzer.get_spectrum(channel, vMFrequences, indexes, meta::spectrum_analyzer::MESH_POINTS);
                 size_t pi = 0, ni = meta::spectrum_analyzer::MMESH_STEP;
 
                 for (; ni < meta::spectrum_analyzer::MESH_POINTS; ni += meta::spectrum_analyzer::MMESH_STEP)
                 {
-                    if (vIndexes[ni] == vIndexes[pi])
+                    if (indexes[ni] == indexes[pi])
                         continue;
 
                     if (flags & F_SMOOTH_LOG)
@@ -752,7 +780,7 @@ namespace lsp
                 }
             }
             else
-                sAnalyzer.get_spectrum(channel, v, vIndexes, meta::spectrum_analyzer::MESH_POINTS);
+                sAnalyzer.get_spectrum(channel, v, indexes, meta::spectrum_analyzer::MESH_POINTS);
 
             // Apply gain
             float gain = (flags & F_BOOST) ?
@@ -936,9 +964,13 @@ namespace lsp
                         {
                             c           = &vChannels[i];
 
-                            get_spectrum(c->vSpc[1], i, F_SMOOTH_LOG | F_MASTERING);
+                            get_spectrum(c->vSpc[1], i, F_MASTERING | F_SMOOTH_LOG);
                             dsp::pmax2(c->vMax[1], c->vSpc[1], meta::spectrum_analyzer::MESH_POINTS);
                             dsp::pmax2(vMaxValues[1], c->vSpc[1], meta::spectrum_analyzer::MESH_POINTS);
+
+                            get_spectrum(c->vSpc[3], i, F_MASTERING | F_LIN_FREQ);
+                            dsp::pmax2(c->vMax[3], c->vSpc[3], meta::spectrum_analyzer::MESH_POINTS);
+                            dsp::pmax2(vMaxValues[3], c->vSpc[3], meta::spectrum_analyzer::MESH_POINTS);
                         }
                     }
                     else
@@ -950,6 +982,10 @@ namespace lsp
                             get_spectrum(c->vSpc[0], i, 0);
                             dsp::pmax2(c->vMax[0], c->vSpc[0], meta::spectrum_analyzer::MESH_POINTS);
                             dsp::pmax2(vMaxValues[0], c->vSpc[0], meta::spectrum_analyzer::MESH_POINTS);
+
+                            get_spectrum(c->vSpc[2], i, F_LIN_FREQ);
+                            dsp::pmax2(c->vMax[2], c->vSpc[2], meta::spectrum_analyzer::MESH_POINTS);
+                            dsp::pmax2(vMaxValues[2], c->vSpc[2], meta::spectrum_analyzer::MESH_POINTS);
                         }
                     }
                 }
@@ -971,7 +1007,7 @@ namespace lsp
                     // Update frame buffers if counter has fired
                     if ((fired) && (!bBypass))
                     {
-                        size_t flags = 0;
+                        size_t flags = (bLinFreq) ? F_LIN_FREQ : 0;
                         if (bLogScale)
                             flags      |= F_LOG_SCALE;
                         else
@@ -988,6 +1024,13 @@ namespace lsp
                             plug::frame_buffer_t *fb = p->buffer<plug::frame_buffer_t>();
                             if (fb == NULL)
                                 continue;
+
+                            // Check that frequency presentation has changed
+                            if (vSpc[i].bLinFreq != bLinFreq)
+                            {
+                                fb->clear();
+                                vSpc[i].bLinFreq    = bLinFreq;
+                            }
 
                             // Get row and commit it
                             sa_channel_t *c     = &vChannels[cid];
@@ -1032,8 +1075,10 @@ namespace lsp
             // Frequencies
             size_t rows = 0;
             float *v    = mesh->pvData[rows++];
-            dsp::copy(&v[2], vFrequences, meta::spectrum_analyzer::MESH_POINTS);
-            const size_t sub = ((enMode == SA_MASTERING) || (enMode == SA_MASTERING_STEREO)) ? 1 : 0;
+            const bool linear   = bLinFreq;
+            const bool mastering= (enMode == SA_MASTERING) || (enMode == SA_MASTERING_STEREO);
+            dsp::copy(&v[2], (linear) ? vFrequences[1] : vFrequences[0], meta::spectrum_analyzer::MESH_POINTS);
+            const size_t sub    = ((linear) ? 2 : 0) + ((mastering) ? 1 : 0);
 
             v[0]    = SPEC_FREQ_MIN * 0.5f;
             v[1]    = SPEC_FREQ_MIN * 0.5f;
@@ -1163,11 +1208,15 @@ namespace lsp
             float ni        = float(meta::spectrum_analyzer::MESH_POINTS) / width; // Normalizing index
             uint32_t *idx   = reinterpret_cast<uint32_t *>(alloca(width * sizeof(uint32_t))); //vIndexes;
 
+            const bool linear           = bLinFreq;
+            const uint32_t *vindexes    = (linear) ? vIndexes[1] : vIndexes[0];
+            const float *vfrequences    = (linear) ? vFrequences[1] : vFrequences[0];
+
             for (size_t j=0; j<width; ++j)
             {
                 size_t k        = j*ni;
-                idx[j]          = vIndexes[k];
-                b->v[0][j]      = vFrequences[k];
+                idx[j]          = vindexes[k];
+                b->v[0][j]      = vfrequences[k];
             }
 
             for (size_t i=0; i<nChannels; ++i)
@@ -1219,7 +1268,10 @@ namespace lsp
                         v->write("fGain", c->fGain);
                         v->write("vIn", c->vIn);
                         v->write("vOut", c->vOut);
+                        v->write("vRet", c->vRet);
                         v->write("vBuffer", c->vBuffer);
+                        v->writev("vSpc", c->vSpc, 4);
+                        v->writev("vMax", c->vMax, 4);
 
                         v->write("pIn", c->pIn);
                         v->write("pOut", c->pOut);
@@ -1252,9 +1304,10 @@ namespace lsp
             v->end_array();
 
             v->write("vAnalyze", vAnalyze);
-            v->write("vFrequences", vFrequences);
+            v->writev("vFrequences", vFrequences, 2);
+            v->writev("vMaxValues", vMaxValues, 4);
             v->write("vMFrequences", vMFrequences);
-            v->write("vIndexes", vIndexes);
+            v->writev("vIndexes", vIndexes, 2);
             v->write("pData", pData);
 
             v->write("bBypass", bBypass);
@@ -1268,6 +1321,7 @@ namespace lsp
             v->write("fZoom", fZoom);
             v->write("enMode", enMode);
             v->write("bLogScale", bLogScale);
+            v->write("bLinFreq", bLinFreq);
             v->write("bMSSwitch", bMSSwitch);
 
             v->write("fWndState", fWndState);
@@ -1286,6 +1340,7 @@ namespace lsp
             v->write("pFrequency", pFrequency);
             v->write("pLevel", pLevel);
             v->write("pLogScale", pLogScale);
+            v->write("pLinFreq", pLinFreq);
             v->write("pFftData", pFftData);
             v->write("pMSSwitch", pMSSwitch);
 

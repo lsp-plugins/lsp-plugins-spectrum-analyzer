@@ -47,6 +47,7 @@
     	<?php }?>
     </ul>
     <li><b>Freeze</b> - immediately freezes all frequency graphs.</li>
+    <li><b>Linear frequency</b> - enables linear scale of the frequency on the horizontal axis instead of logarithmic one.</li>
 	<li><b>Spectrogram</b> - the rendering mechanism of the spectrogram in the <b>Spectralizer</b> mode:</li>
 	<ul>
 		<li><b>Rainbow</b> - each dot on a spectrogram changes it's color's hue component depending on the amplitude of the signal starting with <b>Hue</b> of the selected channel.</li>
@@ -60,7 +61,7 @@
 		<li><b>Mid/Side</b> - allows to switch selected channels from stereo analysis to the Mid/Side analysis.</li>
 	<?php } ?>
 	<li><b>Measure</b> - Additional button that enables horizontal measuring line.</li>
-	<li><b>Log scale</b> - the way how dots on the spectrogram are rendered. When button is down, logarithmic scale is used to translate amplitude into dot's color.</li>
+	<li><b>Log dots</b> - the way how dots on the spectrogram are rendered. When button is down, logarithmic scale is used to translate amplitude into dot's color.</li>
 	<li><b>Line size</b> - the combo box that allows to change the thickness of the lines on the spectrum graph.</li>
 </ul>
 
