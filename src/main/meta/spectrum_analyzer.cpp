@@ -166,9 +166,9 @@ namespace lsp
             COMBO("mode", "Analyzer mode", "Mode", 0, spectrum_analyzer_x ## c ## _modes), \
             COMBO("lthick", "Mesh thickness", "Thickness", 2, line_thick_modes), \
             COMBO("spm", "Spectralizer mode", "SPC mode", 1, spectralizer_modes), \
-            SWITCH("splog", "Spectralizer logarithmic scale", "SPC log scale", 1), \
+            SWITCH("splog", "Spectralizer logarithmic scale", "SPC log dots", 1), \
             SWITCH("freeze", "Analyzer freeze", "Freeze", 0), \
-            SWITCH("linfreq", "Linear frequency scale", "Linear Frequency", 0), \
+            SWITCH("linfreq", "Linear frequency scale", "Linear Freq", 0), \
             SWITCH("mline", "Horizontal measuring line", "Show HMarker", 0), \
             SWITCH("mtrack", "Show maximum values for all channels", "Show max", 1), \
             channel(SWITCH("ctrack", "Track maximum values for individual channels", "Track max", 0), ) \
