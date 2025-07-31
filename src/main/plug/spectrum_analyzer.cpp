@@ -40,6 +40,8 @@ namespace lsp
 {
     namespace plugins
     {
+        static constexpr size_t EQ_SMOOTH_STEP      = 32;
+
         //---------------------------------------------------------------------
         // Plugin factory
         static const meta::plugin_t *plugins[] =
@@ -62,59 +64,77 @@ namespace lsp
         //-------------------------------------------------------------------------
         spectrum_analyzer::spectrum_analyzer(const meta::plugin_t *metadata): plug::Module(metadata)
         {
-            nChannels       = 0;
-            nCorrelometers  = 0;
-            vChannels       = NULL;
-            vCorrelometers  = NULL;
-            vAnalyze        = NULL;
-            pData           = NULL;
-            vFrequences[0]  = NULL;
-            vFrequences[1]  = NULL;
-            vMaxValues[0]   = NULL;
-            vMaxValues[1]   = NULL;
-            vMaxValues[2]   = NULL;
-            vMaxValues[3]   = NULL;
-            vMFrequences    = NULL;
-            vIndexes[0]     = NULL;
-            vIndexes[1]     = NULL;
+            nChannels           = 0;
+            nCorrelometers      = 0;
+            vChannels           = NULL;
+            vCorrelometers      = NULL;
 
-            bBypass         = false;
-            nChannel        = 0;
-            fSelector       = 0;
-            fMinFreq        = 0;
-            fMaxFreq        = 0;
-            fReactivity     = 0.0f;
-            fTau            = 0.0f;
-            fPreamp         = 0.0f;
-            fZoom           = 0.0f;
-            enMode          = SA_ANALYZER;
-            bLogScale       = false;
-            bLinFreq        = false;
-            bMSSwitch       = false;
+            for (size_t i=0; i<2; ++i)
+            {
+                dspu::filter_params_t *fp = &vFP[i];
+                fp->nType           = dspu::FLT_NONE;
+                fp->nSlope          = 0;
+                fp->fFreq           = 1000.0f;
+                fp->fFreq2          = 1000.0f;
+                fp->fGain           = 1.0f;
+                fp->fQuality        = 1.0f;
+            }
 
-            fWndState       = 0.0f;
-            fEnvState       = 0.0f;
+            vAnalyze            = NULL;
+            pData               = NULL;
+            vFrequences[0]      = NULL;
+            vFrequences[1]      = NULL;
+            vMaxValues[0]       = NULL;
+            vMaxValues[1]       = NULL;
+            vMaxValues[2]       = NULL;
+            vMaxValues[3]       = NULL;
+            vMFrequences        = NULL;
+            vIndexes[0]         = NULL;
+            vIndexes[1]         = NULL;
 
-            pBypass         = NULL;
-            pMode           = NULL;
-            pTolerance      = NULL;
-            pWindow         = NULL;
-            pEnvelope       = NULL;
-            pPreamp         = NULL;
-            pZoom           = NULL;
-            pReactivity     = NULL;
-            pChannel        = NULL;
-            pSelector       = NULL;
-            pFrequency      = NULL;
-            pLevel          = NULL;
-            pLogScale       = NULL;
-            pLinFreq        = NULL;
-            pFftData        = NULL;
-            pMSSwitch       = NULL;
+            bBypass             = false;
+            nChannel            = 0;
+            fSelector           = 0;
+            fMinFreq            = 0;
+            fMaxFreq            = 0;
+            fReactivity         = 0.0f;
+            fTau                = 0.0f;
+            fPreamp             = 0.0f;
+            fZoom               = 0.0f;
+            enMode              = SA_ANALYZER;
+            bLogScale           = false;
+            bLinFreq            = false;
+            bMSSwitch           = false;
+            bInspOn             = false;
+            bSyncInspFilter     = false;
+            bSmoothInspFilter   = false;
 
-            pFreeze         = NULL;
-            pMaxReset       = NULL;
-            pSpp            = NULL;
+            fWndState           = 0.0f;
+            fEnvState           = 0.0f;
+
+            pBypass             = NULL;
+            pMode               = NULL;
+            pTolerance          = NULL;
+            pWindow             = NULL;
+            pEnvelope           = NULL;
+            pPreamp             = NULL;
+            pZoom               = NULL;
+            pReactivity         = NULL;
+            pChannel            = NULL;
+            pSelector           = NULL;
+            pFrequency          = NULL;
+            pInspSwitch         = NULL;
+            pInspRange          = NULL;
+            pLevel              = NULL;
+            pLogScale           = NULL;
+            pLinFreq            = NULL;
+            pFftData            = NULL;
+            pInspMesh           = NULL;
+            pMSSwitch           = NULL;
+
+            pFreeze             = NULL;
+            pMaxReset           = NULL;
+            pSpp                = NULL;
 
             for (size_t i=0; i<2; ++i)
             {
@@ -126,7 +146,7 @@ namespace lsp
                 vSpc[i].pFBuffer    = NULL;
             }
 
-            pIDisplay       = NULL;
+            pIDisplay           = NULL;
         }
 
         spectrum_analyzer::~spectrum_analyzer()
@@ -206,6 +226,12 @@ namespace lsp
             for (size_t i=0; i<channels; ++i)
             {
                 sa_channel_t *c     = &vChannels[i];
+
+                // Construct inspection equalizer
+                c->sInspEq.construct();
+                if (!c->sInspEq.init(1, 0))
+                    return false;
+                c->sInspEq.set_mode(dspu::EQM_IIR);
 
                 // Initialize fields
                 c->bOn              = false;
@@ -366,9 +392,13 @@ namespace lsp
                 BIND_PORT(pChannel);
             BIND_PORT(pSelector);
             SKIP_PORT("Horizontal line value");
+            BIND_PORT(pInspSwitch);
+            BIND_PORT(pInspRange);
+            SKIP_PORT("Automatic frequency range inspect");
             BIND_PORT(pFrequency);
             BIND_PORT(pLevel);
             BIND_PORT(pFftData);
+            BIND_PORT(pInspMesh);
 
             // Bind global correlometer ports
             if (nChannels >= 4)
@@ -408,6 +438,16 @@ namespace lsp
 
         void spectrum_analyzer::do_destroy()
         {
+            if (vChannels != NULL)
+            {
+                for (size_t i=0; i<nChannels; ++i)
+                {
+                    sa_channel_t *c     = &vChannels[i];
+                    c->sInspEq.destroy();
+                }
+                vChannels       = NULL;
+            }
+
             if (vCorrelometers != NULL)
             {
                 for (size_t i=0; i<nCorrelometers; ++i)
@@ -576,9 +616,10 @@ namespace lsp
         void spectrum_analyzer::update_settings()
         {
             // Update global settings
+            const float freq        = pSelector->value();
             bBypass                 = pBypass->value();
             nChannel                = (pChannel != NULL) ? pChannel->value() : 0;
-            fSelector               = lsp_limit((pSelector->value() * 2.0f) / fSampleRate, 0.0f, 1.0f);
+            fSelector               = lsp_limit((freq * 2.0f) / fSampleRate, 0.0f, 1.0f);
             fPreamp                 = pPreamp->value();
             fZoom                   = pZoom->value();
             bLogScale               = (pLogScale != NULL) && (pLogScale->value() >= 0.5f);
@@ -648,7 +689,10 @@ namespace lsp
                 res_state    = true;
                 sAnalyzer.set_rank(rank);
             }
-            bLinFreq                = pLinFreq->value() >= 0.5f;
+            const bool lin_freq     = pLinFreq->value() >= 0.5f;
+            if (lin_freq != bLinFreq)
+                bSyncInspFilter         = true;
+            bLinFreq                = lin_freq;
 
             sAnalyzer.set_reactivity(pReactivity->value());
             sAnalyzer.set_window(pWindow->value());
@@ -691,6 +735,55 @@ namespace lsp
                 fEnvState    = pEnvelope->value();
             }
 
+            // Check inspection enabled
+            const float insp_on     = pInspSwitch->value() >= 0.5f;
+            dspu::filter_params_t *old_fp = &vFP[0];
+            dspu::filter_params_t *fp = &vFP[1];
+            fp->nType               = (insp_on) ? dspu::FLT_BT_BWC_BANDPASS : dspu::FLT_NONE;
+
+            if (insp_on)
+            {
+                const float f_range = expf(M_LN2 * 0.5f * pInspRange->value());
+
+                fp->nSlope          = 4;
+                fp->fFreq           = freq / f_range;
+                fp->fFreq2          = freq * f_range;
+                fp->fGain           = 1.0f;
+                fp->fQuality        = 0.707f;
+
+                if (!bInspOn)
+                {
+                    bSyncInspFilter     = true;
+                    bSmoothInspFilter   = false;
+                    *old_fp             = *fp;
+
+                    for (size_t i=0; i<nChannels; ++i)
+                    {
+                        sa_channel_t *c = & vChannels[i];
+                        c->sInspEq.set_params(0, fp);
+                        c->sInspEq.reset();
+                    }
+                }
+                else if ((old_fp->nType != fp->nType) ||
+                    (old_fp->nSlope != fp->nSlope) ||
+                    (old_fp->fFreq != fp->fFreq) ||
+                    (old_fp->fGain != fp->fGain) ||
+                    (old_fp->fQuality != fp->fQuality))
+                {
+                    bSmoothInspFilter   = true;
+                    bSyncInspFilter     = true;
+                }
+            }
+
+            if (insp_on != bInspOn)
+                bSyncInspFilter     = true;
+            bInspOn             = insp_on;
+
+            lsp_trace("insp_on = %s, sync = %s, smooth = %s",
+                (bInspOn) ? "true" : "false",
+                (bSyncInspFilter) ? "true" : "false",
+                (bSmoothInspFilter) ? "true" : "false");
+
             // if the state has changed
             if (res_state)
             {
@@ -720,6 +813,10 @@ namespace lsp
                 cm->sCorr.clear();
             }
 
+            for (size_t i=0; i<nChannels; ++i)
+                vChannels[i].sInspEq.set_sample_rate(sr);
+            bSyncInspFilter = true;
+
             sAnalyzer.set_sample_rate(sr);
             if (sAnalyzer.needs_reconfiguration())
                 sAnalyzer.reconfigure();
@@ -735,6 +832,11 @@ namespace lsp
                 meta::spectrum_analyzer::MESH_POINTS,
                 true);
             sCounter.set_sample_rate(sr, true);
+        }
+
+        void spectrum_analyzer::ui_activated()
+        {
+            bSyncInspFilter = true;
         }
 
         void spectrum_analyzer::get_spectrum(float *dst, size_t channel, size_t flags)
@@ -899,38 +1001,15 @@ namespace lsp
             }
         }
 
-        void spectrum_analyzer::process(size_t samples)
+        void spectrum_analyzer::analyze_data(size_t samples)
         {
-            // Always query for drawing
-            pWrapper->query_display_draw();
-
-            // Now process the channels
-            size_t fft_size     = 1 << sAnalyzer.get_rank();
-
-            for (size_t i=0; i<nChannels; ++i)
-            {
-                // Get channel pointers
-                sa_channel_t *c     = &vChannels[i];
-                c->vIn              = c->pIn->buffer<float>();
-                c->vOut             = c->pOut->buffer<float>();
-
-                core::AudioBuffer *ret  = c->pRet->buffer<core::AudioBuffer>();
-                c->vRet             = ((ret!= NULL) && (ret->active())) ? ret->buffer() : NULL;
-            }
-
-            // Cleanup correlometers
-            for (size_t i=0; i<nCorrelometers; ++i)
-                vCorrelometers[i].fCorrelation      = 0.0f;
+            const size_t fft_size   = 1 << sAnalyzer.get_rank();
 
             for (size_t n=samples; n > 0;)
             {
                 // Get number of samples to process
-                size_t count = lsp_min(sCounter.pending(), n, BUFFER_SIZE);
-                bool fired  = sCounter.submit(count);
-
-                // Always bypass signal
-                for (size_t i=0; i<nChannels; ++i)
-                    dsp::copy(vChannels[i].vOut, vChannels[i].vIn, count);
+                const size_t count  = lsp_min(sCounter.pending(), n, BUFFER_SIZE);
+                const bool fired    = sCounter.submit(count);
 
                 // Measure correlation
                 measure_correlation(count);
@@ -952,7 +1031,7 @@ namespace lsp
                     // Report values
                     sa_channel_t *c     = &vChannels[nChannel];
 
-                    size_t idx  = fSelector * ((fft_size - 1) >> 1);
+                    size_t idx          = fSelector * ((fft_size - 1) >> 1);
                     pFrequency->set_value(float(idx * fSampleRate) / float(fft_size));
                     float lvl = sAnalyzer.get_level(nChannel, idx) * meta::spectrum_analyzer::ANALYZER_BOOST;
                     pLevel->set_value(lvl * c->fGain * fPreamp);
@@ -1050,8 +1129,98 @@ namespace lsp
                 if (fired)
                     sCounter.commit();
             } // for n
+        }
 
+        void spectrum_analyzer::pass_signal(size_t samples)
+        {
+            // Just copy data to output if inspection is disabled
+            if (!bInspOn)
+            {
+                for (size_t i=0; i<nChannels; ++i)
+                {
+                    sa_channel_t *c = &vChannels[i];
+                    dsp::copy(c->vOut, c->vIn, samples);
+                }
+                return;
+            }
+
+            // Apply inspection filter
+            if (!bSmoothInspFilter)
+            {
+                for (size_t i=0; i<nChannels; ++i)
+                {
+                    sa_channel_t *c = &vChannels[i];
+                    c->sInspEq.process(c->vOut, c->vIn, samples);
+                }
+                return;
+            }
+
+            // Smooth inspection filter
+            dspu::filter_params_t fp;
+            const float den                 = 1.0f / samples;
+            dspu::filter_params_t *old_fp   = &vFP[0];
+            dspu::filter_params_t *new_fp   = &vFP[1];
+
+            fp.nType                        = new_fp->nType;
+            fp.nSlope                       = new_fp->nSlope;
+
+            // In smooth mode, we need to update filter parameters for each sample
+            for (size_t offset=0; offset<samples; )
+            {
+                const size_t count          = lsp_min(samples - offset, EQ_SMOOTH_STEP);
+                const float k               = offset * den;
+
+                // Tune filter parameters
+                fp.fFreq                    = old_fp->fFreq * expf(logf(new_fp->fFreq / old_fp-> fFreq)*k);
+                fp.fFreq2                   = old_fp->fFreq2 * expf(logf(new_fp->fFreq2 / old_fp->fFreq2)*k);
+                fp.fGain                    = old_fp->fGain * expf(logf(new_fp->fGain / old_fp->fGain)*k);
+                fp.fQuality                 = old_fp->fQuality + (new_fp->fQuality - old_fp->fQuality)*k;
+
+                for (size_t i=0; i<nChannels; ++i)
+                {
+                    sa_channel_t *c             = &vChannels[i];
+                    c->sInspEq.set_params(0, &fp);
+                    c->sInspEq.process(&c->vOut[offset], &c->vIn[offset], count);
+                }
+
+                // Update position
+                offset                     += count;
+            }
+
+            // Store new filter parameters
+            *old_fp                 = *new_fp;
+            bSyncInspFilter         = true;
+        }
+
+        void spectrum_analyzer::process(size_t samples)
+        {
+            // Always query for drawing
+            pWrapper->query_display_draw();
+
+            // Now process the channels
+            for (size_t i=0; i<nChannels; ++i)
+            {
+                // Get channel pointers
+                sa_channel_t *c     = &vChannels[i];
+                c->vIn              = c->pIn->buffer<float>();
+                c->vOut             = c->pOut->buffer<float>();
+
+                core::AudioBuffer *ret  = c->pRet->buffer<core::AudioBuffer>();
+                c->vRet             = ((ret!= NULL) && (ret->active())) ? ret->buffer() : NULL;
+            }
+
+            // Cleanup correlometers
+            for (size_t i=0; i<nCorrelometers; ++i)
+                vCorrelometers[i].fCorrelation      = 0.0f;
+
+            analyze_data(samples);
+
+            // Pass the sigal to the output
+            pass_signal(samples);
+
+            // Output spectrum
             output_spectrum();
+            output_inpect_filter();
 
             // Report correlometers
             for (size_t i=0; i<nCorrelometers; ++i)
@@ -1148,8 +1317,43 @@ namespace lsp
             v[1]    = GAIN_AMP_M_INF_DB;
 
             // Commit mesh data
-            if (mesh_request)
-                mesh->data(rows, meta::spectrum_analyzer::MESH_POINTS + 4);
+            mesh->data(rows, meta::spectrum_analyzer::MESH_POINTS + 4);
+        }
+
+        void spectrum_analyzer::output_inpect_filter()
+        {
+            if (!bSyncInspFilter)
+                return;
+
+            plug::mesh_t *mesh  = (pInspMesh != NULL) ? pInspMesh->buffer<plug::mesh_t>() : NULL;
+            if ((mesh == NULL) || (!mesh->isEmpty()))
+                return;
+
+            float *v            = mesh->pvData[0];
+            const bool linear   = bLinFreq;
+            dsp::copy(&v[2], (linear) ? vFrequences[1] : vFrequences[0], meta::spectrum_analyzer::MESH_POINTS);
+            v[0]                = SPEC_FREQ_MIN;
+            v[1]                = SPEC_FREQ_MIN;
+            v                  += meta::spectrum_analyzer::MESH_POINTS + 2;
+            v[0]                = SPEC_FREQ_MAX;
+            v[1]                = SPEC_FREQ_MAX;
+
+            v                   = mesh->pvData[1];
+            if (bInspOn)
+            {
+                for (size_t i=0, samples=meta::spectrum_analyzer::MESH_POINTS + 4; i<samples; ++i)
+                {
+                    const size_t count  = lsp_min(samples - i, meta::spectrum_analyzer::MESH_POINTS / 2);
+                    vChannels[0].sInspEq.freq_chart(vMFrequences, &mesh->pvData[0][i + 2], count);
+                    dsp::pcomplex_mod(&v[i], vMFrequences, count);
+                }
+            }
+            else
+                dsp::fill_zero(v, meta::spectrum_analyzer::MESH_POINTS + 4);
+
+            // Commit mesh data
+            mesh->data(2, meta::spectrum_analyzer::MESH_POINTS + 4);
+            bSyncInspFilter     = false;
         }
 
         bool spectrum_analyzer::inline_display(plug::ICanvas *cv, size_t width, size_t height)

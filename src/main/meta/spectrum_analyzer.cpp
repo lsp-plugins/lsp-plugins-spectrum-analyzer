@@ -182,9 +182,13 @@ namespace lsp
             channel(COMBO("chn", "Channel", "Channel", 0, spectrum_analyzer_x ## c ## _channels), ) \
             LOG_CONTROL("sel", "Selector", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
             LOG_CONTROL("mlval", "Horizontal measuring line level value", "HLine lvl", U_DB, spectrum_analyzer::HLINE), \
+            SWITCH("insp_id", "Inspected filter switch", "Inspect switch", 0), \
+            CONTROL("insp_r", "Inspect frequency range", "Inspect range", U_OCTAVES, spectrum_analyzer::INSPECT), \
+            SWITCH("insp_on", "Automatically inspect frequency range", "Auto inspect", 0), \
             METER("freq", "Frequency", U_HZ, spectrum_analyzer::FREQ), \
             METER_MINMAX("lvl", "Level", U_GAIN_AMP, 0.0f, 10000.0f), \
-            MESH("spd", "Spectrum Data", c*2 + 2, spectrum_analyzer::MESH_POINTS + 4)
+            MESH("spd", "Spectrum Data", c*2 + 2, spectrum_analyzer::MESH_POINTS + 4), \
+            MESH("ifmesh", "Inspect filter mesh", 2, spectrum_analyzer::MESH_POINTS + 4)
 
         #define SA_MGROUP(id) \
             OPT_RETURN_MONO("ret_" #id, "rin_" #id, "Audio return group " #id)
