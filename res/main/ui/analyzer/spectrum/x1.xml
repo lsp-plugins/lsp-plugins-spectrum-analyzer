@@ -7,6 +7,9 @@
 				<combo id="mode"/>
 				<button pad.l="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
 				<button pad.l="10" ui:inject="Button_cyan" text="actions.linear_frequency" size="16" width="64" id="linfreq"/>
+				<button ui:inject="Button_cyan" text="labels.chan.inspect" size="16" width="64" id="insp_on" />
+				<knob id="insp_r" scale.size="3" scolor="orange" size="10" pad.l="6"/>
+				<value id="insp_r" width.min="48" same_line="true" fill="true" halign="1" pad.r="12"/>
 			</hbox>
 		</align>
 
@@ -61,6 +64,7 @@
 						<!-- Meshes -->
 						<mesh xi="0" yi="3" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
 						<mesh xi="0" yi="1" id="spd" width=":lthick+1" color="mono" visibility_id="on_0"/>
+						<mesh id="ifmesh" width="3" color="cyan" fill.color="cyan" fill.color.a="0.8" fill="true" visibility=":insp_id > 0.5" />
 
 						<!-- Axis -->
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" log="!:linfreq" visibility="false"/>

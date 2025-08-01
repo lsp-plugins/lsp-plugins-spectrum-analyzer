@@ -1134,7 +1134,7 @@ namespace lsp
         void spectrum_analyzer::pass_signal(size_t samples)
         {
             // Just copy data to output if inspection is disabled
-            if (!bInspOn)
+            if ((bBypass) || (!bInspOn))
             {
                 for (size_t i=0; i<nChannels; ++i)
                 {
@@ -1213,10 +1213,11 @@ namespace lsp
             for (size_t i=0; i<nCorrelometers; ++i)
                 vCorrelometers[i].fCorrelation      = 0.0f;
 
-            analyze_data(samples);
-
             // Pass the sigal to the output
             pass_signal(samples);
+
+            // Analyze data
+            analyze_data(samples);
 
             // Output spectrum
             output_spectrum();
@@ -1331,25 +1332,33 @@ namespace lsp
 
             float *v            = mesh->pvData[0];
             const bool linear   = bLinFreq;
-            dsp::copy(&v[2], (linear) ? vFrequences[1] : vFrequences[0], meta::spectrum_analyzer::MESH_POINTS);
-            v[0]                = SPEC_FREQ_MIN;
-            v[1]                = SPEC_FREQ_MIN;
+            float *vf           = &v[2];
+            dsp::copy(vf, (linear) ? vFrequences[1] : vFrequences[0], meta::spectrum_analyzer::MESH_POINTS);
+            v[0]                = SPEC_FREQ_MIN * 0.5f;
+            v[1]                = SPEC_FREQ_MIN * 0.5f;
             v                  += meta::spectrum_analyzer::MESH_POINTS + 2;
-            v[0]                = SPEC_FREQ_MAX;
-            v[1]                = SPEC_FREQ_MAX;
+            v[0]                = SPEC_FREQ_MAX * 2.0f;
+            v[1]                = SPEC_FREQ_MAX * 2.0f;
 
             v                   = mesh->pvData[1];
+            float *vm           = &v[2];
             if (bInspOn)
             {
-                for (size_t i=0, samples=meta::spectrum_analyzer::MESH_POINTS + 4; i<samples; ++i)
+                for (size_t i=0, samples=meta::spectrum_analyzer::MESH_POINTS; i<samples; ++i)
                 {
                     const size_t count  = lsp_min(samples - i, meta::spectrum_analyzer::MESH_POINTS / 2);
-                    vChannels[0].sInspEq.freq_chart(vMFrequences, &mesh->pvData[0][i + 2], count);
-                    dsp::pcomplex_mod(&v[i], vMFrequences, count);
+                    vChannels[0].sInspEq.freq_chart(vMFrequences, &vf[i], count);
+                    dsp::pcomplex_mod(&vm[i], vMFrequences, count);
                 }
             }
             else
-                dsp::fill_zero(v, meta::spectrum_analyzer::MESH_POINTS + 4);
+                dsp::fill_zero(vm, meta::spectrum_analyzer::MESH_POINTS);
+
+            v[0]                = 0.0f;
+            v[1]                = v[2];
+            v                  += meta::spectrum_analyzer::MESH_POINTS + 2;
+            v[0]                = v[-1];
+            v[1]                = 0.0f;
 
             // Commit mesh data
             mesh->data(2, meta::spectrum_analyzer::MESH_POINTS + 4);
@@ -1507,7 +1516,23 @@ namespace lsp
             }
             v->end_array();
 
-            v->write("vAnalyze", vAnalyze);
+            v->begin_array("vFP", vFP, 2);
+            {
+                for (size_t i=0; i<2; ++i)
+                {
+                    const dspu::filter_params_t *fp = &vFP[i];
+
+                    v->write("nType", fp->nType);
+                    v->write("nSlope", fp->nSlope);
+                    v->write("fFreq", fp->fFreq);
+                    v->write("fFreq2", fp->fFreq2);
+                    v->write("fGain", fp->fGain);
+                    v->write("fQuality", fp->fQuality);
+                }
+            }
+            v->end_array();
+
+            v->writev("vAnalyze", vAnalyze, nChannels);
             v->writev("vFrequences", vFrequences, 2);
             v->writev("vMaxValues", vMaxValues, 4);
             v->write("vMFrequences", vMFrequences);
@@ -1527,6 +1552,9 @@ namespace lsp
             v->write("bLogScale", bLogScale);
             v->write("bLinFreq", bLinFreq);
             v->write("bMSSwitch", bMSSwitch);
+            v->write("bInspOn", bInspOn);
+            v->write("bSyncInspFilter", bSyncInspFilter);
+            v->write("bSmoothInspFilter", bSmoothInspFilter);
 
             v->write("fWndState", fWndState);
             v->write("fEnvState", fEnvState);
@@ -1541,11 +1569,14 @@ namespace lsp
             v->write("pReactivity", pReactivity);
             v->write("pChannel", pChannel);
             v->write("pSelector", pSelector);
+            v->write("pInspSwitch", pInspSwitch);
+            v->write("pInspRange", pInspRange);
             v->write("pFrequency", pFrequency);
             v->write("pLevel", pLevel);
             v->write("pLogScale", pLogScale);
             v->write("pLinFreq", pLinFreq);
             v->write("pFftData", pFftData);
+            v->write("pInspMesh", pInspMesh);
             v->write("pMSSwitch", pMSSwitch);
 
             v->write("pFreeze", pFreeze);

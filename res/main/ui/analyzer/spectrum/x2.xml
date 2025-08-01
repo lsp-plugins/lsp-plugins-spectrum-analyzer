@@ -69,7 +69,7 @@
 						<mesh xi="0" yi="4" id="spd" width="1" color="right" color.a="0.5" fill.color="right" fill.color.a="0.9" fill="true" visibility=":ctrack and :on_1"/>
 						<mesh xi="0" yi="1" id="spd" width=":lthick+1" color="left" color.a="0.2" visibility="on_0"/>
 						<mesh xi="0" yi="2" id="spd" width=":lthick+1" color="right" color.a="0.2" visibility="on_1"/>
-						<mesh id="ifmesh" width="3" color="cyan" fill.color="cyan" fill.color.a="0.8" visibility=":insp_id > 0.5" />
+						<mesh id="ifmesh" width="3" color="cyan" fill.color="cyan" fill.color.a="0.8" fill="true" visibility=":insp_id > 0.5" />
 
 						<!-- Axis -->
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="!:linfreq" visibility="false"/>

@@ -48,6 +48,8 @@
     </ul>
     <li><b>Freeze</b> - immediately freezes all frequency graphs.</li>
     <li><b>Linear frequency</b> - enables linear scale of the frequency on the horizontal axis instead of logarithmic one.</li>
+    <li><b>Inspect</b> - enables band-pass filter applied to audio signal when moving vertical frequency slider on the graph.</li>
+    <li><b>Inspect range</b> - the frequency range in octaves of the band-pass filter.</li>
 	<li><b>Spectrogram</b> - the rendering mechanism of the spectrogram in the <b>Spectralizer</b> mode:</li>
 	<ul>
 		<li><b>Rainbow</b> - each dot on a spectrogram changes it's color's hue component depending on the amplitude of the signal starting with <b>Hue</b> of the selected channel.</li>

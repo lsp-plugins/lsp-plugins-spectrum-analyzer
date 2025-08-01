@@ -118,7 +118,7 @@ namespace lsp
                 uint8_t                *pData;
 
                 bool                    bBypass;
-                size_t                  nChannel;
+                uint32_t                nChannel;
                 float                   fSelector;
                 float                   fMinFreq;
                 float                   fMaxFreq;
