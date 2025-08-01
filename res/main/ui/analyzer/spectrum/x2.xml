@@ -7,6 +7,9 @@
 			<combo id="mode" pad.h="6" pad.v="4"/>
 			<button ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze" pad.r="6" pad.v="4"/>
 			<button pad.l="10" ui:inject="Button_cyan" text="actions.linear_frequency" size="16" width="64" id="linfreq"/>
+			<button ui:inject="Button_cyan" text="labels.chan.inspect" size="16" width="64" id="insp_on" />
+			<knob id="insp_r" scale.size="3" scolor="orange" size="10" pad.l="6"/>
+			<value id="insp_r" width.min="48" same_line="true" fill="true" halign="1" pad.r="12"/>
 			<vsep bg.color="bg" pad.h="2" hreduce="true" hexpand="false"/>
 			<shmlink id="ret_0" value.maxlen="6" text.clip="true" pad.h="6" font.size="10" pad.v="4"/>
 			<void hexpand="true" hfill="true"/>
@@ -66,6 +69,7 @@
 						<mesh xi="0" yi="4" id="spd" width="1" color="right" color.a="0.5" fill.color="right" fill.color.a="0.9" fill="true" visibility=":ctrack and :on_1"/>
 						<mesh xi="0" yi="1" id="spd" width=":lthick+1" color="left" color.a="0.2" visibility="on_0"/>
 						<mesh xi="0" yi="2" id="spd" width=":lthick+1" color="right" color.a="0.2" visibility="on_1"/>
+						<mesh id="ifmesh" width="3" color="cyan" fill.color="cyan" fill.color.a="0.8" fill="true" visibility=":insp_id > 0.5" />
 
 						<!-- Axis -->
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="!:linfreq" visibility="false"/>
