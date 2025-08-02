@@ -1,17 +1,19 @@
 <plugin resizable="true">
 	<vbox spacing="4">
 		<!-- Head settings -->
-		<align halign="-1" fill="true">
-			<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" spacing="8" fill="false" bg.color="bg_schema">
-				<label text="labels.mode"/>
-				<combo id="mode"/>
-				<button pad.l="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
-				<button pad.l="10" ui:inject="Button_cyan" text="actions.linear_frequency" size="16" width="64" id="linfreq"/>
-				<button ui:inject="Button_cyan" text="labels.chan.inspect" size="16" width="64" id="insp_on" />
-				<knob id="insp_r" scale.size="3" scolor="orange" size="10" pad.l="6"/>
-				<value id="insp_r" width.min="48" same_line="true" fill="true" halign="1" pad.r="12"/>
-			</hbox>
-		</align>
+		<hbox fill="true" bg.color="bg_schema">
+			<label text="labels.mode" pad.l="6" pad.v="4"/>
+			<combo id="mode" pad.h="6" pad.v="4"/>
+			<vsep bg.color="bg" pad.h="2" hreduce="true" hexpand="false"/>
+			<button ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze" pad.h="6"/>
+			<vsep bg.color="bg" pad.h="2" hreduce="true" hexpand="false"/>
+			<button ui:inject="Button_magenta" text="actions.linear_frequency" size="16" width="64" id="linfreq" pad.h="6"/>
+			<vsep bg.color="bg" pad.h="2" hreduce="true" hexpand="false"/>
+			<button ui:inject="Button_orange" text="labels.chan.inspect" size="16" width="64" id="insp_on" pad.h="6"/>
+			<knob id="insp_r" scale.size="3" scolor="orange" size="10" pad.h="6"/>
+			<value id="insp_r" width.min="48" same_line="true" fill="true" halign="1" pad.r="6"/>
+			<void hexpand="true" hfill="true"/>
+		</hbox>
 
 		<hbox expand="true" spacing="4">
 			<vbox spacing="4" expand="true">
@@ -34,7 +36,7 @@
 							<ui:for id="f" first="1000" last="23000" step="1000">
 								<marker v="${:f}" visibility=":linfreq"/>
 							</ui:for>
-							
+
 							<ui:for id="g" first="-60" last="12" step="24">
 								<marker v="${g} db" ox="1" oy="0"/>
 							</ui:for>
@@ -96,11 +98,11 @@
 						</ui:with>
 						<ui:with ox="0" oy="2" y="0" halign="1" valign="1" visibility=":linfreq">
 							<text x="10" text="graph.units.hz"/>
-							<ui:for id="f" first="1" last="23"> 
+							<ui:for id="f" first="1" last="23">
 								<text x="${:f * 1000}" text="graph.values.x_k" text:value="${f}"/>
 							</ui:for>
 						</ui:with>
-						
+
 						<ui:for id="t" first="-60" last="12" step="12">
 							<text x="10" y="${t} db" text="${t}" halign="1" valign="1"/>
 						</ui:for>
@@ -147,7 +149,7 @@
 							<ui:for id="f" first="1000" last="23000" step="1000">
 								<marker v="${:f}" visibility=":linfreq"/>
 							</ui:for>
-							
+
 							<ui:for id="t" first="1" last="7" step="2">
 								<marker v="${t}" ox="1" oy="0"/>
 							</ui:for>
@@ -191,7 +193,7 @@
 						</ui:with>
 						<ui:with y="8" halign="1" valign="1" color="graph_prim" visibility=":linfreq">
 							<text x="10" text="graph.units.hz"/>
-							<ui:for id="f" first="1" last="23"> 
+							<ui:for id="f" first="1" last="23">
 								<text x="${:f * 1000}" text="graph.values.x_k" text:value="${f}"/>
 							</ui:for>
 						</ui:with>
