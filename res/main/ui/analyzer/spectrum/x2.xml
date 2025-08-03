@@ -469,6 +469,9 @@
 							bg.color="bg_schema"
 							balance.color="bright_cyan"
 							value.color="cyan"
+							inactive.brightness="1.0"
+							inactive.bg.brightness="1.0"
+							inactive.bg.color="bg_schema"
 							activity=":on_0 and :on_1"/>
 						<label text="+1" font.size="8" hfill="true" text.halign="1" pad.t="2"/>
 					</hbox>
