@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -23,6 +23,7 @@
 #define PRIVATE_PLUGINS_SPECTRUM_ANALYZER_H_
 
 #include <lsp-plug.in/dsp-units/ctl/Counter.h>
+#include <lsp-plug.in/dsp-units/filters/Equalizer.h>
 #include <lsp-plug.in/dsp-units/meters/Correlometer.h>
 #include <lsp-plug.in/dsp-units/util/Analyzer.h>
 #include <lsp-plug.in/plug-fw/plug.h>
@@ -39,44 +40,47 @@ namespace lsp
             protected:
                 typedef struct sa_channel_t
                 {
-                    bool            bOn;                // Enabled flag
-                    bool            bFreeze;            // Freeze flag
-                    bool            bSolo;              // Soloing flag
-                    bool            bSend;              // Send to UI flag
-                    bool            bMSSwitch;          // Mid/side switch
-                    float           fGain;              // Makeup gain
-                    float          *vIn;                // Input buffer pointer
-                    float          *vOut;               // Output buffer pointer
-                    float          *vRet;               // Return buffer
-                    float          *vBuffer;            // Temporary buffer
-                    float          *vSpc[2];            // Spectrum data
-                    float          *vMax[2];            // Maximum data
+                    dspu::Equalizer     sInspEq;            // Inspection equalizer
+
+                    bool                bOn;                // Enabled flag
+                    bool                bFreeze;            // Freeze flag
+                    bool                bSolo;              // Soloing flag
+                    bool                bSend;              // Send to UI flag
+                    bool                bMSSwitch;          // Mid/side switch
+                    float               fGain;              // Makeup gain
+                    float              *vIn;                // Input buffer pointer
+                    float              *vOut;               // Output buffer pointer
+                    float              *vRet;               // Return buffer
+                    float              *vBuffer;            // Temporary buffer
+                    float              *vSpc[4];            // Spectrum data
+                    float              *vMax[4];            // Maximum data
 
                     // Port references
-                    plug::IPort    *pIn;                // Input samples
-                    plug::IPort    *pOut;               // Output samples
-                    plug::IPort    *pRet;               // Return
-                    plug::IPort    *pMSSwitch;          // Mid/Side switch
-                    plug::IPort    *pOn;                // FFT on
-                    plug::IPort    *pSolo;              // Soloing flag
-                    plug::IPort    *pFreeze;            // Freeze flag
-                    plug::IPort    *pShift;             // Shift gain
+                    plug::IPort        *pIn;                // Input samples
+                    plug::IPort        *pOut;               // Output samples
+                    plug::IPort        *pRet;               // Return
+                    plug::IPort        *pMSSwitch;          // Mid/Side switch
+                    plug::IPort        *pOn;                // FFT on
+                    plug::IPort        *pSolo;              // Soloing flag
+                    plug::IPort        *pFreeze;            // Freeze flag
+                    plug::IPort        *pShift;             // Shift gain
                 } sa_channel_t;
 
                 typedef struct sa_spectralizer_t
                 {
-                    int32_t         nPortId;            // Last port identifier
-                    int32_t         nChannelId;         // Channel identifier
+                    int32_t             nPortId;            // Last port identifier
+                    int32_t             nChannelId;         // Channel identifier
+                    bool                bLinFreq;           // Linear frequency
 
-                    plug::IPort    *pPortId;            // Port identifier
-                    plug::IPort    *pFBuffer;           // Frame buffer port
+                    plug::IPort        *pPortId;            // Port identifier
+                    plug::IPort        *pFBuffer;           // Frame buffer port
                 } sa_spectralizer_t;
 
                 typedef struct sa_correlometer_t
                 {
-                    dspu::Correlometer  sCorr;          // Correlometer
-                    float           fCorrelation;       // Measured correlation value
-                    plug::IPort    *pCorrelometer;      // Correlometer output value
+                    dspu::Correlometer  sCorr;              // Correlometer
+                    float               fCorrelation;       // Measured correlation value
+                    plug::IPort        *pCorrelometer;      // Correlometer output value
                 } sa_correlometer_t;
 
                 enum mode_t
@@ -91,97 +95,111 @@ namespace lsp
 
                 enum flags_t
                 {
-                    F_MASTERING     = 1 << 0,
-                    F_SMOOTH_LOG    = 1 << 1,
-                    F_LOG_SCALE     = 1 << 2,
-                    F_BOOST         = 1 << 3
+                    F_MASTERING         = 1 << 0,
+                    F_SMOOTH_LOG        = 1 << 1,
+                    F_LOG_SCALE         = 1 << 2,
+                    F_BOOST             = 1 << 3,
+                    F_LIN_FREQ          = 1 << 4,
                 };
 
             protected:
-                dspu::Analyzer      sAnalyzer;
-                dspu::Counter       sCounter;
-                uint32_t            nChannels;
-                uint32_t            nCorrelometers;
-                sa_channel_t       *vChannels;
-                sa_correlometer_t  *vCorrelometers;     // Available correlometers
-                float             **vAnalyze;           // Analysis buffers
-                float              *vFrequences;
-                float              *vMaxValues[2];      // Maximum value tracking
-                float              *vMFrequences;
-                uint32_t           *vIndexes;
-                uint8_t            *pData;
+                dspu::Analyzer          sAnalyzer;
+                dspu::Counter           sCounter;
+                uint32_t                nChannels;
+                uint32_t                nCorrelometers;
+                sa_channel_t           *vChannels;
+                sa_correlometer_t      *vCorrelometers;     // Available correlometers
+                dspu::filter_params_t   vFP[2];             // Filter parameters (current, new)
+                float                 **vAnalyze;           // Analysis buffers
+                float                  *vFrequences[2];     // Logarithmic frequencies, linear frequencies
+                float                  *vMaxValues[4];      // Maximum value tracking
+                float                  *vMFrequences;
+                uint32_t               *vIndexes[2];        // Logarithimic indexes, linear indexes
+                uint8_t                *pData;
 
-                bool                bBypass;
-                size_t              nChannel;
-                float               fSelector;
-                float               fMinFreq;
-                float               fMaxFreq;
-                float               fReactivity;        // Reactivity
-                float               fTau;               // Time constant (dependent on reactivity)
-                float               fPreamp;            // Preamplification level
-                float               fZoom;              // Zoom
-                mode_t              enMode;
-                bool                bLogScale;
-                bool                bMSSwitch;          // Mid/Side switch for stereo mode
+                bool                    bBypass;
+                uint32_t                nChannel;
+                float                   fSelector;
+                float                   fMinFreq;
+                float                   fMaxFreq;
+                float                   fReactivity;        // Reactivity
+                float                   fTau;               // Time constant (dependent on reactivity)
+                float                   fPreamp;            // Preamplification level
+                float                   fZoom;              // Zoom
+                mode_t                  enMode;
+                bool                    bLogScale;
+                bool                    bLinFreq;           // Linear frequency
+                bool                    bMSSwitch;          // Mid/Side switch for stereo mode
+                bool                    bInspOn;            // Frequency inspection is active
+                bool                    bSyncInspFilter;    // Sync inspect filter characteristics
+                bool                    bSmoothInspFilter;  // Smooth inspect filter
 
-                float               fWndState;          // Variable to save the state of WINDOW
-                float               fEnvState;          // Variable to save the state of ENVELOPE
+                float                   fWndState;          // Variable to save the state of WINDOW
+                float                   fEnvState;          // Variable to save the state of ENVELOPE
 
-                plug::IPort        *pBypass;
-                plug::IPort        *pMode;
-                plug::IPort        *pTolerance;
-                plug::IPort        *pWindow;
-                plug::IPort        *pEnvelope;
-                plug::IPort        *pPreamp;
-                plug::IPort        *pZoom;
-                plug::IPort        *pReactivity;
-                plug::IPort        *pChannel;
-                plug::IPort        *pSelector;
-                plug::IPort        *pFrequency;
-                plug::IPort        *pLevel;
-                plug::IPort        *pLogScale;
-                plug::IPort        *pFftData;
-                plug::IPort        *pMSSwitch;
+                plug::IPort            *pBypass;
+                plug::IPort            *pMode;
+                plug::IPort            *pTolerance;
+                plug::IPort            *pWindow;
+                plug::IPort            *pEnvelope;
+                plug::IPort            *pPreamp;
+                plug::IPort            *pZoom;
+                plug::IPort            *pReactivity;
+                plug::IPort            *pChannel;
+                plug::IPort            *pSelector;
+                plug::IPort            *pInspSwitch;
+                plug::IPort            *pInspRange;
+                plug::IPort            *pFrequency;
+                plug::IPort            *pLevel;
+                plug::IPort            *pLogScale;
+                plug::IPort            *pLinFreq;
+                plug::IPort            *pFftData;
+                plug::IPort            *pInspMesh;
+                plug::IPort            *pMSSwitch;
 
-                plug::IPort        *pFreeze;
-                plug::IPort        *pMaxReset;          // Reset maximum values
-                plug::IPort        *pSpp;
-                sa_spectralizer_t   vSpc[2];
+                plug::IPort            *pFreeze;
+                plug::IPort            *pMaxReset;          // Reset maximum values
+                plug::IPort            *pSpp;
+                sa_spectralizer_t       vSpc[2];
 
-                core::IDBuffer     *pIDisplay;          // Inline display buffer
+                core::IDBuffer         *pIDisplay;          // Inline display buffer
 
             protected:
-                bool                create_channels(size_t channels);
-                mode_t              decode_mode(size_t mode);
-                void                do_destroy();
+                bool                    create_channels(size_t channels);
+                mode_t                  decode_mode(size_t mode);
+                void                    do_destroy();
 
-                void                update_multiple_settings();
-                void                update_x2_settings(ssize_t ch1, ssize_t ch2);
-                void                update_spectralizer_x2_settings(ssize_t ch1, ssize_t ch2);
+                void                    update_multiple_settings();
+                void                    update_x2_settings(ssize_t ch1, ssize_t ch2);
+                void                    update_spectralizer_x2_settings(ssize_t ch1, ssize_t ch2);
 
-                void                process_multiple();
-                void                process_spectralizer();
-                void                get_spectrum(float *dst, size_t channel, size_t flags);
-                void                measure_correlation(size_t count);
-                void                prepare_buffers(size_t count);
+                void                    analyze_data(size_t samples);
+                void                    pass_signal(size_t samples);
+                void                    process_multiple();
+                void                    process_spectralizer();
+                void                    get_spectrum(float *dst, size_t channel, size_t flags);
+                void                    measure_correlation(size_t count);
+                void                    prepare_buffers(size_t count);
 
-                void                output_spectrum();
+                void                    output_spectrum();
+                void                    output_inpect_filter();
 
             public:
                 explicit spectrum_analyzer(const meta::plugin_t *metadata);
                 virtual ~spectrum_analyzer() override;
 
             public:
-                virtual void        init(plug::IWrapper *wrapper, plug::IPort **ports) override;
-                virtual void        destroy() override;
+                virtual void            init(plug::IWrapper *wrapper, plug::IPort **ports) override;
+                virtual void            destroy() override;
 
-                virtual void        update_settings() override;
-                virtual void        update_sample_rate(long sr) override;
+                virtual void            update_settings() override;
+                virtual void            update_sample_rate(long sr) override;
 
-                virtual void        process(size_t samples) override;
-                virtual bool        inline_display(plug::ICanvas *cv, size_t width, size_t height) override;
+                virtual void            process(size_t samples) override;
+                virtual bool            inline_display(plug::ICanvas *cv, size_t width, size_t height) override;
+                virtual void            ui_activated() override;
 
-                virtual void        dump(dspu::IStateDumper *v) const override;
+                virtual void            dump(dspu::IStateDumper *v) const override;
         };
 
     } /* namespace plugins */

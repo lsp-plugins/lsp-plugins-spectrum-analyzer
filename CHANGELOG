@@ -2,6 +2,11 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.32 ===
+* Added frequency inspection mode.
+* Added support of linear frequency scale.
+* Updated build scripts and dependencies.
+
 === 1.0.31 ===
 * Updated build scripts and dependencies.
 

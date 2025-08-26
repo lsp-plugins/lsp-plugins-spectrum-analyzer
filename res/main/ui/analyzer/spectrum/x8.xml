@@ -1,13 +1,19 @@
 <plugin resizable="true">
-	<vbox spacing="4"  width.min="931" height.min="696">
+	<vbox spacing="4" width.min="931" height.min="696">
 		<!-- Head settings -->
-		<align halign="-1" fill="true">
-			<hbox pad.l="6" pad.r="6" pad.t="4" pad.b="4" spacing="8" fill="false" bg.color="bg_schema">
-				<label text="labels.mode"/>
-				<combo id="mode"/>
-				<button pad.l="10" ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze"/>
-			</hbox>
-		</align>
+		<hbox fill="true" bg.color="bg_schema">
+			<label text="labels.mode" pad.l="6" pad.v="4"/>
+			<combo id="mode" pad.h="6" pad.v="4"/>
+			<vsep bg.color="bg" pad.h="2" hreduce="true" hexpand="false"/>
+			<button ui:inject="Button_cyan" text="actions.freeze" size="16" width="64" id="freeze" pad.h="6" pad.v="4"/>
+			<vsep bg.color="bg" pad.h="2" hreduce="true" hexpand="false"/>
+			<button ui:inject="Button_magenta" text="actions.linear_frequency" size="16" width="64" id="linfreq" pad.h="6"/>
+			<vsep bg.color="bg" pad.h="2" hreduce="true" hexpand="false"/>
+			<button ui:inject="Button_orange" text="labels.chan.inspect" size="16" width="64" id="insp_on" pad.h="6"/>
+			<knob id="insp_r" scale.size="3" scolor="orange" size="10" pad.h="6"/>
+			<value id="insp_r" width.min="48" same_line="true" fill="true" halign="1" pad.r="6"/>
+			<void hexpand="true" hfill="true"/>
+		</hbox>
 
 		<hbox expand="true" spacing="4">
 			<vbox spacing="4" expand="true">
@@ -19,12 +25,19 @@
 
 						<!-- Secondary grid -->
 						<ui:with color="graph_sec">
-							<ui:for id="f" first="20" last="90" step="10">
-								<marker v="${:f}"/>
-								<marker v="${:f * 10}"/>
-								<marker v="${:f * 100}"/>
+							<ui:with visibility="!:linfreq">
+								<ui:for id="f" first="20" last="90" step="10">
+									<marker v="${:f}"/>
+									<marker v="${:f * 10}"/>
+									<marker v="${:f * 100}"/>
+								</ui:for>
+								<marker v="20000"/>
+							</ui:with>
+
+							<ui:for id="f" first="1000" last="23000" step="1000">
+								<marker v="${:f}" visibility=":linfreq"/>
 							</ui:for>
-							<marker v="20000"/>
+
 							<ui:for id="g" first="-60" last="12" step="24">
 								<marker v="${g} db" ox="1" oy="0"/>
 							</ui:for>
@@ -39,9 +52,9 @@
 
 						<!-- Primary Grid -->
 						<ui:with color="graph_prim">
-							<marker v="100"/>
-							<marker v="1000"/>
-							<marker v="10000"/>
+							<marker v="100" visibility="!:linfreq"/>
+							<marker v="1000" visibility="!:linfreq"/>
+							<marker v="10000" visibility="!:linfreq"/>
 
 							<marker v="0 db" ox="1" oy="0"/>
 							<marker v="-24 db" ox="1" oy="0"/>
@@ -79,22 +92,10 @@
 								color.a="0.2"
 								visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
 						</ui:for>
-
-						<mesh xi="0" yi="1" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
-						<ui:for id="i" first="0" count="8">
-							<mesh
-								xi="0"
-								yi="${:i + 2}"
-								id="spd"
-								width=":lthick+1"
-								color="graph_mesh_cycle"
-								color.a="0.2"
-								color.hue="${i} / 8.0"
-								visibility="(((:mode ieq 0) or (:mode ieq 2)) and (:on_${i})) or ((:mode ieq 1) or (:mode ieq 3) and ((:spc0 ieq ${i}) or (:spc1 ieq ${i})))"/>
-						</ui:for>
+						<mesh id="ifmesh" width="3" color="cyan" fill.color="cyan" fill.color.a="0.8" fill="true" visibility=":insp_id > 0.5"/>
 
 						<!-- Axis -->
-						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="true" visibility="false"/>
+						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="!:linfreq" visibility="false"/>
 						<axis angle="0.5" min="-72 db / :zoom" max="24 db * :zoom" color="graph_prim" log="true" visibility="false"/>
 						<axis angle="0.5" min="-1" max="1" visibility="false"/>
 
@@ -121,7 +122,7 @@
 						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" visibility="((:mode ieq 1) or (:mode ieq 3))" editable="true"/>
 
 						<!-- Text -->
-						<ui:with ox="0" oy="2" y="0" halign="1" valign="1">
+						<ui:with ox="0" oy="2" y="0" halign="1" valign="1" visibility="!:linfreq">
 							<text x="10" text="graph.units.hz"/>
 							<text x="20" text="20"/>
 							<text x="30" text="30"/>
@@ -137,6 +138,14 @@
 							<text x="10000" text="graph.values.x_k" text:value="10"/>
 							<text x="20000" text="graph.values.x_k" text:value="20"/>
 						</ui:with>
+
+						<ui:with ox="0" oy="2" y="0" halign="1" valign="1">
+							<text x="10" text="graph.units.hz"/>
+							<ui:for id="f" first="1" last="23">
+								<text x="${:f * 1000}" text="graph.values.x_k" text:value="${f}" visibility=":linfreq"/>
+							</ui:for>
+						</ui:with>
+
 						<ui:for id="t" first="-60" last="12" step="12">
 							<text x="10" y="${t} db" text="${t}" halign="1" valign="1"/>
 						</ui:for>
@@ -178,12 +187,19 @@
 
 						<!-- Secondary grid -->
 						<ui:with color="graph_prim" color.a="0.5">
-							<ui:for id="f" first="20" last="90" step="10">
-								<marker v="${:f}"/>
-								<marker v="${:f * 10}"/>
-								<marker v="${:f * 100}"/>
+							<ui:with visibility="!:linfreq">
+								<ui:for id="f" first="20" last="90" step="10">
+									<marker v="${:f}"/>
+									<marker v="${:f * 10}"/>
+									<marker v="${:f * 100}"/>
+								</ui:for>
+								<marker v="20000" color="graph_sec"/>
+							</ui:with>
+
+							<ui:for id="f" first="1000" last="23000" step="1000">
+								<marker v="${:f}" visibility=":linfreq"/>
 							</ui:for>
-							<marker v="20000" color="graph_sec"/>
+
 							<ui:for id="t" first="1" last="7" step="2">
 								<marker v="${t}" ox="1" oy="0"/>
 							</ui:for>
@@ -191,9 +207,9 @@
 
 						<!-- Primary grid -->
 						<ui:with color="graph_prim">
-							<marker v="100"/>
-							<marker v="1000"/>
-							<marker v="10000"/>
+							<marker v="100" visibility="!:linfreq"/>
+							<marker v="1000" visibility="!:linfreq"/>
+							<marker v="10000" visibility="!:linfreq"/>
 							<ui:for id="t" first="2" last="6" step="2">
 								<marker v="${t}" ox="1" oy="0"/>
 							</ui:for>
@@ -202,13 +218,13 @@
 						</ui:with>
 
 						<!-- Axis -->
-						<axis angle="0.0" ui:id="spc_single_graph_ox" min="10" max="24000" log="true" visibility="false"/>
+						<axis angle="0.0" ui:id="spc_single_graph_ox" min="10" max="24000" log="!:linfreq" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
 
 						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
 
 						<!-- Text -->
-						<ui:with y="8" halign="1" valign="1" color="graph_prim">
+						<ui:with y="8" halign="1" valign="1" color="graph_prim" visibility="!:linfreq">
 							<text x="10" text="graph.units.hz"/>
 							<text x="20" text="20"/>
 							<text x="30" text="30"/>
@@ -225,7 +241,26 @@
 							<text x="20000" text="graph.values.x_k" text:value="20"/>
 						</ui:with>
 
-						<text ox="0" oy="1" y="0" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector_spc" text="xxx" x=":sel" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
+						<text
+							ox="0"
+							oy="1"
+							y="0"
+							valign="-1"
+							color="graph_marker_line"
+							pad.h="4"
+							font.bold="true"
+							ui:id="global_selector_spc"
+							text="xxx"
+							x=":sel"
+							halign="(:sel lt (:linfreq ? 12000 : 500)) ? 1 : -1"
+							text.halign="(:sel lt (:linfreq ? 12000 : 500)) ? -1 : 1"/>
+
+						<ui:with y="8" halign="1" valign="1" color="graph_prim" visibility=":linfreq">
+							<text x="10" text="graph.units.hz"/>
+							<ui:for id="f" first="1" last="23">
+								<text x="${:f * 1000}" text="graph.values.x_k" text:value="${f}"/>
+							</ui:for>
+						</ui:with>
 
 						<text x="10" y="0" text="graph.axis.time" halign="1" valign="-1" color="graph_prim"/>
 						<ui:for id="t" first="1" last="7">
@@ -245,7 +280,7 @@
 						<fbuffer id="fb1" x="0" y="1" width="0.5" height="1" transparency="0.25" angle="0" mode=":spm" color="red" color.hue=":spc1 / 8.0"/>
 
 						<!-- Secondary grid -->
-						<ui:with color="graph_prim" color.a="0.5">
+						<ui:with color="graph_prim" color.a="0.6" visibility="!:linfreq">
 							<ui:for id="f" first="20" last="90" step="10">
 								<marker v="${:f}"/>
 								<marker v="${:f * 10}"/>
@@ -257,6 +292,15 @@
 							</ui:for>
 							<marker v="20000"/>
 							<marker v="20000" o="1" ox="2" oy="1"/>
+						</ui:with>
+						<ui:with color="graph_prim" color.a="0.6" visibility=":linfreq">
+							<ui:for id="f" first="1000" last="23000" step="1000">
+								<marker v="${:f}"/>
+								<marker v="${:f}" o="1" ox="2" oy="1"/>
+							</ui:for>
+						</ui:with>
+
+						<ui:with color="graph_prim" color.a="0.6">
 							<ui:for id="t" first="1" last="7" step="2">
 								<marker v="${t}" ox="1" oy="0"/>
 							</ui:for>
@@ -265,9 +309,9 @@
 						<!-- Primary grid -->
 						<ui:with color="graph_prim">
 							<ui:for id="c" first="0" last="1">
-								<marker v="100" o="${c}"/>
-								<marker v="1000" o="${c}"/>
-								<marker v="10000" o="${c}"/>
+								<marker v="100" o="${c}" visibility="!:linfreq"/>
+								<marker v="1000" o="${c}" visibility="!:linfreq"/>
+								<marker v="10000" o="${c}" visibility="!:linfreq"/>
 							</ui:for>
 							<ui:for id="t" first="2" last="6" step="2">
 								<marker v="${t}" ox="1" oy="0"/>
@@ -278,25 +322,58 @@
 						</ui:with>
 
 						<!-- Axis -->
-						<axis ui:id="spc_dual_graph_ox_1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+						<axis ui:id="spc_dual_graph_ox_1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="!:linfreq" visibility="false"/>
 						<axis angle="1.5" min="0" max="8" log="false" visibility="false"/>
-						<axis ui:id="spc_dual_graph_ox_2" zero="10" o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="true" visibility="false"/>
+						<axis ui:id="spc_dual_graph_ox_2" zero="10" o="1" angle="0.0" min="10" max="24000" length=":_a_width idiv 2" log="!:linfreq" visibility="false"/>
 
 						<marker id="sel" ox="0" oy="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
 						<marker id="sel" ox="2" oy="1" o="1" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line" pointer="hsize" editable="true"/>
 
-						<text ox="0" oy="1" y="0" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector_spc_d1" text="xxx" x=":sel" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
+						<text
+							ox="0"
+							oy="1"
+							y="0"
+							valign="-1"
+							color="graph_marker_line"
+							pad.h="4"
+							font.bold="true"
+							ui:id="global_selector_spc_d1"
+							text="xxx"
+							x=":sel"
+							halign="(:sel lt (:linfreq ? 12000 : 500)) ? 1 : -1"
+							text.halign="(:sel lt (:linfreq ? 12000 : 500)) ? -1 : 1"/>
 
-						<text ox="2" oy="1" y="0" o="1" valign="-1" color="graph_marker_line" pad.h="4" font.bold="true" ui:id="global_selector_spc_d2" text="xxx" x=":sel" halign="(:sel lt 500) ? 1 : -1" text.halign="(:sel lt 500) ? -1 : 1"/>
+						<text
+							ox="2"
+							oy="1"
+							y="0"
+							o="1"
+							valign="-1"
+							color="graph_marker_line"
+							pad.h="4"
+							font.bold="true"
+							ui:id="global_selector_spc_d2"
+							text="xxx"
+							x=":sel"
+							halign="(:sel lt (:linfreq ? 12000 : 500)) ? 1 : -1"
+							text.halign="(:sel lt (:linfreq ? 12000 : 500)) ? -1 : 1"/>
 
-						<!-- Text -->
-						<ui:for id="c" first="0" last="1">
-							<ui:with y="8" halign="1" valign="1">
-								<text x="10" o="${c}" text="graph.units.hz"/>
-								<text x="100" o="${c}" text="100"/>
-								<text x="1000" o="${c}" text="graph.values.1k"/>
-								<text x="10000" o="${c}" text="graph.values.10k"/>
-							</ui:with>
+							<!-- Text -->
+							<ui:for id="c" first="0" last="1">
+								<ui:with y="8" halign="1" valign="1" visibility="!:linfreq">
+									<text x="10" o="${c}" text="graph.units.hz"/>
+									<text x="100" o="${c}" text="100"/>
+									<text x="1000" o="${c}" text="graph.values.1k"/>
+									<text x="10000" o="${c}" text="graph.values.10k"/>
+								</ui:with>
+
+								<ui:with y="8" halign="1" valign="1" visibility=":linfreq">
+									<text x="10" o="${c}" text="graph.units.hz"/>
+									<ui:for id="f" first="1" last="23">
+										<text x="${:f * 1000}" o="${c}" text="graph.values.x_k" text:value="${f}"/>
+									</ui:for>
+								</ui:with>
+
 							<ui:for id="t" first="1" last="7">
 								<text o="${c}" text="${t}" x="10" y="${t}" halign="1" valign="1"/>
 							</ui:for>
@@ -392,6 +469,9 @@
 										bg.color="bg_schema"
 										balance.color="bright_cyan"
 										value.color="cyan"
+										inactive.brightness="1.0"
+										inactive.bg.brightness="1.0"
+										inactive.bg.color="bg_schema"
 										activity=":on_${:i} and :on_${:i + 1}"/>
 									<label text="+1" font.size="8" hfill="true" text.halign="1" pad.t="2"/>
 								</hbox>

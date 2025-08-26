@@ -35,6 +35,12 @@ namespace lsp
         class spectrum_analyzer_ui: public ui::Module, public ui::IPortListener
         {
             protected:
+                enum key_flags_t
+                {
+                    K_LEFT_CTRL     = 1 << 0,
+                    K_RIGHT_CTRL    = 1 << 1,
+                };
+
                 typedef struct channel_t
                 {
                     spectrum_analyzer_ui   *pUI;
@@ -64,6 +70,8 @@ namespace lsp
                 ui::IPort                  *pSelChannel;        // Selected channel
                 ui::IPort                  *pFftFreq;           // Actual FFT frequency
                 ui::IPort                  *pLevel;             // Actual level
+                ui::IPort                  *pInspIndex;         // Inspection index
+                ui::IPort                  *pInspOn;            // Inspection enable flag
                 lltl::darray<channel_t>     vChannels;
 
             protected:
@@ -72,6 +80,8 @@ namespace lsp
                 ui::IPort      *find_port(const char *prefix, size_t id);
 
             protected:
+                static status_t slot_graph_key_down(tk::Widget *sender, void *ptr, void *data);
+                static status_t slot_graph_key_up(tk::Widget *sender, void *ptr, void *data);
                 static status_t slot_graph_mouse_down(tk::Widget *sender, void *ptr, void *data);
                 static status_t slot_graph_mouse_move(tk::Widget *sender, void *ptr, void *data);
                 static status_t slot_graph_mouse_up(tk::Widget *sender, void *ptr, void *data);
@@ -83,14 +93,20 @@ namespace lsp
                 void            on_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev);
                 void            on_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev);
                 void            on_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev);
+                void            on_graph_key_down(tk::Widget *sender, const ws::event_t *ev);
+                void            on_graph_key_up(tk::Widget *sender, const ws::event_t *ev);
                 void            set_selector_text(tk::GraphText *fWidget, bool no_gain);
                 bool            channels_selector_visible();
+                void            enable_inspect(bool enable);
+                size_t          get_keys(tk::Widget *sender);
+
             public:
                 explicit spectrum_analyzer_ui(const meta::plugin_t *meta);
                 virtual ~spectrum_analyzer_ui() override;
 
+            public:
                 virtual status_t    post_init() override;
-
+                virtual status_t    pre_destroy() override;
                 virtual void        notify(ui::IPort *port, size_t flags) override;
         };
 

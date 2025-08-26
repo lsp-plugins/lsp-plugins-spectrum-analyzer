@@ -25,7 +25,7 @@
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MAJOR         1
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MINOR         0
-#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         31
+#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         32
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -166,8 +166,9 @@ namespace lsp
             COMBO("mode", "Analyzer mode", "Mode", 0, spectrum_analyzer_x ## c ## _modes), \
             COMBO("lthick", "Mesh thickness", "Thickness", 2, line_thick_modes), \
             COMBO("spm", "Spectralizer mode", "SPC mode", 1, spectralizer_modes), \
-            SWITCH("splog", "Spectralizer logarithmic scale", "SPC log scale", 1), \
+            SWITCH("splog", "Spectralizer logarithmic scale", "SPC log dots", 1), \
             SWITCH("freeze", "Analyzer freeze", "Freeze", 0), \
+            SWITCH("linfreq", "Linear frequency scale", "Linear Freq", 0), \
             SWITCH("mline", "Horizontal measuring line", "Show HMarker", 0), \
             SWITCH("mtrack", "Show maximum values for all channels", "Show max", 1), \
             channel(SWITCH("ctrack", "Track maximum values for individual channels", "Track max", 0), ) \
@@ -181,9 +182,13 @@ namespace lsp
             channel(COMBO("chn", "Channel", "Channel", 0, spectrum_analyzer_x ## c ## _channels), ) \
             LOG_CONTROL("sel", "Selector", "Selector", U_HZ, spectrum_analyzer::SELECTOR), \
             LOG_CONTROL("mlval", "Horizontal measuring line level value", "HLine lvl", U_DB, spectrum_analyzer::HLINE), \
+            SWITCH("insp_id", "Inspected filter switch", "Inspect switch", 0), \
+            CONTROL("insp_r", "Inspect frequency range", "Inspect range", U_OCTAVES, spectrum_analyzer::INSPECT), \
+            SWITCH("insp_on", "Automatically inspect frequency range", "Auto inspect", 0), \
             METER("freq", "Frequency", U_HZ, spectrum_analyzer::FREQ), \
             METER_MINMAX("lvl", "Level", U_GAIN_AMP, 0.0f, 10000.0f), \
-            MESH("spd", "Spectrum Data", c*2 + 2, spectrum_analyzer::MESH_POINTS + 4)
+            MESH("spd", "Spectrum Data", c*2 + 2, spectrum_analyzer::MESH_POINTS + 4), \
+            MESH("ifmesh", "Inspect filter mesh", 2, spectrum_analyzer::MESH_POINTS + 4)
 
         #define SA_MGROUP(id) \
             OPT_RETURN_MONO("ret_" #id, "rin_" #id, "Audio return group " #id)

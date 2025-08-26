@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -81,6 +81,16 @@ namespace lsp
             static constexpr float          ZOOM_MAX            = GAIN_AMP_0_DB;
             static constexpr float          ZOOM_DFL            = GAIN_AMP_0_DB;
             static constexpr float          ZOOM_STEP           = 0.025f;
+
+            static constexpr float          INSPECT_MIN         = 0.0f;
+            static constexpr float          INSPECT_MAX         = 5.0f;
+            static constexpr float          INSPECT_DFL         = 1.0f;
+            static constexpr float          INSPECT_STEP        = 0.005f;
+
+            static constexpr float          WIDTH_MIN           = 0.0f;
+            static constexpr float          WIDTH_MAX           = 12.0f;
+            static constexpr float          WIDTH_DFL           = 4.0f;
+            static constexpr float          WIDTH_STEP          = 0.002f;
 
             static constexpr float          PREAMP_DFL          = 1.0;
 

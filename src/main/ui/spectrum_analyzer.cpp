@@ -86,7 +86,7 @@ namespace lsp
             nXAxisIndexSpcS = -1;
             nXAxisIndexSpcD1= -1;
             nXAxisIndexSpcD2= -1;
-            nGraphBtn   = 0;
+            nGraphBtn       = 0;
 
             pMode           = NULL;
             pSelector       = NULL;
@@ -94,6 +94,8 @@ namespace lsp
             pSelChannel     = NULL;
             pFftFreq        = NULL;
             pLevel          = NULL;
+            pInspIndex      = NULL;
+            pInspOn         = NULL;
         }
 
         spectrum_analyzer_ui::~spectrum_analyzer_ui()
@@ -122,29 +124,22 @@ namespace lsp
                 return res;
 
             // Bind ports
-            pMode   = pWrapper->port("mode");
-            if (pMode != NULL)
+            if ((pMode = pWrapper->port("mode")) != NULL)
                 pMode->bind(this);
-
-            pSelector   = pWrapper->port("sel");
-            if (pSelector != NULL)
+            if ((pSelector = pWrapper->port("sel")) != NULL)
                 pSelector->bind(this);
-
-            pMlValue   = pWrapper->port("mlval");
-            if (pMlValue != NULL)
+            if ((pMlValue = pWrapper->port("mlval")) != NULL)
                 pMlValue->bind(this);
-
-            pSelChannel = pWrapper->port("chn");
-            if (pSelChannel != NULL)
+            if ((pSelChannel = pWrapper->port("chn")) != NULL)
                 pSelChannel->bind(this);
-
-            pFftFreq = pWrapper->port("freq");
-            if (pFftFreq != NULL)
+            if ((pFftFreq = pWrapper->port("freq")) != NULL)
                 pFftFreq->bind(this);
-
-            pLevel = pWrapper->port("lvl");
-            if (pLevel != NULL)
+            if ((pLevel = pWrapper->port("lvl")) != NULL)
                 pLevel->bind(this);
+            if ((pInspIndex = pWrapper->port("insp_id")) != NULL)
+                pInspIndex->bind(this);
+            if ((pInspOn = pWrapper->port("insp_on")) != NULL)
+                pInspOn->bind(this);
 
             // Initialize channels
             for (size_t i=0; i<nChannels; ++i)
@@ -164,6 +159,8 @@ namespace lsp
                 wMainGraph->slots()->bind(tk::SLOT_MOUSE_DOWN, slot_graph_mouse_down, this);
                 wMainGraph->slots()->bind(tk::SLOT_MOUSE_MOVE, slot_graph_mouse_move, this);
                 wMainGraph->slots()->bind(tk::SLOT_MOUSE_UP, slot_graph_mouse_up, this);
+                wMainGraph->slots()->bind(tk::SLOT_KEY_DOWN, slot_graph_key_down, this);
+                wMainGraph->slots()->bind(tk::SLOT_KEY_UP, slot_graph_key_up, this);
                 nXAxisIndex         = find_axis(wMainGraph, "main_graph_ox");
             }
 
@@ -206,6 +203,18 @@ namespace lsp
             update_mlvalue_text();
 
             return res;
+        }
+
+        status_t spectrum_analyzer_ui::pre_destroy()
+        {
+            // Force the inspect mode to be turned off
+            if (pInspIndex != NULL)
+            {
+                pInspIndex->set_value(0.0f);
+                pInspIndex->notify_all(ui::PORT_USER_EDIT);
+            }
+
+            return ui::Module::pre_destroy();
         }
 
         void spectrum_analyzer_ui::notify(ui::IPort *port, size_t flags)
@@ -362,38 +371,73 @@ namespace lsp
 
         status_t spectrum_analyzer_ui::slot_graph_mouse_down(tk::Widget *sender, void *ptr, void *data)
         {
-            spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
-            if (_this == NULL)
+            spectrum_analyzer_ui *self = static_cast<spectrum_analyzer_ui *>(ptr);
+            if (self == NULL)
                 return STATUS_BAD_STATE;
 
             ws::event_t *ev = static_cast<ws::event_t *>(data);
-            _this->on_graph_mouse_down(sender, ev);
+            self->on_graph_mouse_down(sender, ev);
 
             return STATUS_OK;
         }
 
         status_t spectrum_analyzer_ui::slot_graph_mouse_move(tk::Widget *sender, void *ptr, void *data)
         {
-            spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
-            if (_this == NULL)
+            spectrum_analyzer_ui *self = static_cast<spectrum_analyzer_ui *>(ptr);
+            if (self == NULL)
                 return STATUS_BAD_STATE;
 
             ws::event_t *ev = static_cast<ws::event_t *>(data);
-            _this->on_graph_mouse_move(sender, ev);
+            self->on_graph_mouse_move(sender, ev);
 
             return STATUS_OK;
         }
 
         status_t spectrum_analyzer_ui::slot_graph_mouse_up(tk::Widget *sender, void *ptr, void *data)
         {
-            spectrum_analyzer_ui *_this = static_cast<spectrum_analyzer_ui *>(ptr);
-            if (_this == NULL)
+            spectrum_analyzer_ui *self = static_cast<spectrum_analyzer_ui *>(ptr);
+            if (self == NULL)
                 return STATUS_BAD_STATE;
 
             ws::event_t *ev = static_cast<ws::event_t *>(data);
-            _this->on_graph_mouse_up(sender, ev);
+            self->on_graph_mouse_up(sender, ev);
 
             return STATUS_OK;
+        }
+
+        status_t spectrum_analyzer_ui::slot_graph_key_up(tk::Widget *sender, void *ptr, void *data)
+        {
+            spectrum_analyzer_ui *self = static_cast<spectrum_analyzer_ui *>(ptr);
+            if (self == NULL)
+                return STATUS_BAD_STATE;
+
+            ws::event_t *ev = static_cast<ws::event_t *>(data);
+            self->on_graph_key_up(sender, ev);
+
+            return STATUS_OK;
+        }
+
+        status_t spectrum_analyzer_ui::slot_graph_key_down(tk::Widget *sender, void *ptr, void *data)
+        {
+            spectrum_analyzer_ui *self = static_cast<spectrum_analyzer_ui *>(ptr);
+            if (self == NULL)
+                return STATUS_BAD_STATE;
+
+            ws::event_t *ev = static_cast<ws::event_t *>(data);
+            self->on_graph_key_down(sender, ev);
+
+            return STATUS_OK;
+        }
+
+        void spectrum_analyzer_ui::enable_inspect(bool enable)
+        {
+            if (pInspIndex == NULL)
+                return;
+
+            lsp_trace("enable = %s", (enable) ? "true" : "false");
+
+            pInspIndex->set_value(enable ? 1.0f : 0.0f);
+            pInspIndex->notify_all(ui::PORT_USER_EDIT);
         }
 
         void spectrum_analyzer_ui::on_graph_mouse_down(tk::Widget *sender, const ws::event_t *ev)
@@ -405,14 +449,59 @@ namespace lsp
         void spectrum_analyzer_ui::on_graph_mouse_up(tk::Widget *sender, const ws::event_t *ev)
         {
             nGraphBtn &= ~(size_t(1) << ev->nCode);
+
+            const bool enable1 = (pInspOn != NULL) && (pInspOn->value() >= 0.5f);
+            const bool enable2 = (nGraphBtn & (K_LEFT_CTRL | K_RIGHT_CTRL));
+
+            enable_inspect((nGraphBtn == ws::MCF_LEFT) && (enable1 ^ enable2));
+        }
+
+        size_t spectrum_analyzer_ui::get_keys(tk::Widget *sender)
+        {
+            tk::Window *wnd = tk::widget_cast<tk::Window>(sender->toplevel());
+            if (wnd == NULL)
+                return 0;
+
+            size_t mask = 0;
+            const lltl::darray<ws::code_t> * keys = wnd->active_keys();
+            for (size_t i=0, n=keys->size(); i<n; ++i)
+            {
+                const ws::code_t *code = keys->uget(i);
+                switch (*code)
+                {
+                    case ws::WSK_CONTROL_L:
+                        mask       |= K_LEFT_CTRL;
+                        break;
+                    case ws::WSK_CONTROL_R:
+                        mask       |= K_RIGHT_CTRL;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return mask;
+        }
+
+        void spectrum_analyzer_ui::on_graph_key_down(tk::Widget *sender, const ws::event_t *ev)
+        {
+            on_graph_mouse_move(sender, ev);
+        }
+
+        void spectrum_analyzer_ui::on_graph_key_up(tk::Widget *sender, const ws::event_t *ev)
+        {
+            on_graph_mouse_move(sender, ev);
         }
 
         void spectrum_analyzer_ui::on_graph_mouse_move(tk::Widget *sender, const ws::event_t *ev)
         {
-            if ((wMainGraph == NULL) || (nXAxisIndex < 0))
+            if (nGraphBtn != ws::MCF_LEFT)
                 return;
-            if (nGraphBtn != (size_t(1) << ws::MCB_LEFT))
-                return;
+
+            const size_t keys  = get_keys(sender);
+            const bool enable1 = (pInspOn != NULL) && (pInspOn->value() >= 0.5f);
+            const bool enable2 = (keys & (K_LEFT_CTRL | K_RIGHT_CTRL));
+            enable_inspect(enable1 ^ enable2);
 
             if (sender == wMainGraph)
             {
@@ -457,7 +546,6 @@ namespace lsp
                     pSelector->set_value(freq);
                     pSelector->notify_all(ui::PORT_USER_EDIT);
                 }
-
             }
             else if (sender == wSpcGraphDual)
             {
@@ -469,7 +557,6 @@ namespace lsp
 
                 ssize_t xcenter = r.nLeft + r.nWidth/2;
                 ssize_t xaxis = xcenter > ev->nLeft ? nXAxisIndexSpcD1 : nXAxisIndexSpcD2;
-
 
                 // Translate coordinates
                 float freq = 0.0f;
@@ -483,7 +570,6 @@ namespace lsp
                     pSelector->set_value(freq);
                     pSelector->notify_all(ui::PORT_USER_EDIT);
                 }
-
             }
         }
 
