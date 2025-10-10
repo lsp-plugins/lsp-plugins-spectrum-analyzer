@@ -64,6 +64,18 @@
 							<marker v="24000" visibility="false"/>
 						</ui:with>
 
+						<!-- Piano keys -->
+						<embed oy="3" start.x="midi_freq_start(12, 127)" start.y="20" end.x="midi_freq_end(12, 127)" end.y="44" valign="1" alpha="0" visibility=":_ui_graph_piano_layout and !:linfreq">
+							<piano natural="false" note.min="12" note.max="127" height="24" editable="false" selectable="false" border="0"/>
+						</embed>
+
+						<!-- Octave text -->
+						<ui:with ox="0" oy="3" y="44" halign="1" valign="1" pgroup="0" priority="10" visibility=":_ui_graph_piano_layout and !:linfreq" pad.b="2">
+							<ui:for id="octave" first="0" last="9">
+								<text x="midi_freq(12 * ${:octave + 1})" text="lists.notes.fmt.c" text:octave="${octave}" valign="1" halign="0"/>
+							</ui:for>
+						</ui:with>
+
 						<!-- Meshes -->
 						<mesh xi="0" yi="9" id="spd" width="1" color="cyan" fill.color="cyan" fill.color.a="0.9" color.a="0.5" fill="true" visibility=":mtrack"/>
 						<ui:for id="i" first="0" count="4">
@@ -98,6 +110,7 @@
 						<axis ui:id="main_graph_ox" angle="0.0" min="10" max="24000" color="graph_prim" log="!:linfreq" visibility="false"/>
 						<axis angle="0.5" min="-72 db / :zoom" max="24 db * :zoom" color="graph_prim" log="true" visibility="false"/>
 						<axis angle="0.5" min="-1" max="1" visibility="false"/>
+						<axis min="0" max=":_a_scaled_height" visibility="false" angle="0.5"/>
 
 						<!-- Marker horizontal line -->
 						<marker id="mlval" ox="1" oy="0" width="2" hwidth="2" color="graph_marker_line" hcolor="graph_marker_line_hover" pointer="vsize" visibility=":mline" editable="true"/>
