@@ -199,18 +199,6 @@
 						<!-- Frame buffer -->
 						<fbuffer id="fb0" width="1" height="1" hpos="-1" vpos="1" transparency="0.25" angle="0" mode=":spm" color="red" color.hue=":spc0 / 4.0"/>
 
-						<!-- Piano keys -->
-						<embed ox="0" oy="2" o="1" start.x="midi_freq_start(12, 127)" start.y="20" end.x="midi_freq_end(12, 127)" end.y="44" valign="1" alpha="0.5" visibility=":_ui_graph_piano_layout and !:linfreq">
-							<piano natural="false" note.min="12" note.max="127" height="24" editable="false" selectable="false" border="0"/>
-						</embed>
-
-						<!-- Octave text -->
-						<ui:with ox="0" oy="2" o="1" y="44" halign="1" valign="1" pgroup="0" priority="10" visibility=":_ui_graph_piano_layout and !:linfreq" pad.b="2">
-							<ui:for id="octave" first="0" last="9">
-								<text x="midi_freq(12 * ${:octave + 1})" text="lists.notes.fmt.c" text:octave="${octave}" valign="1" halign="0"/>
-							</ui:for>
-						</ui:with>
-						
 						<!-- Secondary grid -->
 						<ui:with color="graph_prim" color.a="0.5">
 							<ui:with visibility="!:linfreq">
@@ -241,6 +229,18 @@
 							</ui:for>
 							<marker v="8" ox="1" oy="0" visibility="false"/>
 							<marker v="24000" ox="0" oy="1" visibility="false"/>
+						</ui:with>
+
+						<!-- Piano keys -->
+						<embed ox="0" oy="2" o="1" start.x="midi_freq_start(12, 127)" start.y="20" end.x="midi_freq_end(12, 127)" end.y="44" valign="1" alpha="0.35" visibility=":_ui_graph_piano_layout and !:linfreq">
+							<piano natural="false" note.min="12" note.max="127" height="24" editable="false" selectable="false" border="0"/>
+						</embed>
+
+						<!-- Octave text -->
+						<ui:with ox="0" oy="2" o="1" y="44" halign="1" valign="1" pgroup="0" priority="10" visibility=":_ui_graph_piano_layout and !:linfreq" pad.b="2">
+							<ui:for id="octave" first="0" last="9">
+								<text x="midi_freq(12 * ${:octave + 1})" text="lists.notes.fmt.c" text:octave="${octave}" valign="1" halign="0"/>
+							</ui:for>
 						</ui:with>
 
 						<!-- Boundaries -->
