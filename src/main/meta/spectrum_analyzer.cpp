@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/plug-fw/meta/ports.h>
+#include <lsp-plug.in/plug-fw/meta/registry.h>
 #include <lsp-plug.in/shared/meta/developers.h>
 #include <private/meta/spectrum_analyzer.h>
 
@@ -464,6 +465,7 @@ namespace lsp
             spectrum_analyzer_x1_port_groups,
             &spectrum_analyzer_bundle
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x1);
 
         const plugin_t spectrum_analyzer_x2 =
         {
@@ -494,6 +496,7 @@ namespace lsp
             spectrum_analyzer_x2_port_groups,
             &spectrum_analyzer_bundle
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x2);
 
         const plugin_t spectrum_analyzer_x4 =
         {
@@ -524,6 +527,7 @@ namespace lsp
             spectrum_analyzer_x4_port_groups,
             &spectrum_analyzer_bundle
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x4);
 
         const plugin_t spectrum_analyzer_x8 =
         {
@@ -554,6 +558,7 @@ namespace lsp
             spectrum_analyzer_x8_port_groups,
             &spectrum_analyzer_bundle
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x8);
 
         const plugin_t spectrum_analyzer_x12 =
         {
@@ -584,6 +589,7 @@ namespace lsp
             spectrum_analyzer_x12_port_groups,
             &spectrum_analyzer_bundle
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x12);
 
         const plugin_t spectrum_analyzer_x16 =
         {
@@ -614,5 +620,7 @@ namespace lsp
             spectrum_analyzer_x16_port_groups,
             &spectrum_analyzer_bundle
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x16);
+
     } /* namespace meta */
 } /* namespace lsp */
