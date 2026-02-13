@@ -460,7 +460,7 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x1_ports,
-            "analyzer/spectrum/x1.xml",
+            "plugins/analyzer/spectrum/x1.xml",
             NULL,
             spectrum_analyzer_x1_port_groups,
             &spectrum_analyzer_bundle
@@ -491,7 +491,7 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x2_ports,
-            "analyzer/spectrum/x2.xml",
+            "plugins/analyzer/spectrum/x2.xml",
             NULL,
             spectrum_analyzer_x2_port_groups,
             &spectrum_analyzer_bundle
@@ -522,7 +522,7 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x4_ports,
-            "analyzer/spectrum/x4.xml",
+            "plugins/analyzer/spectrum/x4.xml",
             NULL,
             spectrum_analyzer_x4_port_groups,
             &spectrum_analyzer_bundle
@@ -553,7 +553,7 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x8_ports,
-            "analyzer/spectrum/x8.xml",
+            "plugins/analyzer/spectrum/x8.xml",
             NULL,
             spectrum_analyzer_x8_port_groups,
             &spectrum_analyzer_bundle
@@ -584,7 +584,7 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x12_ports,
-            "analyzer/spectrum/x12.xml",
+            "plugins/analyzer/spectrum/x12.xml",
             NULL,
             spectrum_analyzer_x12_port_groups,
             &spectrum_analyzer_bundle
@@ -615,7 +615,7 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x16_ports,
-            "analyzer/spectrum/x16.xml",
+            "plugins/analyzer/spectrum/x16.xml",
             NULL,
             spectrum_analyzer_x16_port_groups,
             &spectrum_analyzer_bundle
