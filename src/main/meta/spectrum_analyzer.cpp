@@ -463,7 +463,8 @@ namespace lsp
             "plugins/analyzer/spectrum/x1.xml",
             NULL,
             spectrum_analyzer_x1_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            1
         };
         LSP_REGISTER_METADATA(spectrum_analyzer_x1);
 
@@ -494,7 +495,8 @@ namespace lsp
             "plugins/analyzer/spectrum/x2.xml",
             NULL,
             spectrum_analyzer_x2_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            2
         };
         LSP_REGISTER_METADATA(spectrum_analyzer_x2);
 
@@ -525,7 +527,8 @@ namespace lsp
             "plugins/analyzer/spectrum/x4.xml",
             NULL,
             spectrum_analyzer_x4_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            3
         };
         LSP_REGISTER_METADATA(spectrum_analyzer_x4);
 
@@ -556,7 +559,8 @@ namespace lsp
             "plugins/analyzer/spectrum/x8.xml",
             NULL,
             spectrum_analyzer_x8_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            4
         };
         LSP_REGISTER_METADATA(spectrum_analyzer_x8);
 
@@ -587,7 +591,8 @@ namespace lsp
             "plugins/analyzer/spectrum/x12.xml",
             NULL,
             spectrum_analyzer_x12_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            5
         };
         LSP_REGISTER_METADATA(spectrum_analyzer_x12);
 
@@ -618,7 +623,8 @@ namespace lsp
             "plugins/analyzer/spectrum/x16.xml",
             NULL,
             spectrum_analyzer_x16_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            6
         };
         LSP_REGISTER_METADATA(spectrum_analyzer_x16);
 
