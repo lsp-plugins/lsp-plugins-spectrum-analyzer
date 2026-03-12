@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -20,12 +20,13 @@
  */
 
 #include <lsp-plug.in/plug-fw/meta/ports.h>
+#include <lsp-plug.in/plug-fw/meta/registry.h>
 #include <lsp-plug.in/shared/meta/developers.h>
 #include <private/meta/spectrum_analyzer.h>
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MAJOR         1
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MINOR         0
-#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         35
+#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         36
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -459,11 +460,13 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x1_ports,
-            "analyzer/spectrum/x1.xml",
+            "plugins/analyzer/spectrum/x1.xml",
             NULL,
             spectrum_analyzer_x1_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            1
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x1);
 
         const plugin_t spectrum_analyzer_x2 =
         {
@@ -489,11 +492,13 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x2_ports,
-            "analyzer/spectrum/x2.xml",
+            "plugins/analyzer/spectrum/x2.xml",
             NULL,
             spectrum_analyzer_x2_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            2
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x2);
 
         const plugin_t spectrum_analyzer_x4 =
         {
@@ -519,11 +524,13 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x4_ports,
-            "analyzer/spectrum/x4.xml",
+            "plugins/analyzer/spectrum/x4.xml",
             NULL,
             spectrum_analyzer_x4_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            3
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x4);
 
         const plugin_t spectrum_analyzer_x8 =
         {
@@ -549,11 +556,13 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x8_ports,
-            "analyzer/spectrum/x8.xml",
+            "plugins/analyzer/spectrum/x8.xml",
             NULL,
             spectrum_analyzer_x8_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            4
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x8);
 
         const plugin_t spectrum_analyzer_x12 =
         {
@@ -579,11 +588,13 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x12_ports,
-            "analyzer/spectrum/x12.xml",
+            "plugins/analyzer/spectrum/x12.xml",
             NULL,
             spectrum_analyzer_x12_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            5
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x12);
 
         const plugin_t spectrum_analyzer_x16 =
         {
@@ -609,10 +620,13 @@ namespace lsp
             clap_features,
             E_INLINE_DISPLAY | E_DUMP_STATE,
             spectrum_analyzer_x16_ports,
-            "analyzer/spectrum/x16.xml",
+            "plugins/analyzer/spectrum/x16.xml",
             NULL,
             spectrum_analyzer_x16_port_groups,
-            &spectrum_analyzer_bundle
+            &spectrum_analyzer_bundle,
+            6
         };
+        LSP_REGISTER_METADATA(spectrum_analyzer_x16);
+
     } /* namespace meta */
 } /* namespace lsp */

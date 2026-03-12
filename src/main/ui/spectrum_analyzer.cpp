@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-plugins-spectrum-analyzer
  * Created on: 22 июн. 2021 г.
@@ -271,7 +271,7 @@ namespace lsp
             expr::Parameters params;
             tk::prop::String snote;
             LSPString text;
-            snote.bind(fWidget->style(), pDisplay->dictionary());
+            snote.bind(fWidget->style(), display()->dictionary());
             SET_LOCALE_SCOPED(LC_NUMERIC, "C");
 
             // Frequency
