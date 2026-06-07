@@ -151,13 +151,13 @@ namespace lsp
         #define SA_CORRMETER(id, label) \
             METER(id, label, U_PERCENT, spectrum_analyzer::CORRELATION)
 
-        #define SA_INPUT(x, active) \
-            AUDIO_INPUT_N(x), \
-            AUDIO_OUTPUT_N(x), \
-            SWITCH("on_" #x, "Analyse " #x, "On " #x, active), \
-            SWITCH("solo_" #x, "Solo " #x, "Solo " #x, 0.0f), \
-            SWITCH("frz_" #x, "Freeze " #x, "Freeze " #x, 0.0f), \
-            AMP_GAIN("sh_" #x, "Shift gain " #x, "Shift " #x, 1.0f, 1000.0f)
+        #define SA_INPUT(x, xid, active) \
+            AUDIO_INPUT_NM(x, xid), \
+            AUDIO_OUTPUT_NM(x, xid), \
+            SWITCH("on_" #x, "Analyse " #xid, "On " #xid, active), \
+            SWITCH("solo_" #x, "Solo " #xid, "Solo " #xid, 0.0f), \
+            SWITCH("frz_" #x, "Freeze " #xid, "Freeze " #xid, 0.0f), \
+            AMP_GAIN("sh_" #x, "Shift gain " #xid, "Shift " #xid, 1.0f, 1000.0f)
 
         #define SA_MULTI_CHANNEL(...)         __VA_ARGS__
         #define SA_SINGLE_CHANNEL(...)
@@ -191,18 +191,18 @@ namespace lsp
             MESH("spd", "Spectrum Data", c*2 + 2, spectrum_analyzer::MESH_POINTS + 4), \
             MESH("ifmesh", "Inspect filter mesh", 2, spectrum_analyzer::MESH_POINTS + 4)
 
-        #define SA_MGROUP(id) \
-            OPT_RETURN_MONO("ret_" #id, "rin_" #id, "Audio return group " #id)
+        #define SA_MGROUP(id, sid) \
+            OPT_RETURN_MONO("ret_" #id, "rin_" #sid, "Audio return group " #sid)
 
-        #define SA_SGROUP(id) \
-            OPT_RETURN_STEREO("ret_" #id, "rin_" #id, "Audio return group " #id), \
-            SWITCH("ms_" #id, "Mid/Side switch for channel pair " #id, "M/S switch " #id, 0), \
-            SA_CORRMETER("cm_" #id, "Correlometer for stereo channel pair " #id)
+        #define SA_SGROUP(id, sid) \
+            OPT_RETURN_STEREO("ret_" #id, "rin_" #sid, "Audio return group " #sid), \
+            SWITCH("ms_" #id, "Mid/Side switch for channel pair " #sid, "M/S switch " #sid, 0), \
+            SA_CORRMETER("cm_" #id, "Correlometer for stereo channel pair " #sid)
 
         static const port_t spectrum_analyzer_x1_ports[] =
         {
-            SA_INPUT(0, 1),
-            SA_MGROUP(0),
+            SA_INPUT(0, 1, 1),
+            SA_MGROUP(0, 1),
             SA_COMMON(1, SA_SINGLE_CHANNEL),
             FBUFFER("fb", "Spectralizer buffer", spectrum_analyzer::FB_ROWS, spectrum_analyzer::MESH_POINTS),
             PORTS_END
@@ -210,9 +210,9 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x2_ports[] =
         {
-            SA_INPUT(0, 1),
-            SA_INPUT(1, 1),
-            SA_SGROUP(0),
+            SA_INPUT(0, 1, 1),
+            SA_INPUT(1, 2, 1),
+            SA_SGROUP(0, 1),
             SA_COMMON(2, SA_MULTI_CHANNEL),
             SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
             COMBO("spc", "Spectralizer channel", "SPC channel", 0, spectrum_analyzer_x2_channels),
@@ -223,12 +223,12 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x4_ports[] =
         {
-            SA_INPUT(0, 1),
-            SA_INPUT(1, 1),
-            SA_INPUT(2, 0),
-            SA_INPUT(3, 0),
-            SA_SGROUP(0),
-            SA_SGROUP(1),
+            SA_INPUT(0, 1, 1),
+            SA_INPUT(1, 2, 1),
+            SA_INPUT(2, 3, 0),
+            SA_INPUT(3, 4, 0),
+            SA_SGROUP(0, 1),
+            SA_SGROUP(1, 1),
             SA_COMMON(4, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
@@ -241,18 +241,18 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x8_ports[] =
         {
-            SA_INPUT(0, 1),
-            SA_INPUT(1, 1),
-            SA_INPUT(2, 0),
-            SA_INPUT(3, 0),
-            SA_INPUT(4, 0),
-            SA_INPUT(5, 0),
-            SA_INPUT(6, 0),
-            SA_INPUT(7, 0),
-            SA_SGROUP(0),
-            SA_SGROUP(1),
-            SA_SGROUP(2),
-            SA_SGROUP(3),
+            SA_INPUT(0, 1, 1),
+            SA_INPUT(1, 2, 1),
+            SA_INPUT(2, 3, 0),
+            SA_INPUT(3, 4, 0),
+            SA_INPUT(4, 5, 0),
+            SA_INPUT(5, 6, 0),
+            SA_INPUT(6, 7, 0),
+            SA_INPUT(7, 8, 0),
+            SA_SGROUP(0, 1),
+            SA_SGROUP(1, 2),
+            SA_SGROUP(2, 3),
+            SA_SGROUP(3, 4),
             SA_COMMON(8, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
@@ -265,24 +265,24 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x12_ports[] =
         {
-            SA_INPUT(0, 1),
-            SA_INPUT(1, 1),
-            SA_INPUT(2, 0),
-            SA_INPUT(3, 0),
-            SA_INPUT(4, 0),
-            SA_INPUT(5, 0),
-            SA_INPUT(6, 0),
-            SA_INPUT(7, 0),
-            SA_INPUT(8, 0),
-            SA_INPUT(9, 0),
-            SA_INPUT(10, 0),
-            SA_INPUT(11, 0),
-            SA_SGROUP(0),
-            SA_SGROUP(1),
-            SA_SGROUP(2),
-            SA_SGROUP(3),
-            SA_SGROUP(4),
-            SA_SGROUP(5),
+            SA_INPUT(0, 1, 1),
+            SA_INPUT(1, 2, 1),
+            SA_INPUT(2, 3, 0),
+            SA_INPUT(3, 4, 0),
+            SA_INPUT(4, 5, 0),
+            SA_INPUT(5, 6, 0),
+            SA_INPUT(6, 7, 0),
+            SA_INPUT(7, 8, 0),
+            SA_INPUT(8, 9, 0),
+            SA_INPUT(9, 10, 0),
+            SA_INPUT(10, 11, 0),
+            SA_INPUT(11, 12, 0),
+            SA_SGROUP(0, 1),
+            SA_SGROUP(1, 2),
+            SA_SGROUP(2, 3),
+            SA_SGROUP(3, 4),
+            SA_SGROUP(4, 5),
+            SA_SGROUP(5, 6),
             SA_COMMON(12, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
@@ -295,30 +295,30 @@ namespace lsp
 
         static const port_t spectrum_analyzer_x16_ports[] =
         {
-            SA_INPUT(0, 1),
-            SA_INPUT(1, 1),
-            SA_INPUT(2, 0),
-            SA_INPUT(3, 0),
-            SA_INPUT(4, 0),
-            SA_INPUT(5, 0),
-            SA_INPUT(6, 0),
-            SA_INPUT(7, 0),
-            SA_INPUT(8, 0),
-            SA_INPUT(9, 0),
-            SA_INPUT(10, 0),
-            SA_INPUT(11, 0),
-            SA_INPUT(12, 0),
-            SA_INPUT(13, 0),
-            SA_INPUT(14, 0),
-            SA_INPUT(15, 0),
-            SA_SGROUP(0),
-            SA_SGROUP(1),
-            SA_SGROUP(2),
-            SA_SGROUP(3),
-            SA_SGROUP(4),
-            SA_SGROUP(5),
-            SA_SGROUP(6),
-            SA_SGROUP(7),
+            SA_INPUT(0, 1, 1),
+            SA_INPUT(1, 2, 1),
+            SA_INPUT(2, 3, 0),
+            SA_INPUT(3, 4, 0),
+            SA_INPUT(4, 5, 0),
+            SA_INPUT(5, 6, 0),
+            SA_INPUT(6, 7, 0),
+            SA_INPUT(7, 8, 0),
+            SA_INPUT(8, 9, 0),
+            SA_INPUT(9, 10, 0),
+            SA_INPUT(10, 11, 0),
+            SA_INPUT(11, 12, 0),
+            SA_INPUT(12, 13, 0),
+            SA_INPUT(13, 14, 0),
+            SA_INPUT(14, 15, 0),
+            SA_INPUT(15, 16, 0),
+            SA_SGROUP(0, 1),
+            SA_SGROUP(1, 2),
+            SA_SGROUP(2, 3),
+            SA_SGROUP(3, 4),
+            SA_SGROUP(4, 5),
+            SA_SGROUP(5, 6),
+            SA_SGROUP(6, 7),
+            SA_SGROUP(7, 8),
             SA_COMMON(16, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
@@ -355,75 +355,75 @@ namespace lsp
 
         const port_group_t spectrum_analyzer_x1_port_groups[] =
         {
-            { "in_0",           "Input 0",       GRP_MONO,      PGF_IN | PGF_MAIN,          mono_in_ports       },
-            { "out_0",          "Output 0",      GRP_MONO,      PGF_OUT | PGF_MAIN,         mono_out_ports      },
+            { "in_0",           "Input 1",       GRP_MONO,      PGF_IN | PGF_MAIN,          mono_in_ports       },
+            { "out_0",          "Output 1",      GRP_MONO,      PGF_OUT | PGF_MAIN,         mono_out_ports      },
             PORT_GROUPS_END
         };
 
         const port_group_t spectrum_analyzer_x2_port_groups[] =
         {
-            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
-            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_0",           "Input 1",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 1",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
             PORT_GROUPS_END
         };
 
         const port_group_t spectrum_analyzer_x4_port_groups[] =
         {
-            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
-            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
-            { "in_1",           "Input 1",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
-            { "out_1",          "Output 1",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
+            { "in_0",           "Input 1",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 1",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_1",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
+            { "out_1",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
             PORT_GROUPS_END
         };
 
         const port_group_t spectrum_analyzer_x8_port_groups[] =
         {
-            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
-            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
-            { "in_1",           "Input 1",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
-            { "out_1",          "Output 1",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
-            { "in_2",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
-            { "out_2",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
-            { "in_3",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
-            { "out_3",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
+            { "in_0",           "Input 1",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 1",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_1",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
+            { "out_1",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
+            { "in_2",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
+            { "out_2",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
+            { "in_3",           "Input 4",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
+            { "out_3",          "Output 4",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
             PORT_GROUPS_END
         };
 
         const port_group_t spectrum_analyzer_x12_port_groups[] =
         {
-            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
-            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
-            { "in_1",           "Input 1",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
-            { "out_1",          "Output 1",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
-            { "in_2",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
-            { "out_2",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
-            { "in_3",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
-            { "out_3",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
-            { "in_4",           "Input 4",       GRP_STEREO,    PGF_IN,                     stereo_in4_ports    },
-            { "out_4",          "Output 4",      GRP_STEREO,    PGF_OUT,                    stereo_out4_ports   },
-            { "in_5",           "Input 5",       GRP_STEREO,    PGF_IN,                     stereo_in5_ports    },
-            { "out_5",          "Output 5",      GRP_STEREO,    PGF_OUT,                    stereo_out5_ports   },
+            { "in_0",           "Input 1",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 1",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_1",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
+            { "out_1",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
+            { "in_2",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
+            { "out_2",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
+            { "in_3",           "Input 4",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
+            { "out_3",          "Output 4",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
+            { "in_4",           "Input 5",       GRP_STEREO,    PGF_IN,                     stereo_in4_ports    },
+            { "out_4",          "Output 5",      GRP_STEREO,    PGF_OUT,                    stereo_out4_ports   },
+            { "in_5",           "Input 6",       GRP_STEREO,    PGF_IN,                     stereo_in5_ports    },
+            { "out_5",          "Output 6",      GRP_STEREO,    PGF_OUT,                    stereo_out5_ports   },
             PORT_GROUPS_END
         };
 
         const port_group_t spectrum_analyzer_x16_port_groups[] =
         {
-            { "in_0",           "Input 0",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
-            { "out_0",          "Output 0",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
-            { "in_1",           "Input 1",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
-            { "out_1",          "Output 1",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
-            { "in_2",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
-            { "out_2",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
-            { "in_3",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
-            { "out_3",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
-            { "in_4",           "Input 4",       GRP_STEREO,    PGF_IN,                     stereo_in4_ports    },
-            { "out_4",          "Output 4",      GRP_STEREO,    PGF_OUT,                    stereo_out4_ports   },
-            { "in_5",           "Input 5",       GRP_STEREO,    PGF_IN,                     stereo_in5_ports    },
-            { "out_5",          "Output 5",      GRP_STEREO,    PGF_OUT,                    stereo_out5_ports   },
-            { "in_6",           "Input 6",       GRP_STEREO,    PGF_IN,                     stereo_in6_ports    },
-            { "out_6",          "Output 6",      GRP_STEREO,    PGF_OUT,                    stereo_out6_ports   },
-            { "in_7",           "Input 7",       GRP_STEREO,    PGF_IN,                     stereo_in7_ports    },
-            { "out_7",          "Output 7",      GRP_STEREO,    PGF_OUT,                    stereo_out7_ports   },
+            { "in_0",           "Input 1",       GRP_STEREO,    PGF_IN | PGF_MAIN,          stereo_in0_ports    },
+            { "out_0",          "Output 1",      GRP_STEREO,    PGF_OUT | PGF_MAIN,         stereo_out0_ports   },
+            { "in_1",           "Input 2",       GRP_STEREO,    PGF_IN,                     stereo_in1_ports    },
+            { "out_1",          "Output 2",      GRP_STEREO,    PGF_OUT,                    stereo_out1_ports   },
+            { "in_2",           "Input 3",       GRP_STEREO,    PGF_IN,                     stereo_in2_ports    },
+            { "out_2",          "Output 3",      GRP_STEREO,    PGF_OUT,                    stereo_out2_ports   },
+            { "in_3",           "Input 4",       GRP_STEREO,    PGF_IN,                     stereo_in3_ports    },
+            { "out_3",          "Output 4",      GRP_STEREO,    PGF_OUT,                    stereo_out3_ports   },
+            { "in_4",           "Input 5",       GRP_STEREO,    PGF_IN,                     stereo_in4_ports    },
+            { "out_4",          "Output 5",      GRP_STEREO,    PGF_OUT,                    stereo_out4_ports   },
+            { "in_5",           "Input 6",       GRP_STEREO,    PGF_IN,                     stereo_in5_ports    },
+            { "out_5",          "Output 6",      GRP_STEREO,    PGF_OUT,                    stereo_out5_ports   },
+            { "in_6",           "Input 7",       GRP_STEREO,    PGF_IN,                     stereo_in6_ports    },
+            { "out_6",          "Output 7",      GRP_STEREO,    PGF_OUT,                    stereo_out6_ports   },
+            { "in_7",           "Input 8",       GRP_STEREO,    PGF_IN,                     stereo_in7_ports    },
+            { "out_7",          "Output 8",      GRP_STEREO,    PGF_OUT,                    stereo_out7_ports   },
             PORT_GROUPS_END
         };
 
