@@ -228,7 +228,7 @@ namespace lsp
             SA_INPUT(2, 3, 0),
             SA_INPUT(3, 4, 0),
             SA_SGROUP(0, 1),
-            SA_SGROUP(1, 1),
+            SA_SGROUP(1, 2),
             SA_COMMON(4, SA_MULTI_CHANNEL),
             SA_CORRMETER("cccm", "Correlometer for selected channels"),
             SWITCH("ms", "Stereo analysis Mid/Side mode", "M/S mode", 0),
