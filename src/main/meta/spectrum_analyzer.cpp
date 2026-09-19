@@ -170,6 +170,7 @@ namespace lsp
             { "Squared Cosine",         "fft.wnd.sqr_cosine" },
             { "Cubic",                  "fft.wnd.cubic" },
             { "Kaiser",                 "fft.wnd.kaiser" },
+            { "Kaiser-Bessel Derived",  "fft.wnd.kaiser_bessel_derived" },
             { NULL, NULL }
         };
 
