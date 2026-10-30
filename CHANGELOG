@@ -2,6 +2,10 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.42 ===
+* Added Kaiser and Kaiser-Bessel Derived windows for analysis.
+* Updated build scripts and dependencies.
+
 === 1.0.41 ===
 * Updated build scripts and dependencies.
 

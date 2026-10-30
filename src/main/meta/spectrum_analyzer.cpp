@@ -26,7 +26,7 @@
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MAJOR         1
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MINOR         0
-#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         41
+#define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION_MICRO         42
 
 #define LSP_PLUGINS_SPECTRUM_ANALYZER_VERSION  \
     LSP_MODULE_VERSION( \
@@ -143,6 +143,34 @@ namespace lsp
             { "Color",      "spectrum.spc.color" },
             { "Lightning",  "spectrum.spc.lightning" },
             { "Lightness",  "spectrum.spc.lightness" },
+            { NULL, NULL }
+        };
+
+        const port_item_t fft_windows[] =
+        {
+            { "Hann",                   "fft.wnd.hann" },
+            { "Hamming",                "fft.wnd.hamming" },
+            { "Blackman",               "fft.wnd.blackman" },
+            { "Lanczos",                "fft.wnd.lanczos" },
+            { "Gaussian",               "fft.wnd.gauss" },
+            { "Poisson",                "fft.wnd.poisson" },
+            { "Parzen",                 "fft.wnd.parzen" },
+            { "Tukey",                  "fft.wnd.tukey" },
+            { "Welch",                  "fft.wnd.welch" },
+            { "Nuttall",                "fft.wnd.nuttall" },
+            { "Blackman-Nuttall",       "fft.wnd.blackman_nuttall" },
+            { "Blackman-Harris",        "fft.wnd.blackman_harris" },
+            { "Hann-Poisson",           "fft.wnd.hann_poisson" },
+            { "Bartlett-Hann",          "fft.wnd.bartlett_hann" },
+            { "Bartlett-Fejer",         "fft.wnd.bartlett_fejer" },
+            { "Triangular",             "fft.wnd.triangular" },
+            { "Rectangular",            "fft.wnd.rectangular" },
+            { "Flat top",               "fft.wnd.flat_top" },
+            { "Cosine",                 "fft.wnd.cosine" },
+            { "Squared Cosine",         "fft.wnd.sqr_cosine" },
+            { "Cubic",                  "fft.wnd.cubic" },
+            { "Kaiser",                 "fft.wnd.kaiser" },
+            { "Kaiser-Bessel Derived",  "fft.wnd.kaiser_bessel_derived" },
             { NULL, NULL }
         };
 
